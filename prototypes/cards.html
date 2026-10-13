@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Lab</title>
+  <script>
+    try {
+      const t = localStorage.getItem('pmm-theme');
+      document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch (e) { document.documentElement.dataset.theme = 'light'; }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    svg { display: block; flex-shrink: 0; }
+
+    /* Same tokens as v8 */
+    :root {
+      --bg: #F4F1F8; --bg-2: #EAE5F2; --surface: #FCFBFE;
+      --line: rgba(34,30,51,.09); --line-2: rgba(34,30,51,.18);
+      --text: #221E33; --text-2: #4E4864; --text-3: #6A6482;
+      --accent: #5048C8; --accent-ink: #FFFFFF; --accent-soft: #E3E0FA; --on-soft: #3B34A8;
+      --shadow: 0 1px 2px rgba(34,30,51,.05), 0 6px 20px rgba(34,30,51,.05);
+      --r: 12px; color-scheme: light;
+    }
+    [data-theme="dark"] {
+      --bg: #131519; --bg-2: #1F2228; --surface: #1A1D22;
+      --line: rgba(255,255,255,.07); --line-2: rgba(255,255,255,.15);
+      --text: #ECEDF0; --text-2: #B3B7C1; --text-3: #8E939E;
+      --accent: #ABA6FF; --accent-ink: #131519; --accent-soft: rgba(171,166,255,.14); --on-soft: #CBC8FF;
+      --shadow: none; color-scheme: dark;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+    .tnum { font-variant-numeric: tabular-nums; }
+    .wrap { max-width: 1480px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── Lab chrome ── */
+    .lab-top { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); padding: 14px 0; }
+    .lab-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+    .lab-title { font-size: 19px; font-weight: 600; letter-spacing: -.02em; margin-right: auto; }
+    .seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--bg-2); border-radius: 100px; flex-wrap: wrap; }
+    .seg button { padding: 6px 14px; border-radius: 100px; font-size: 14px; font-weight: 500; color: var(--text-2); }
+    .seg button:hover { color: var(--text); }
+    .seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    .icon-btn { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: var(--text-2); }
+    .icon-btn:hover { background: var(--bg-2); color: var(--text); }
+    [data-theme="dark"] .i-moon, :root:not([data-theme="dark"]) .i-sun { display: none; }
+
+    .about { padding: 24px 0 20px; max-width: 760px; }
+    .about h1 { font-size: 26px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; }
+    .about p { margin-top: 6px; color: var(--text-2); }
+    .about .tradeoff { font-size: 14px; color: var(--text-3); }
+    .grid { display: grid; gap: 16px; padding-bottom: 48px; grid-template-columns: minmax(0, 1fr); grid-auto-rows: 1fr; }
+    @media (min-width: 720px)  { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 1024px) { .wrap { padding: 0 32px; } .grid { gap: 20px; } }
+    @media (min-width: 1440px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+    /* Shared card bits */
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); min-width: 0; }
+    .poster { aspect-ratio: 2 / 3; border-radius: 8px; flex-shrink: 0; }
+    .title { font-size: 17px; font-weight: 600; letter-spacing: -.01em; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .meta { margin-top: 2px; font-size: 13px; color: var(--text-3); }
+    .cue { font-size: 13px; font-weight: 500; color: var(--text-2); white-space: nowrap; }
+    .cue.hot { background: var(--accent); color: var(--accent-ink); padding: 1px 10px; border-radius: 100px; font-weight: 600; }
+    .fmt { font-weight: 600; color: var(--text-3); }
+    .ellip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* ── A · List line (v8) ── */
+    .a { display: flex; gap: 16px; padding: 16px; }
+    .a .poster { width: 96px; align-self: flex-start; }
+    .a-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .a-foot { margin-top: auto; padding-top: 10px; }
+    .a-feat { display: block; padding: 6px 8px; margin: 0 -8px; border-radius: 8px; }
+    .a-feat:hover { background: var(--bg-2); }
+    .a-top { display: flex; align-items: center; gap: 8px; }
+    .a-time { font-size: 17px; font-weight: 600; }
+    .a-where { margin-top: 2px; font-size: 13px; color: var(--text-2); }
+    .a-more { display: flex; gap: 6px; align-items: center; width: 100%; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--line); font-size: 13px; color: var(--text-2); text-align: left; }
+    .a-more b { font-weight: 600; white-space: nowrap; }
+    .a-more span { flex: 1; min-width: 0; color: var(--text-3); }
+
+    /* ── A1–A4 · lighter takes on A ── */
+    .car { display: inline-block; vertical-align: -2px; margin-right: 3px; opacity: .8; }
+    .a-more.q { border-top: none; padding-top: 4px; margin-top: 2px; font-weight: 600; }
+    .a-more.q.none { font-weight: 400; color: var(--text-3); }
+    .a2-row { display: flex; align-items: flex-start; gap: 8px; }
+    .a2-row .title { flex: 1; min-width: 0; }
+    .badge-n { flex-shrink: 0; padding: 2px 9px; border-radius: 100px; background: var(--bg-2); font-size: 12px; font-weight: 600; color: var(--text-2); }
+    button.badge-n:hover { color: var(--text); }
+    .a2-feat { display: flex; align-items: center; gap: 12px; padding: 6px 8px; margin: 0 -8px; border-radius: 8px; }
+    .a2-feat:hover { background: var(--bg-2); }
+    .a2-time { font-size: 28px; font-weight: 600; letter-spacing: -.02em; line-height: 1; }
+    .a2-time small { font-size: 14px; font-weight: 500; margin-left: 2px; color: var(--text-2); letter-spacing: 0; }
+    .a2-side { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; font-size: 13px; color: var(--text-2); }
+    .a3-chips { display: flex; gap: 6px; margin-top: 8px; overflow: hidden; }
+    .a3-chips .chip { padding: 4px 10px; font-size: 12px; }
+    .a3-chips .chip.n { background: var(--bg-2); border-color: transparent; color: var(--text-2); }
+    .tl { display: block; width: 100%; margin-top: 10px; text-align: left; }
+    .tl-bar { position: relative; display: block; height: 18px; }
+    .tl-bar::before { content: ''; position: absolute; left: 0; right: 0; top: 8px; height: 2px; border-radius: 2px; background: var(--line-2); }
+    .tl-tick { position: absolute; top: 4px; width: 3px; height: 10px; margin-left: -1.5px; border-radius: 2px; background: var(--text-3); }
+    .tl-tick.on { top: 2px; width: 8px; height: 14px; margin-left: -4px; border-radius: 4px; background: var(--accent); }
+    .tl-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-3); }
+    .tl:hover .tl-tick:not(.on) { background: var(--text-2); }
+
+    /* ── B · Session tiles (your idea) ──
+       Two rows of three tiles are always reserved, so every card is the same height. */
+    .b { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+    .b-head { display: flex; gap: 14px; }
+    .b-head .poster { width: 64px; }
+    .b-head > div { min-width: 0; align-self: center; }
+    .b-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, 1fr); gap: 8px; margin-top: auto; }
+    .tile {
+      display: flex; flex-direction: column; justify-content: center; gap: 1px;
+      min-height: 72px; padding: 8px 10px; border-radius: 10px;
+      border: 1px solid var(--line-2); background: var(--surface); text-align: left;
+      transition: border-color .12s, background .12s;
+    }
+    .tile:hover { border-color: var(--text-3); }
+    .tile .t { font-size: 15px; font-weight: 600; }
+    .tile .w, .tile .d { font-size: 12px; color: var(--text-3); }
+    .tile .w { color: var(--text-2); }
+    .tile.hot { border-color: var(--accent); background: var(--accent-soft); }
+    .tile.hot .t, .tile.hot .d { color: var(--on-soft); }
+    .tile.more { align-items: center; text-align: center; font-size: 13px; font-weight: 600; color: var(--text-2); background: var(--bg-2); border-color: transparent; }
+    .tile.ghost { border-style: dashed; border-color: var(--line); background: none; }
+
+    /* ── C · Time strip + detail ──
+       All times in one scrolling row; the picked time's details sit underneath. */
+    .c { display: flex; gap: 16px; padding: 16px; }
+    .c .poster { width: 96px; align-self: flex-start; }
+    .c-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .c-strip { display: flex; gap: 6px; margin-top: auto; padding: 10px 0 2px; overflow-x: auto; scrollbar-width: none; mask-image: linear-gradient(90deg, #000 85%, transparent); }
+    .c-strip::-webkit-scrollbar { display: none; }
+    .chip { flex-shrink: 0; padding: 6px 11px; border-radius: 100px; border: 1px solid var(--line-2); font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .chip:hover { border-color: var(--text-3); }
+    .chip[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+    .chip.hot:not([aria-pressed="true"]) { border-color: var(--accent); color: var(--on-soft); }
+    .c-detail { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+    .c-detail > div { flex: 1; min-width: 0; }
+    .c-where { font-size: 13px; font-weight: 500; }
+    .c-trip { font-size: 13px; color: var(--text-3); }
+    .book { flex-shrink: 0; padding: 7px 14px; border-radius: 100px; background: var(--accent); color: var(--accent-ink); font-size: 13px; font-weight: 600; }
+
+    /* ── D · Poster first ──
+       Letterboxd-style: the poster is the card. Denser grid, details in the sheet. */
+    .grid.d-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 24px 16px; }
+    @media (min-width: 1024px) { .grid.d-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); } }
+    .d { background: none; border: none; box-shadow: none; display: flex; flex-direction: column; text-align: left; width: 100%; }
+    .d .poster { width: 100%; border-radius: 10px; position: relative; transition: transform .15s; }
+    .d:hover .poster { transform: translateY(-2px); }
+    .d .badge { position: absolute; left: 8px; bottom: 8px; padding: 2px 9px; border-radius: 100px; font-size: 12px; font-weight: 600; background: var(--accent); color: var(--accent-ink); }
+    .d .title { margin-top: 10px; font-size: 15px; -webkit-line-clamp: 1; }
+    .d-next { margin-top: 2px; font-size: 13px; color: var(--text-2); }
+    .d-next b { font-weight: 600; color: var(--text); }
+    .d-count { font-size: 13px; color: var(--text-3); }
+
+    /* Sheet (all sessions) */
+    .overlay { position: fixed; inset: 0; z-index: 100; background: rgba(16,14,24,.5); display: flex; align-items: flex-end; justify-content: center; }
+    .modal { position: relative; width: 100%; max-width: 440px; max-height: 88vh; overflow-y: auto; background: var(--surface); border-radius: 20px 20px 0 0; padding: 20px; }
+    @media (min-width: 1024px) { .overlay { align-items: center; padding: 24px; } .modal { border-radius: 20px; } }
+    .modal-close { position: absolute; top: 10px; right: 10px; }
+    .m-title { font-size: 21px; font-weight: 600; padding-right: 36px; }
+    .m-sub { font-size: 14px; color: var(--text-2); margin: 2px 0 12px; }
+    .s-row { display: grid; grid-template-columns: 74px 1fr auto; gap: 2px 12px; align-items: center; padding: 10px 6px; margin: 0 -6px; border-bottom: 1px solid var(--line); border-radius: 8px; }
+    .s-row:hover { background: var(--bg-2); }
+    .s-row .t { font-weight: 600; }
+    .s-row .w { font-size: 14px; font-weight: 500; }
+    .s-row .d { display: block; font-size: 13px; color: var(--text-3); font-weight: 400; }
+  </style>
+</head>
+<body>
+  <div class="lab-top">
+    <div class="wrap lab-row">
+      <span class="lab-title">Card lab</span>
+      <div class="seg" id="v-seg" role="group" aria-label="Card design"></div>
+      <div class="seg" id="d-seg" role="group" aria-label="Day"></div>
+      <div class="seg" id="w-seg" role="group" aria-label="Window"></div>
+      <div class="seg" id="p-seg" role="group" aria-label="Posters"></div>
+      <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch theme">
+        <svg class="i-moon" width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <svg class="i-sun" width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <div class="about"><h1 id="v-name"></h1><p id="v-why"></p><p class="tradeoff" id="v-trade"></p></div>
+    <div id="grid"></div>
+    <p style="padding-bottom:40px;font-size:13px;color:var(--text-3)">Posters and film data from TMDb. This product uses the TMDb API but is not endorsed or certified by TMDb.</p>
+  </main>
+
+  <div class="overlay" id="ov" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+      <button class="icon-btn modal-close" id="m-close" type="button" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <h2 class="m-title" id="m-title"></h2>
+      <p class="m-sub" id="m-sub"></p>
+      <div id="m-list"></div>
+    </div>
+  </div>
+
+  <script>
+  /* Same seeded data and reachability as v8, trimmed to what cards need.
+     ?now=HH:MM pins the clock (default 12:00 so "Today" has sessions). */
+  const clockOffset = (() => {
+    const p = new URLSearchParams(location.search).get('now') || '12:00';
+    const [h, m] = p.split(':').map(Number);
+    const d = new Date(); d.setHours(h, m, 0, 0);
+    return d - Date.now();
+  })();
+  const now = () => new Date(Date.now() + clockOffset);
+  const BUFFER_MIN = 10, TIGHT_MIN = 20, ORIGIN = { lat: -37.7984, lng: 144.9785 }, KM = 30;
+
+  const CINEMAS = [
+    ['Cinema Nova', 'Nova', -37.7983, 144.9671, ['Std']], ['Hoyts Melbourne Central', 'Hoyts MC', -37.8102, 144.9628, ['Std', 'Std', 'LUX']],
+    ['Village Crown', 'Crown', -37.8237, 144.9580, ['Std', 'Gold Class', 'Vmax']], ['IMAX Melbourne', 'IMAX', -37.8033, 144.9717, ['IMAX']],
+    ['Palace Westgarth', 'Westgarth', -37.7786, 144.9989, ['Std']], ['Palace Como', 'Como', -37.8391, 144.9937, ['Std']],
+    ['Lido Cinemas', 'Lido', -37.8217, 145.0315, ['Std']], ['Hoyts Highpoint', 'Highpoint', -37.7738, 144.8880, ['Std', 'Std', 'LUX']],
+    ['Hoyts Chadstone', 'Chadstone', -37.8862, 145.0830, ['Std', 'Std', 'LUX']], ['Village Southland', 'Southland', -37.9580, 145.0490, ['Std', 'Std', 'Gold Class']],
+  ].map(([name, short, lat, lng, formats]) => ({ name, short, lat, lng, formats, url: '#' }));
+  const MOVIES = [
+    ['Alien: Romulus', 'Sci-fi horror', 119, '#2C5A3F,#0E2316', '/2uSWRTtCG336nuBiG8jOTEUKSy8.jpg'], ['Inside Out 2', 'Animation', 100, '#5BA3E0,#1A4F86', '/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg'],
+    ['Deadpool & Wolverine', 'Action comedy', 128, '#D2453A,#5C1010', '/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg'], ['Longlegs', 'Thriller', 101, '#4A4A78,#18182E', '/1EwNyiiNFd863H4e8nWEzutnZD7.jpg'],
+    ['The Substance', 'Body horror', 140, '#E0739A,#6A2040', '/lqoMzCcZYEFK729d6qzt349fB4o.jpg'], ['Dune: Part Two', 'Sci-fi epic', 166, '#D9A045,#6A4410', '/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg'],
+    ['The Wild Robot', 'Animation', 102, '#4DB38A,#155040', '/wTnV3PCVW5O92JMrFvvrRcV39RU.jpg'], ['Wicked', 'Musical', 160, '#8D5BD6,#2E1250', '/xDGbZ0JJ3mYaGKy4Nzd9Kph6M9L.jpg'],
+    ['Civil War', 'Action drama', 109, '#7A8A4A,#263010', '/sh7Rg8Er3tFcN9BpKIPOMvALgZd.jpg'],
+  ].map(([title, genre, runtime, g, img]) => ({ title, genre, runtime, img, grad: `linear-gradient(160deg,${g})` }));
+  const posterBg = m => st.real ? `url(https://image.tmdb.org/t/p/w342${m.img}) center/cover, ${m.grad}` : m.grad;
+
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const today0 = (() => { const d = now(); d.setHours(0, 0, 0, 0); return d; })();
+  const DAYS = [0, 1, 2].map(i => {
+    const d = new Date(today0); d.setDate(d.getDate() + i);
+    return { idx: i, date: d, label: i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : d.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' }).replace(',', '') };
+  });
+  const SESSIONS = [];
+  DAYS.forEach(day => {
+    const seed = day.date.getFullYear() * 400 + day.date.getMonth() * 32 + day.date.getDate();
+    CINEMAS.forEach((cinema, ci) => {
+      const r = rng(seed * 97 + ci);
+      [...MOVIES].sort(() => r() - 0.5).slice(0, 3).forEach(movie => {
+        const starts = [600 + 5 * Math.floor(r() * 78), 1020 + 5 * Math.floor(r() * 48)];
+        if (r() < 0.45) starts.push(1260 + 5 * Math.floor(r() * 20));
+        if (r() < 0.12) starts.push(1440 + 5 * Math.floor(r() * 10));
+        starts.forEach(startMin => SESSIONS.push({ day, cinema, movie, startMin,
+          format: cinema.formats[Math.floor(r() * cinema.formats.length)],
+          start: new Date(day.date.getTime() + startMin * 60000) }));
+      });
+    });
+  });
+  function hav(a, b) { const R = 6371, rad = x => x * Math.PI / 180, dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng); const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
+  const drive = km => Math.round(km * 1.3 / (km < 5 ? 22 : 34) * 60) + 4;
+
+  const NB = ' ';
+  const clock = d => d.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s?([ap])\.?m\.?/i, `${NB}$1m`);
+  const dur = m => m < 60 ? `${m}${NB}min` : `${Math.floor(m / 60)}h${m % 60 ? NB + (m % 60) + 'm' : ''}`;
+  const runtime = m => `${Math.floor(m / 60)}h${NB}${String(m % 60).padStart(2, '0')}m`;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function cue(e) {
+    if (e.slack < 0) return { hot: true, text: 'Leave now' };
+    if (e.slack < TIGHT_MIN) return { hot: true, text: e.slack < 1 ? 'Leave now' : `Leave in ${Math.floor(e.slack)}${NB}min` };
+    if (e.day.idx === 0 && e.slack < 90) return { hot: false, text: `Leave in ${dur(Math.floor(e.slack))}` };
+    return { hot: false, text: `Leave by ${clock(e.leaveBy)}` };
+  }
+
+  /* ── State ── */
+  const WINDOWS = { few: ['Evening · 5–9 pm', 1020, 1260], many: ['All day · 6 am – 1 am', 360, 1500] };
+  const VARIANTS = {
+    A: { name: 'A · List line', why: 'What v8 has now: the soonest session up front, every other time on one line that opens the full list.',
+         trade: 'Calmest and most compact. But the other times are only a hint: no cinema shown, and you need a tap to choose one.' },
+    A1: { name: 'A1 · Quiet', why: 'Cut every word that isn’t needed to decide. Genre goes, the word “drive” becomes a car icon, cinemas use short names, and the list of times becomes a count. “Leave by” only shows when it’s urgent.',
+         trade: 'About half the text of A. You lose the at-a-glance spread of later times, and relaxed sessions don’t say when to leave until you open them.' },
+    A2: { name: 'A2 · Time-led', why: 'Fix the hierarchy, not the word count. The next time is the biggest thing on the card, the leave cue and cinema sit beside it, and the “more” count becomes a badge by the title.',
+         trade: 'Reads in one glance: “12:30, leave in 18 min”. The title gets smaller, so it’s less film-first. Good if people come in knowing it’s about time.' },
+    A3: { name: 'A3 · A + chips', why: 'A’s layout, but the other times are small chips. Tapping one swaps it into the main slot (borrowed from C). “+N” opens the full list.',
+         trade: 'Times scan faster as shapes than as a comma list, and you can pick one without opening a sheet. It brings back C’s hidden “selected” state, and the chips are still text.' },
+    A4: { name: 'A4 · Timeline', why: 'Show, don’t list: a thin bar for the time window, with a tick for each session. The next one is highlighted. You see roughly how many and when without reading.',
+         trade: 'The least text of all and visually distinct. But it’s vague (you can’t read exact times off it), it’s a new pattern people have to learn, and ticks bunch up on busy films.' },
+    B: { name: 'B · Session tiles', why: 'Your idea: a small tile for each session, showing time, cinema and drive. The ones you need to leave for soon are highlighted.',
+         trade: 'Easy to scan, and you can book straight from a tile. The card is taller, and room is kept for 6 tiles, so films with 1–2 sessions show empty slots.' },
+    C: { name: 'C · Time strip', why: 'Every time in one row of chips you can swipe. Tap a time and its cinema, drive and Book button show underneath.',
+         trade: 'Same compact height as A, and every session is reachable without leaving the card. The trade-off: a hidden "selected" state, and the strip scrolls sideways.' },
+    D: { name: 'D · Poster first', why: 'Letterboxd-style: the poster is the card, with the next time and a count underneath. Twice as many films fit on screen.',
+         trade: 'Most "film-first" and best looking with real posters. Only the next session is visible; everything else is a tap away.' },
+  };
+  const st = { v: 'A1', day: 0, win: 'many', picked: {}, real: true };
+  try { const u = new URLSearchParams(location.search), q = u.get('v'); if (VARIANTS[q]) st.v = q; if (u.get('posters') === '0') st.real = false; if (u.get('win') === 'few') st.win = 'few'; } catch (e) {}
+
+  function films() {
+    const t = now(), [, from, to] = WINDOWS[st.win];
+    const live = SESSIONS.filter(s => s.day.idx === st.day && s.startMin >= from && s.startMin < to)
+      .map(s => { const km = hav(ORIGIN, s.cinema), travel = drive(km); return { ...s, km, travel, slack: (s.start - t) / 60000 - travel, leaveBy: new Date(s.start - travel * 60000) }; })
+      .filter(e => e.km <= KM && e.slack >= -BUFFER_MIN).sort((a, b) => a.start - b.start);
+    const m = new Map();
+    live.forEach(e => { if (!m.has(e.movie.title)) m.set(e.movie.title, { movie: e.movie, sessions: [] }); m.get(e.movie.title).sessions.push(e); });
+    return [...m.values()];
+  }
+
+  /* ── Variants ── */
+  const head = f => `<h2 class="title" title="${esc(f.movie.title)}">${esc(f.movie.title)}</h2><p class="meta">${esc(f.movie.genre)} · ${runtime(f.movie.runtime)}</p>`;
+  const poster = f => `<div class="poster" style="background:${posterBg(f.movie)}" aria-hidden="true"></div>`;
+  const fmtS = e => e.format !== 'Std' && e.format !== e.cinema.short ? ` · <span class="fmt">${esc(e.format)}</span>` : '';
+  const CAR = '<svg class="car" width="14" height="14" viewBox="0 0 16 16" aria-label="drive"><path d="M3 10.5V8.2l1.3-3.4A1.5 1.5 0 0 1 5.7 3.8h4.6a1.5 1.5 0 0 1 1.4 1l1.3 3.4v2.3M3 10.5h10M3 10.5V12.5M13 10.5V12.5M2.5 7.5h11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.2" cy="9" r=".8" fill="currentColor"/><circle cx="10.8" cy="9" r=".8" fill="currentColor"/></svg>';
+  const hm = m => { const h = Math.floor(m / 60) % 24, mm = m % 60; return m === 1440 ? 'midnight' : `${h % 12 || 12}${mm ? ':' + String(mm).padStart(2, '0') : ''}${NB}${h < 12 ? 'am' : 'pm'}`; };
+  const fmt = e => e.format !== 'Std' ? ` · <span class="fmt">${esc(e.format)}</span>` : '';
+
+  const R = {
+    A(f, i) {
+      const e = f.sessions[0], c = cue(e), rest = f.sessions.slice(1);
+      return `<article class="card a">${poster(f)}<div class="a-body">${head(f)}<div class="a-foot">
+        <a class="a-feat" href="#"><span class="a-top"><span class="a-time tnum">${clock(e.start)}</span><span class="cue ${c.hot ? 'hot' : ''}">${c.text}</span></span>
+          <span class="a-where ellip" style="display:block">${esc(e.cinema.name)}${fmt(e)} · ${dur(e.travel)} drive</span></a>
+        ${rest.length ? `<button class="a-more" data-sheet="${i}"><b>${rest.length} more</b><span class="ellip tnum">${rest.map(r => clock(r.start).replace(NB, '')).join(', ')}</span>›</button>`
+                      : `<p class="a-more" style="color:var(--text-3)">No other times in this window</p>`}
+      </div></div></article>`;
+    },
+    A1(f, i) {
+      const e = f.sessions[0], c = cue(e), n = f.sessions.length - 1;
+      return `<article class="card a">${poster(f)}<div class="a-body">
+        <h2 class="title" title="${esc(f.movie.title)}">${esc(f.movie.title)}</h2><p class="meta">${runtime(f.movie.runtime)}</p>
+        <div class="a-foot">
+          <a class="a-feat" href="#" aria-label="${clock(e.start)} at ${esc(e.cinema.name)}, ${dur(e.travel)} drive. ${c.text}">
+            <span class="a-top"><span class="a-time tnum">${clock(e.start)}</span>${c.hot ? `<span class="cue hot">${c.text}</span>` : ''}</span>
+            <span class="a-where ellip" style="display:block">${esc(e.cinema.short)}${fmtS(e)} · ${CAR}${dur(e.travel)}</span></a>
+          ${n ? `<button class="a-more q" data-sheet="${i}">+${n} more ${n === 1 ? 'time' : 'times'} ›</button>` : `<p class="a-more q none">Only time in this window</p>`}
+        </div></div></article>`;
+    },
+    A2(f, i) {
+      const e = f.sessions[0], c = cue(e), n = f.sessions.length - 1;
+      const [hhmm, ap] = clock(e.start).split(NB);
+      return `<article class="card a">${poster(f)}<div class="a-body">
+        <div class="a2-row"><h2 class="title" title="${esc(f.movie.title)}">${esc(f.movie.title)}</h2>
+          ${n ? `<button class="badge-n" data-sheet="${i}" aria-label="${n} more times">+${n}</button>` : ''}</div>
+        <p class="meta">${runtime(f.movie.runtime)}</p>
+        <div class="a-foot">
+          <a class="a2-feat" href="#" aria-label="${clock(e.start)} at ${esc(e.cinema.name)}, ${dur(e.travel)} drive. ${c.text}">
+            <span class="a2-time tnum">${hhmm}<small>${ap}</small></span>
+            <span class="a2-side"><span class="cue ${c.hot ? 'hot' : ''}">${c.text}</span>
+              <span class="ellip" style="max-width:100%">${esc(e.cinema.short)}${fmtS(e)} · ${CAR}${dur(e.travel)}</span></span></a>
+        </div></div></article>`;
+    },
+    A3(f, i) {
+      const pick = Math.min(st.picked[f.movie.title] || 0, f.sessions.length - 1), e = f.sessions[pick], c = cue(e);
+      const others = f.sessions.map((s, k) => [s, k]).filter(([, k]) => k !== pick), SHOW = 4;
+      return `<article class="card a">${poster(f)}<div class="a-body">
+        <h2 class="title" title="${esc(f.movie.title)}">${esc(f.movie.title)}</h2><p class="meta">${runtime(f.movie.runtime)}</p>
+        <div class="a-foot">
+          <a class="a-feat" href="#"><span class="a-top"><span class="a-time tnum">${clock(e.start)}</span><span class="cue ${c.hot ? 'hot' : ''}">${c.text}</span></span>
+            <span class="a-where ellip" style="display:block">${esc(e.cinema.short)}${fmtS(e)} · ${CAR}${dur(e.travel)}</span></a>
+          <div class="a3-chips">${others.length ? others.slice(0, SHOW).map(([s, k]) =>
+              `<button class="chip tnum ${cue(s).hot ? 'hot' : ''}" data-pick="${esc(f.movie.title)}" data-k="${k}" aria-label="Show ${clock(s.start)} at ${esc(s.cinema.name)}">${clock(s.start).replace(NB, '')}</button>`).join('')
+              + (others.length > SHOW ? `<button class="chip n" data-sheet="${i}">+${others.length - SHOW}</button>` : '')
+            : '<span class="meta" style="margin:0;padding:4px 0">Only time in this window</span>'}</div>
+        </div></div></article>`;
+    },
+    A4(f, i) {
+      const e = f.sessions[0], c = cue(e), [, from, to] = WINDOWS[st.win];
+      const t0 = st.day === 0 ? Math.max(from, now().getHours() * 60 + now().getMinutes()) : from, span = Math.max(to - t0, 60);
+      const pos = s => Math.min(100, Math.max(0, (s.startMin - t0) / span * 100));
+      return `<article class="card a">${poster(f)}<div class="a-body">
+        <h2 class="title" title="${esc(f.movie.title)}">${esc(f.movie.title)}</h2><p class="meta">${runtime(f.movie.runtime)}</p>
+        <div class="a-foot">
+          <a class="a-feat" href="#"><span class="a-top"><span class="a-time tnum">${clock(e.start)}</span>${c.hot ? `<span class="cue hot">${c.text}</span>` : ''}</span>
+            <span class="a-where ellip" style="display:block">${esc(e.cinema.short)}${fmtS(e)} · ${CAR}${dur(e.travel)}</span></a>
+          <button class="tl" data-sheet="${i}" aria-label="See all ${f.sessions.length} times">
+            <span class="tl-bar">${f.sessions.map((s, k) => `<span class="tl-tick ${k === 0 ? 'on' : ''}" style="left:${pos(s)}%"></span>`).join('')}</span>
+            <span class="tl-ends tnum"><span>${st.day === 0 && t0 > from ? 'Now' : hm(t0)}</span><span>${f.sessions.length > 1 ? `${f.sessions.length} times ›` : 'Only time'}</span><span>${hm(to)}</span></span>
+          </button>
+        </div></div></article>`;
+    },
+    B(f, i) {
+      const SLOTS = 6, over = f.sessions.length > SLOTS;
+      const shown = over ? f.sessions.slice(0, SLOTS - 1) : f.sessions;
+      let tiles = shown.map(e => {
+        const c = cue(e);
+        return `<a class="tile ${c.hot ? 'hot' : ''}" href="#" title="${esc(e.cinema.name)} · ${c.text}" aria-label="${clock(e.start)} at ${esc(e.cinema.name)}, ${dur(e.travel)} drive. ${c.text}">
+          <span class="t tnum">${clock(e.start)}</span><span class="w ellip">${esc(e.cinema.short)}${e.format !== 'Std' && e.format !== e.cinema.short ? ' · ' + esc(e.format) : ''}</span>
+          <span class="d ellip">${c.hot ? c.text : dur(e.travel) + ' drive'}</span></a>`;
+      }).join('');
+      if (over) tiles += `<button class="tile more" data-sheet="${i}">+${f.sessions.length - shown.length} more</button>`;
+      for (let k = Math.max(shown.length + (over ? 1 : 0), 0); k < SLOTS; k++) tiles += `<span class="tile ghost" aria-hidden="true"></span>`;
+      return `<article class="card b"><div class="b-head">${poster(f)}<div>${head(f)}</div></div><div class="b-tiles">${tiles}</div></article>`;
+    },
+    C(f, i) {
+      const pick = Math.min(st.picked[f.movie.title] || 0, f.sessions.length - 1), e = f.sessions[pick], c = cue(e);
+      return `<article class="card c">${poster(f)}<div class="c-body">${head(f)}
+        <div class="c-strip" role="group" aria-label="Times for ${esc(f.movie.title)}">${f.sessions.map((s, k) =>
+          `<button class="chip tnum ${cue(s).hot ? 'hot' : ''}" data-pick="${esc(f.movie.title)}" data-k="${k}" aria-pressed="${k === pick}">${clock(s.start)}</button>`).join('')}</div>
+        <div class="c-detail"><div><p class="c-where ellip">${esc(e.cinema.name)}${fmt(e)}</p>
+          <p class="c-trip ellip">${dur(e.travel)} drive · <span class="cue ${c.hot ? 'hot' : ''}">${c.text}</span></p></div>
+          <a class="book" href="#">Book</a></div>
+      </div></article>`;
+    },
+    D(f, i) {
+      const e = f.sessions[0], c = cue(e), n = f.sessions.length;
+      return `<button class="card d" data-sheet="${i}" aria-label="${esc(f.movie.title)}: ${n} sessions, next ${clock(e.start)} at ${esc(e.cinema.name)}">
+        <span class="poster" style="background:${posterBg(f.movie)};display:block">${c.hot ? `<span class="badge">${c.text}</span>` : ''}</span>
+        <span class="title">${esc(f.movie.title)}</span>
+        <span class="d-next ellip"><b class="tnum">${clock(e.start)}</b> · ${esc(e.cinema.short)} · ${dur(e.travel)}</span>
+        <span class="d-count">${n === 1 ? 'Only session' : `${n} times`}</span></button>`;
+    },
+  };
+
+  /* ── Render ── */
+  const $ = id => document.getElementById(id);
+  let cur = [];
+  function segHTML(items, val, key) { return items.map(([k, l]) => `<button type="button" data-${key}="${k}" aria-pressed="${String(val) === String(k)}">${l}</button>`).join(''); }
+  function render() {
+    $('v-seg').innerHTML = segHTML(Object.keys(VARIANTS).map(k => [k, k]), st.v, 'v');
+    $('d-seg').innerHTML = segHTML(DAYS.map(d => [d.idx, d.label]), st.day, 'd');
+    $('p-seg').innerHTML = segHTML([['1', 'Real posters'], ['0', 'Placeholders']], st.real ? 1 : 0, 'p');
+    $('w-seg').innerHTML = segHTML(Object.entries(WINDOWS).map(([k, [l]]) => [k, l]), st.win, 'w');
+    const v = VARIANTS[st.v];
+    $('v-name').textContent = v.name; $('v-why').textContent = v.why; $('v-trade').textContent = v.trade;
+    cur = films();
+    $('grid').className = 'grid' + (st.v === 'D' ? ' d-grid' : '');
+    $('grid').innerHTML = cur.length ? cur.map(R[st.v]).join('') : '<p style="color:var(--text-2)">Nothing in this window — try another day.</p>';
+  }
+  $('v-seg').onclick = e => { const b = e.target.closest('[data-v]'); if (b) { st.v = b.dataset.v; render(); } };
+  $('d-seg').onclick = e => { const b = e.target.closest('[data-d]'); if (b) { st.day = +b.dataset.d; render(); } };
+  $('p-seg').onclick = e => { const b = e.target.closest('[data-p]'); if (b) { st.real = b.dataset.p === '1'; render(); } };
+  $('w-seg').onclick = e => { const b = e.target.closest('[data-w]'); if (b) { st.win = b.dataset.w; render(); } };
+  $('grid').onclick = e => {
+    const p = e.target.closest('[data-pick]');
+    if (p) { st.picked[p.dataset.pick] = +p.dataset.k; const sl = p.parentElement.scrollLeft; render();
+      const strip = [...document.querySelectorAll('.c-strip')].find(s => s.querySelector(`[data-pick="${CSS.escape(p.dataset.pick)}"]`)); if (strip) strip.scrollLeft = sl; return; }
+    const s = e.target.closest('[data-sheet]'); if (s) openSheet(cur[+s.dataset.sheet]);
+    if (e.target.closest('a[href="#"]')) e.preventDefault();
+  };
+  function openSheet(f) {
+    $('m-title').textContent = f.movie.title;
+    $('m-sub').textContent = `${f.sessions.length} sessions · ${DAYS[st.day].label} · ${WINDOWS[st.win][0]}`;
+    $('m-list').innerHTML = f.sessions.map(e => { const c = cue(e); return `<a class="s-row" href="#"><span class="t tnum">${clock(e.start)}</span>
+      <span class="w">${esc(e.cinema.name)}${fmt(e)}<span class="d">${dur(e.travel)} drive · ${e.km.toFixed(1)}${NB}km</span></span><span class="cue ${c.hot ? 'hot' : ''}">${c.text}</span></a>`; }).join('');
+    $('ov').hidden = false; $('m-close').focus();
+  }
+  const close = () => { $('ov').hidden = true; };
+  $('m-close').onclick = close;
+  $('ov').onclick = e => { if (e.target === $('ov')) close(); };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  $('theme-btn').onclick = () => { const n = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = n; try { localStorage.setItem('pmm-theme', n); } catch (e) {} };
+  render();
+  </script>
+</body>
+</html>

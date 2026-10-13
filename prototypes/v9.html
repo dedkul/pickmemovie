@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PickMeMovie</title>
+  <script>
+    // Theme before first paint: saved choice, else the OS setting.
+    try {
+      const t = localStorage.getItem('pmm-theme');
+      document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch (e) { document.documentElement.dataset.theme = 'light'; }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    button, select, input { font: inherit; color: inherit; }
+    button { background: none; border: none; cursor: pointer; }
+    svg { display: block; flex-shrink: 0; }
+
+    /* ── Tokens ───────────────────────────────────────────────
+       Light = pastel lavender ground (default). Dark = cool slate.
+       One accent, used only for "act now" and the primary button.
+       Text tiers all ≥ 4.5:1 on --bg. */
+    :root {
+      --bg:          #F4F1F8;
+      --bg-2:        #EAE5F2;
+      --surface:     #FCFBFE;
+      --line:        rgba(34, 30, 51, .09);
+      --line-2:      rgba(34, 30, 51, .18);
+      --text:        #221E33;
+      --text-2:      #4E4864;
+      --text-3:      #6A6482;
+      --accent:      #5048C8;
+      --accent-ink:  #FFFFFF;
+      --accent-soft: #E3E0FA;
+      --on-soft:     #3B34A8;
+      --shadow:      0 1px 2px rgba(34,30,51,.05), 0 6px 20px rgba(34,30,51,.05);
+      --r: 12px;
+      --wrap: 1280px;
+      color-scheme: light;
+    }
+    [data-theme="dark"] {
+      --bg:          #131519;
+      --bg-2:        #1F2228;
+      --surface:     #1A1D22;
+      --line:        rgba(255, 255, 255, .07);
+      --line-2:      rgba(255, 255, 255, .15);
+      --text:        #ECEDF0;
+      --text-2:      #B3B7C1;
+      --text-3:      #8E939E;
+      --accent:      #ABA6FF;
+      --accent-ink:  #131519;
+      --accent-soft: rgba(171, 166, 255, .14);
+      --on-soft:     #CBC8FF;
+      --shadow:      none;
+      color-scheme: dark;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      transition: background .2s, color .2s;
+    }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+    .tnum { font-variant-numeric: tabular-nums; }
+    .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 20px; }
+
+    /* ── Header ───────────────────────────────────────────────── */
+    .top {
+      position: sticky; top: 0; z-index: 40;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+    .top-row { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+    .wordmark { font-size: 19px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
+    .top-actions { display: flex; align-items: center; gap: 6px; }
+    .btn-quiet {
+      padding: 8px 14px; border-radius: 100px;
+      font-size: 14px; font-weight: 500; color: var(--text-2);
+      transition: background .15s, color .15s;
+    }
+    .btn-quiet:hover:not(:disabled) { background: var(--bg-2); color: var(--text); }
+    .btn-quiet:disabled { opacity: .45; cursor: not-allowed; }
+    .icon-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: grid; place-items: center; color: var(--text-2);
+      transition: background .15s, color .15s;
+    }
+    .icon-btn:hover { background: var(--bg-2); color: var(--text); }
+    [data-theme="dark"] .i-moon, :root:not([data-theme="dark"]) .i-sun { display: none; }
+
+    /* Mobile summary */
+    .summary-bar {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 0 20px 14px; text-align: left;
+    }
+    .summary-pill {
+      flex: 1; min-width: 0;
+      display: flex; align-items: center; gap: 8px;
+      padding: 11px 14px;
+      background: var(--surface); border: 1px solid var(--line); border-radius: 100px;
+      box-shadow: var(--shadow);
+      font-size: 14px; color: var(--text-2);
+    }
+    .summary-pill span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .summary-pill strong { color: var(--text); font-weight: 600; }
+
+    /* ── Controls ─────────────────────────────────────────────
+       Mobile: full-screen sheet. Desktop: one slim row under the header,
+       date and time open as popovers. */
+    .controls {
+      position: fixed; inset: 0; z-index: 60;
+      background: var(--bg);
+      overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    body:not(.filters-open) .controls { display: none; }
+    .panel-hd {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 12px 4px 20px; font-size: 17px; font-weight: 600;
+    }
+    .ctl { padding: 16px 20px; }
+    .ctl-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-3); margin-bottom: 10px; }
+    .panel-ft {
+      margin-top: auto; position: sticky; bottom: 0;
+      padding: 16px 20px 20px; background: var(--bg);
+    }
+
+    .field {
+      position: relative; display: flex; align-items: center;
+      background: var(--surface); border: 1px solid var(--line-2); border-radius: 10px;
+      transition: border-color .15s;
+    }
+    .field:focus-within { border-color: var(--accent); }
+    .field > .lead { position: absolute; left: 12px; color: var(--text-3); pointer-events: none; }
+    .loc-input {
+      flex: 1; min-width: 0;
+      background: none; border: none; outline: none;
+      padding: 10px 40px 10px 36px;
+      font-size: 15px; font-weight: 500;
+    }
+    .loc-input::placeholder { color: var(--text-3); font-weight: 400; }
+    .locate { position: absolute; right: 4px; width: 34px; height: 34px; }
+    .loc-note { margin-top: 8px; font-size: 13px; color: var(--text-2); }
+
+    .ac-dropdown {
+      position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 70;
+      background: var(--surface); border: 1px solid var(--line-2); border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.14); overflow: hidden;
+    }
+    .ac-item { display: block; width: 100%; text-align: left; padding: 10px 14px; cursor: pointer; }
+    .ac-item[aria-selected="true"] { background: var(--bg-2); }
+    .ac-name { display: block; font-size: 14px; font-weight: 500; }
+    .ac-sub  { display: block; font-size: 13px; color: var(--text-3); }
+    .ac-empty { padding: 12px 14px; font-size: 14px; color: var(--text-2); }
+
+    /* Pills — one selected style everywhere */
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      padding: 8px 14px; border-radius: 100px;
+      border: 1px solid var(--line-2); background: var(--surface);
+      font-size: 14px; font-weight: 500; color: var(--text-2);
+      transition: background .12s, color .12s, border-color .12s;
+    }
+    .pill:hover:not(:disabled) { color: var(--text); border-color: var(--text-3); }
+    .pill[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+    .pill:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* Time presets carry their hours, so "Evening" is never a guess */
+    .preset { display: flex; flex-direction: column; align-items: flex-start; padding: 7px 14px; border-radius: 12px; line-height: 1.25; }
+    .preset .hrs { font-size: 12px; font-weight: 400; opacity: .75; }
+
+    /* Segmented: Leave now | Plan ahead */
+    .seg {
+      display: inline-flex; padding: 3px; gap: 2px;
+      background: var(--bg-2); border-radius: 100px;
+    }
+    .seg button {
+      padding: 6px 14px; border-radius: 100px;
+      font-size: 14px; font-weight: 500; color: var(--text-2);
+      transition: background .12s, color .12s;
+    }
+    .seg button:hover:not(:disabled) { color: var(--text); }
+    .seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    .seg button:disabled { opacity: .45; cursor: not-allowed; }
+    .seg .sub { font-weight: 400; opacity: .75; }
+
+    .now-info { font-size: 14px; color: var(--text-2); }
+    .now-info strong { color: var(--text); font-weight: 600; }
+
+    /* Range: Starts between [from] and [to] */
+    .range-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-size: 14px; color: var(--text-2); }
+    .select-wrap { position: relative; display: inline-flex; align-items: center; }
+    .select-wrap select {
+      appearance: none; -webkit-appearance: none;
+      padding: 8px 32px 8px 12px; border-radius: 10px;
+      border: 1px solid var(--line-2); background: var(--surface);
+      font-size: 14px; font-weight: 500; cursor: pointer;
+    }
+    .select-wrap.round select { border-radius: 100px; padding: 9px 36px 9px 14px; }
+    .select-wrap svg { position: absolute; right: 11px; pointer-events: none; color: var(--text-3); }
+    .time-note { margin-top: 10px; font-size: 13px; color: var(--text-3); }
+
+
+    /* Popover trigger buttons — desktop only */
+    .pop-btn { display: none; }
+
+    .btn-primary {
+      display: block; width: 100%; padding: 13px; border-radius: 100px;
+      background: var(--accent); color: var(--accent-ink);
+      font-size: 15px; font-weight: 600; text-align: center; text-decoration: none;
+      transition: filter .15s;
+    }
+    .btn-primary:hover { filter: brightness(1.08); }
+
+    /* ── Results ──────────────────────────────────────────────── */
+    .results-hd { padding: 28px 0 20px; }
+    .results-title { font-size: 26px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; }
+    .results-sub { margin-top: 6px; font-size: 15px; color: var(--text-2); }
+    .results-sub strong { color: var(--text); font-weight: 600; }
+
+    /* Every card has the same parts in the same places; grid-auto-rows: 1fr
+       makes every row as tall as the tallest card, so the grid never staggers. */
+    .film-grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: 1fr; gap: 16px; padding-bottom: 32px; }
+    .film {
+      display: flex; gap: 14px; padding: 14px;
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+      box-shadow: var(--shadow);
+    }
+    .poster { width: 100%; aspect-ratio: 2 / 3; border-radius: 8px; }
+    .film > .poster { width: 84px; flex-shrink: 0; align-self: flex-start; }
+    .film-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .film-title {
+      font-size: 17px; font-weight: 600; letter-spacing: -.01em; line-height: 1.25;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .film-meta { margin-top: 2px; font-size: 13px; color: var(--text-3); }
+    .film-foot { margin-top: auto; padding-top: 10px; }
+
+    /* A1 "Quiet" card: the whole card opens the film (stretched link on the title button). */
+    .film { position: relative; transition: border-color .15s, transform .15s; }
+    .film:hover { border-color: var(--line-2); }
+    .film:has(.film-open:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .film-open { text-align: left; font: inherit; letter-spacing: inherit; }
+    .film-open::after { content: ''; position: absolute; inset: 0; border-radius: var(--r); }
+    .film-open:focus-visible { outline: none; }
+    .feat-top { display: flex; align-items: center; gap: 8px; }
+    .feat-time { font-size: 17px; font-weight: 600; }
+    .feat-where { margin-top: 2px; font-size: 13px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .feat-where .fmt { font-weight: 600; color: var(--text-3); }
+    .car { display: inline-block; vertical-align: -2px; margin-right: 3px; opacity: .8; }
+    .more-q { margin-top: 4px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+    .more-q.none { font-weight: 400; color: var(--text-3); }
+
+    .late-tag { display: block; font-size: 11px; font-weight: 500; color: var(--text-3); }
+    .feat-top .late-tag { display: inline; font-size: 12px; }
+    .s-cue { font-size: 13px; font-weight: 500; color: var(--text-2); white-space: nowrap; }
+    .s-cue.tight, .s-cue.trailers { background: var(--accent); color: var(--accent-ink); padding: 1px 10px; border-radius: 100px; font-weight: 600; }
+
+    .empty { padding-bottom: 40px; }
+    .empty p { color: var(--text-2); margin-bottom: 14px; }
+    .foot { padding: 8px 0 40px; font-size: 13px; color: var(--text-3); }
+
+    /* ── Film detail: full-screen sheet on phones, side panel on desktop ── */
+    .fd-ov { align-items: stretch; }
+    .drawer { position: relative; width: 100%; height: 100%; overflow-y: auto; background: var(--surface); }
+    .fd-hero { position: relative; aspect-ratio: 16 / 9; background: var(--bg-2) center/cover; }
+    .fd-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, var(--surface)); pointer-events: none; }
+    .fd-hero iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 2; }
+    .fd-hero.playing::after { display: none; }
+    .fd-close { position: absolute; top: 12px; right: 12px; z-index: 3; background: rgba(16,14,24,.55); color: #fff; }
+    .fd-close:hover { background: rgba(16,14,24,.75); color: #fff; }
+    .fd-play {
+      position: absolute; left: 20px; bottom: 18px; z-index: 1;
+      display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px 9px 12px; border-radius: 100px;
+      background: rgba(255,255,255,.92); color: #1a1726; font-size: 14px; font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    }
+    .fd-play:hover { background: #fff; }
+    .fd-body { padding: 4px 20px 28px; }
+    .fd-title { font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; }
+    .fd-meta { margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 14px; color: var(--text-2); }
+    .cert { padding: 1px 6px; border: 1px solid var(--line-2); border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--text-2); }
+    .fd-genres { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .fd-genres span { padding: 4px 10px; border-radius: 100px; background: var(--bg-2); font-size: 12px; font-weight: 500; color: var(--text-2); }
+    .fd-syn { margin-top: 14px; font-size: 15px; line-height: 1.55; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .fd-syn.open { -webkit-line-clamp: unset; display: block; }
+    .fd-more { margin-top: 4px; font-size: 14px; font-weight: 600; color: var(--text); }
+    .fd-sec { margin: 26px 0 4px; font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+    .fd-cin { padding: 14px 0 6px; border-bottom: 1px solid var(--line); }
+    .fd-cin-hd { display: flex; align-items: flex-start; gap: 12px; }
+    .fd-cin-hd > div { flex: 1; min-width: 0; }
+    .fd-cin-hd .name { font-size: 15px; font-weight: 600; }
+    .fd-cin-hd .trip { font-size: 13px; color: var(--text-3); }
+    .fd-dir { flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; padding: 4px 0; }
+    .fd-dir:hover { color: var(--text); }
+    .fd-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; padding: 10px 0; }
+    .fd-row + .fd-row { border-top: 1px dashed var(--line); }
+    .fd-t { font-size: 16px; font-weight: 600; }
+    .fd-t .fmt { margin-left: 6px; font-size: 12px; font-weight: 600; color: var(--text-3); }
+    .fd-sub { grid-column: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 13px; color: var(--text-3); }
+    .fd-book {
+      grid-row: 1 / span 2; grid-column: 2;
+      padding: 7px 14px; border-radius: 100px; border: 1px solid var(--line-2);
+      font-size: 13px; font-weight: 600; color: var(--text); text-decoration: none; white-space: nowrap;
+    }
+    .fd-book:hover { border-color: var(--text-3); }
+    .fd-book.hot { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    .fd-credit { margin-top: 22px; font-size: 12px; color: var(--text-3); }
+    .m-details { align-self: flex-start; margin-top: 6px; font-size: 14px; font-weight: 600; color: var(--text); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-2); }
+
+    /* ── Dialogs (film sheet, surprise) ───────────────────────── */
+    .overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(16, 14, 24, .5);
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .modal {
+      position: relative; width: 100%; max-width: 440px; max-height: 88vh; overflow-y: auto;
+      background: var(--surface); border-radius: 20px 20px 0 0;
+      padding: 20px; display: flex; flex-direction: column; gap: 16px;
+    }
+    .modal-close { position: absolute; top: 10px; right: 10px; }
+    .m-head { display: grid; grid-template-columns: 96px 1fr; gap: 16px; }
+    .m-head.small { grid-template-columns: 56px 1fr; align-items: center; padding-right: 32px; }
+    .m-eyebrow { font-size: 13px; color: var(--text-3); margin-bottom: 2px; padding-right: 32px; }
+    .m-title { font-size: 21px; font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
+    .m-line { margin-top: 4px; font-size: 14px; color: var(--text-2); }
+    .m-when { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .m-clock { font-size: 17px; font-weight: 600; }
+    .m-seg { align-self: flex-start; max-width: calc(100% - 40px); }
+    .m-seg button { white-space: nowrap; }
+    .m-actions { display: flex; gap: 8px; }
+    .m-actions .btn-quiet { border: 1px solid var(--line-2); flex: 1; }
+    .m-actions .btn-primary { flex: 1.4; }
+
+    /* ── ≥ 720: two film columns ─────────────────────────────── */
+    @media (min-width: 720px) {
+      .film-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    /* ── ≥ 1024: desktop filter bar ──────────────────────────── */
+    @media (min-width: 1024px) {
+      .wrap { padding: 0 32px; }
+      .summary-bar, .panel-hd, .panel-ft { display: none; }
+      .controls, body:not(.filters-open) .controls {
+        position: static; display: flex; flex-direction: row; align-items: center; flex-wrap: wrap;
+        gap: 10px; padding: 0 0 14px; overflow: visible; background: none; z-index: auto;
+      }
+      .ctl { padding: 0; }
+      .ctl-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+      .ctl.loc { width: 260px; }
+      .loc-input { padding-top: 8px; padding-bottom: 8px; font-size: 14px; }
+      .loc-note { position: absolute; margin-top: 4px; }
+
+      .ctl.has-pop { position: relative; }
+      .pop-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 8px 12px 8px 12px; border-radius: 100px;
+        border: 1px solid var(--line-2); background: var(--surface);
+        font-size: 14px; font-weight: 500; white-space: nowrap;
+      }
+      .pop-btn:hover { border-color: var(--text-3); }
+      .pop-btn svg { color: var(--text-3); }
+      .pop {
+        position: absolute; top: calc(100% + 8px); left: 0; z-index: 70;
+        padding: 16px;
+        background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px;
+        box-shadow: 0 12px 32px rgba(0,0,0,.14);
+      }
+      .pop:not(.open) { display: none; }
+      .pop.time-pop { width: 420px; }
+      .divider { width: 1px; height: 24px; background: var(--line-2); margin: 0 4px; }
+
+      .results-hd { padding: 36px 0 24px; }
+      .results-title { font-size: 30px; }
+      .film-grid { gap: 20px; }
+      .film { gap: 18px; padding: 16px; }
+      .film > .poster { width: 108px; }
+
+      .overlay { align-items: center; padding: 24px; }
+      .fd-ov { align-items: stretch; justify-content: flex-end; padding: 0; }
+      .drawer { width: 520px; box-shadow: -12px 0 40px rgba(0,0,0,.2); }
+      .fd-body { padding: 4px 28px 32px; }
+      .modal { border-radius: 20px; }
+    }
+    @media (max-width: 1023px) { .divider, .rr-lead { display: none; } }
+
+    /* ── ≥ 1440: three film columns ──────────────────────────── */
+    @media (min-width: 1440px) {
+      :root { --wrap: 1480px; }
+      .film-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top">
+    <div class="wrap top-row">
+      <a class="wordmark" href="#">PickMeMovie</a>
+      <div class="top-actions">
+        <button class="btn-quiet" id="surprise-btn" type="button">Surprise me</button>
+        <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch theme">
+          <svg class="i-moon" width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <svg class="i-sun" width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile: one-line summary that opens the filter sheet -->
+    <button class="summary-bar" id="summary-bar" type="button" aria-expanded="false" aria-controls="controls">
+      <span class="summary-pill">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14.5s4.8-4.4 4.8-8.1a4.8 4.8 0 0 0-9.6 0c0 3.7 4.8 8.1 4.8 8.1Z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="6.4" r="1.7" fill="currentColor"/></svg>
+        <span id="summary-text"></span>
+      </span>
+    </button>
+
+    <div class="wrap">
+      <div class="controls" id="controls" role="group" aria-label="Filters">
+        <div class="panel-hd">
+          Filters
+          <button class="icon-btn" id="panel-close" type="button" aria-label="Close filters">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <div class="ctl loc">
+          <label class="ctl-label" for="loc-input">Leaving from</label>
+          <div class="field">
+            <svg class="lead" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14.5s4.8-4.4 4.8-8.1a4.8 4.8 0 0 0-9.6 0c0 3.7 4.8 8.1 4.8 8.1Z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="6.4" r="1.7" fill="currentColor"/></svg>
+            <input id="loc-input" class="loc-input" type="text" autocomplete="off" spellcheck="false"
+                   placeholder="Suburb or address"
+                   role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ac-list">
+            <button class="icon-btn locate" id="geo-btn" type="button" aria-label="Use my current location" title="Use my current location">
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="4.3" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/><path d="M8 1v2.2M8 12.8V15M1 8h2.2M12.8 8H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <div class="ac-dropdown" id="ac-list" role="listbox" hidden></div>
+          </div>
+          <p class="loc-note" id="loc-note" role="status" hidden></p>
+        </div>
+
+        <div class="ctl mode">
+          <span class="ctl-label" id="mode-label">When</span>
+          <div class="seg" id="mode-seg" role="group" aria-labelledby="mode-label">
+            <button type="button" data-mode="now">Leave now</button>
+            <button type="button" data-mode="plan">Plan ahead</button>
+          </div>
+        </div>
+
+        <!-- Leave now: no date/time to pick, so say exactly what window is used -->
+        <div class="ctl now-ctl" id="now-ctl">
+          <p class="now-info" id="now-info"></p>
+        </div>
+
+        <div class="ctl" id="date-ctl">
+          <span class="ctl-label" id="date-label">Day</span>
+          <div class="seg" id="day-seg" role="group" aria-labelledby="date-label"></div>
+        </div>
+
+        <div class="ctl has-pop" id="time-ctl">
+          <span class="ctl-label" id="time-label">Starting between</span>
+          <button class="pop-btn" id="time-btn" type="button" aria-expanded="false" aria-controls="time-pop">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.6V8l2.3 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="time-btn-text" class="tnum"></span>
+          </button>
+          <div class="pop time-pop" id="time-pop">
+            <div class="pills" id="presets" role="group" aria-labelledby="time-label"></div>
+            <div class="range-row">
+              <span class="rr-lead">Starts between</span>
+              <span class="select-wrap">
+                <select id="from-sel" aria-label="Earliest start time"></select>
+                <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span>and</span>
+              <span class="select-wrap">
+                <select id="to-sel" aria-label="Latest start time"></select>
+                <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+            <p class="time-note" id="time-note" hidden></p>
+          </div>
+        </div>
+
+        <span class="divider" aria-hidden="true"></span>
+
+        <div class="ctl radius">
+          <label class="ctl-label" for="radius">How far</label>
+          <span class="select-wrap round">
+            <select id="radius">
+              <option value="5">Within 5 km</option>
+              <option value="15">Within 15 km</option>
+              <option value="30">Within 30 km</option>
+              <option value="50">Within 50 km</option>
+            </select>
+            <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+
+        <div class="panel-ft">
+          <button class="btn-primary" id="show-btn" type="button"></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="results-hd" aria-live="polite">
+      <h1 class="results-title" id="results-title"></h1>
+      <p class="results-sub" id="results-sub"></p>
+    </div>
+    <div id="list"></div>
+    <p class="foot">Prototype · sample showtimes · travel is by car only (public transport isn’t supported yet), estimated from distance. End times assume about 15 minutes of ads and trailers. Film info and posters from TMDb. You can still make a session if you arrive within 10 minutes of the start — that's the trailers. Try <code>?now=21:30</code> to see late-night edge cases.</p>
+  </main>
+
+  <!-- Film detail: trailer, synopsis, and every session grouped by cinema -->
+  <div class="overlay fd-ov" id="film-ov" hidden>
+    <div class="drawer" role="dialog" aria-modal="true" aria-labelledby="fd-title">
+      <div class="fd-hero" id="fd-hero">
+        <button class="icon-btn fd-close" data-close type="button" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button class="fd-play" id="fd-play" type="button">
+          <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z" fill="currentColor"/></svg>Play trailer
+        </button>
+      </div>
+      <div class="fd-body">
+        <h2 class="fd-title" id="fd-title"></h2>
+        <p class="fd-meta" id="fd-meta"></p>
+        <div class="fd-genres" id="fd-genres"></div>
+        <p class="fd-syn" id="fd-syn"></p>
+        <button class="fd-more" id="fd-more" type="button">More</button>
+        <h3 class="fd-sec" id="fd-when"></h3>
+        <div id="fd-list"></div>
+        <p class="fd-credit">Film info and images from TMDb. This product uses the TMDb API but is not endorsed or certified by TMDb.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Surprise me -->
+  <div class="overlay" id="sp-ov" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+      <button class="icon-btn modal-close" data-close type="button" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <div class="seg m-seg" id="m-seg" role="group" aria-label="Pick from"></div>
+      <div class="m-head">
+        <div class="poster" id="m-poster" aria-hidden="true"></div>
+        <div>
+          <p class="m-eyebrow" id="m-eyebrow"></p>
+          <h2 class="m-title" id="m-title"></h2>
+          <p class="m-line" id="m-meta"></p>
+          <p class="m-line" id="m-where"></p>
+          <div class="m-when"><span class="m-clock tnum" id="m-clock"></span><span id="m-cue"></span></div>
+        </div>
+      </div>
+      <button class="m-details" id="m-details" type="button">Trailer and all sessions</button>
+      <div class="m-actions">
+        <button class="btn-quiet" id="m-another" type="button">Try another</button>
+        <a class="btn-primary" id="m-book" href="#" target="_blank" rel="noopener"></a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /* ══ Clock ═══════════════════════════════════════════════════
+     ?now=18:40 pins the demo clock (it still ticks from there). */
+  const clockOffset = (() => {
+    const p = new URLSearchParams(location.search).get('now');
+    if (!p || !/^\d{1,2}:\d{2}$/.test(p)) return 0;
+    const [h, m] = p.split(':').map(Number);
+    const d = new Date(); d.setHours(h, m, 0, 0);
+    return d - Date.now();
+  })();
+  const now = () => new Date(Date.now() + clockOffset);
+  const nowMin = () => { const t = now(); return t.getHours() * 60 + t.getMinutes(); };
+
+  /* ══ Reference data ══════════════════════════════════════════ */
+  const BUFFER_MIN  = 10;    // PRD §5.4: trailer grace
+  const PRE_ROLL    = 15;    // ads + trailers before the film; used for the estimated end time
+  const TIGHT_MIN   = 20;    // under this much slack, flag it
+  const NOW_WINDOW  = 120;   // "Leave now" = sessions starting within the next 2 hours
+  const COVERAGE_KM = 60;    // from the CBD
+  const HORIZON     = 3;     // today + the next two days — the app is about soon, not someday
+  const CBD = { lat: -37.8136, lng: 144.9631 };
+
+  // Presets are just shortcuts for a start-time window; the hours are always shown.
+  const PRESETS = [
+    { id: 'morning',   name: 'Morning',   from: 360,  to: 720  },
+    { id: 'afternoon', name: 'Afternoon', from: 720,  to: 1020 },
+    { id: 'evening',   name: 'Evening',   from: 1020, to: 1260 },
+    { id: 'late',      name: 'Late',      from: 1260, to: 1500 },
+    { id: 'all',       name: 'All day',   from: 360,  to: 1500 },
+  ];
+  const T_MIN = 360, T_MAX = 1500, T_STEP = 30;   // 1500 = 1 am: after-midnight sessions belong to the night before
+  const RADII = [5, 15, 30, 50];
+
+  const SUBURBS = [
+    ['Fitzroy', 'VIC 3065', -37.7984, 144.9785], ['Fitzroy North', 'VIC 3068', -37.7833, 144.9850],
+    ['Carlton', 'VIC 3053', -37.8001, 144.9671], ['Collingwood', 'VIC 3066', -37.8020, 144.9880],
+    ['Brunswick', 'VIC 3056', -37.7667, 144.9600], ['Northcote', 'VIC 3070', -37.7700, 145.0000],
+    ['Coburg', 'VIC 3058', -37.7440, 144.9660], ['Preston', 'VIC 3072', -37.7430, 145.0050],
+    ['Melbourne', 'VIC 3000 · CBD', -37.8136, 144.9631], ['Docklands', 'VIC 3008', -37.8170, 144.9460],
+    ['Richmond', 'VIC 3121', -37.8180, 145.0010], ['South Yarra', 'VIC 3141', -37.8380, 144.9920],
+    ['St Kilda', 'VIC 3182', -37.8676, 144.9809], ['Hawthorn', 'VIC 3122', -37.8220, 145.0350],
+    ['Footscray', 'VIC 3011', -37.8000, 144.9000], ['Box Hill', 'VIC 3128', -37.8189, 145.1218],
+    ['Glen Waverley', 'VIC 3150', -37.8780, 145.1650], ['Geelong', 'VIC 3220', -38.1499, 144.3617],
+  ].map(([name, sub, lat, lng]) => ({ name, sub, lat, lng }));
+
+  const CINEMAS = [
+    { name: 'Cinema Nova', short: 'Nova',             chain: 'Cinema Nova',    suburb: 'Carlton',     lat: -37.7983, lng: 144.9671, url: 'https://www.cinemanova.com.au',    formats: ['Std'] },
+    { name: 'Hoyts Melbourne Central', short: 'Hoyts MC', chain: 'Hoyts',          suburb: 'CBD',         lat: -37.8102, lng: 144.9628, url: 'https://www.hoyts.com.au',         formats: ['Std', 'Std', 'LUX'] },
+    { name: 'Village Crown', short: 'Crown',           chain: 'Village',        suburb: 'Southbank',   lat: -37.8237, lng: 144.9580, url: 'https://villagecinemas.com.au',    formats: ['Std', 'Gold Class', 'Vmax'] },
+    { name: 'IMAX Melbourne', short: 'IMAX',          chain: 'IMAX Melbourne', suburb: 'Carlton',     lat: -37.8033, lng: 144.9717, url: 'https://imaxmelbourne.com.au',     formats: ['IMAX'] },
+    { name: 'Palace Westgarth', short: 'Westgarth',        chain: 'Palace',         suburb: 'Northcote',   lat: -37.7786, lng: 144.9989, url: 'https://www.palacecinemas.com.au', formats: ['Std'] },
+    { name: 'Palace Como', short: 'Como',             chain: 'Palace',         suburb: 'South Yarra', lat: -37.8391, lng: 144.9937, url: 'https://www.palacecinemas.com.au', formats: ['Std'] },
+    { name: 'Lido Cinemas', short: 'Lido',            chain: 'Lido',           suburb: 'Hawthorn',    lat: -37.8217, lng: 145.0315, url: 'https://www.lidocinemas.com.au',   formats: ['Std'] },
+    { name: 'Hoyts Highpoint', short: 'Highpoint',         chain: 'Hoyts',          suburb: 'Maribyrnong', lat: -37.7738, lng: 144.8880, url: 'https://www.hoyts.com.au',         formats: ['Std', 'Std', 'LUX'] },
+    { name: 'Hoyts Chadstone', short: 'Chadstone',         chain: 'Hoyts',          suburb: 'Chadstone',   lat: -37.8862, lng: 145.0830, url: 'https://www.hoyts.com.au',         formats: ['Std', 'Std', 'LUX'] },
+    { name: 'Village Southland', short: 'Southland',       chain: 'Village',        suburb: 'Cheltenham',  lat: -37.9580, lng: 145.0490, url: 'https://villagecinemas.com.au',    formats: ['Std', 'Std', 'Gold Class'] },
+  ];
+
+  // Film details from TMDb (fetched once for the prototype; the app will cache these per film).
+  const IMG = 'https://image.tmdb.org/t/p/';
+  const MOVIES = [
+    { title: "Alien: Romulus", runtime: 119, year: '2024', cert: "MA 15+", genres: ["Horror", "Science Fiction"], trailer: "x0XDEhP4MQs",
+      img: '/2uSWRTtCG336nuBiG8jOTEUKSy8.jpg', backdrop: '/iYqSQaWDttQIQzsxg9xHyg0bttG.jpg', grad: 'linear-gradient(160deg,#2C5A3F,#0E2316)',
+      overview: "While scavenging the deep ends of a derelict space station, a group of young space colonizers come face to face with the most terrifying life form in the universe." },
+    { title: "Inside Out 2", runtime: 97, year: '2024', cert: "PG", genres: ["Animation", "Adventure", "Comedy", "Family"], trailer: "u69y5Ie519M",
+      img: '/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg', backdrop: '/p5ozvmdgsmbWe0H8Xk7Rc8SCwAB.jpg', grad: 'linear-gradient(160deg,#5BA3E0,#1A4F86)',
+      overview: "Teenager Riley's mind headquarters is undergoing a sudden demolition to make room for something entirely unexpected: new Emotions! Joy, Sadness, Anger, Fear and Disgust, who’ve long been running a successful operation by all accounts, aren’t sure how to feel when Anxiety shows up. And it looks like she’s not alone." },
+    { title: "Deadpool & Wolverine", runtime: 128, year: '2024', cert: "MA 15+", genres: ["Action", "Comedy", "Science Fiction"], trailer: "Idh8n5XuYIA",
+      img: '/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg', backdrop: '/by8z9Fe8y7p4jo2YlW2SZDnptyT.jpg', grad: 'linear-gradient(160deg,#D2453A,#5C1010)',
+      overview: "A listless Wade Wilson toils away in civilian life with his days as the morally flexible mercenary, Deadpool, behind him. But when his homeworld faces an existential threat, Wade must reluctantly suit-up again with an even more reluctant Wolverine." },
+    { title: "Longlegs", runtime: 101, year: '2024', cert: "MA 15+", genres: ["Crime", "Horror", "Mystery"], trailer: "FXOtkvx25gI",
+      img: '/1EwNyiiNFd863H4e8nWEzutnZD7.jpg', backdrop: '/6ToGkmqn0KG0UGGGUAC1Ww0e5CM.jpg', grad: 'linear-gradient(160deg,#4A4A78,#18182E)',
+      overview: "FBI Agent Lee Harker is a gifted new recruit assigned to the unsolved case of an elusive serial killer. As the case takes complex turns, unearthing evidence of the occult, Harker discovers a personal connection to the merciless killer and must race against time to stop him before he claims the lives of another innocent family." },
+    { title: "The Substance", runtime: 141, year: '2024', cert: "R 18+", genres: ["Horror", "Science Fiction"], trailer: "lR5nlovVgvQ",
+      img: '/lqoMzCcZYEFK729d6qzt349fB4o.jpg', backdrop: '/bVSOgrxasVJF6V71T7v2KfBRSzu.jpg', grad: 'linear-gradient(160deg,#E0739A,#6A2040)',
+      overview: "A fading celebrity decides to use a black market drug, a cell-replicating substance that temporarily creates a younger, better version of herself." },
+    { title: "Dune: Part Two", runtime: 167, year: '2024', cert: "M", genres: ["Science Fiction", "Adventure"], trailer: "U2Qp5pL3ovA",
+      img: '/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg', backdrop: '/eZ239CUp1d6OryZEBPnO2n87gMG.jpg', grad: 'linear-gradient(160deg,#D9A045,#6A4410)',
+      overview: "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee." },
+    { title: "The Wild Robot", runtime: 102, year: '2024', cert: "PG", genres: ["Family", "Animation", "Science Fiction", "Adventure"], trailer: "VUCNBAmse04",
+      img: '/wTnV3PCVW5O92JMrFvvrRcV39RU.jpg', backdrop: '/1pmXyN3sKeYoUhu5VBZiDU4BX21.jpg', grad: 'linear-gradient(160deg,#4DB38A,#155040)',
+      overview: "After a shipwreck, an intelligent robot called Roz is stranded on an uninhabited island. To survive the harsh environment, Roz bonds with the island's animals and cares for an orphaned baby goose." },
+    { title: "Wicked", runtime: 162, year: '2024', cert: "PG", genres: ["Drama", "Romance", "Fantasy"], trailer: "pqi45Qhq3CI",
+      img: '/xDGbZ0JJ3mYaGKy4Nzd9Kph6M9L.jpg', backdrop: '/w22GVYotTIVC1dUd58mRhwPqiS.jpg', grad: 'linear-gradient(160deg,#8D5BD6,#2E1250)',
+      overview: "In the land of Oz, ostracized and misunderstood green-skinned Elphaba is forced to share a room with the popular aristocrat Glinda at Shiz University, and the two's unlikely friendship is tested as they begin to fulfill their respective destinies as Glinda the Good and the Wicked Witch of the West." },
+    { title: "Civil War", runtime: 109, year: '2024', cert: "MA 15+", genres: ["War", "Action", "Drama"], trailer: "c2G18nIVpNE",
+      img: '/sh7Rg8Er3tFcN9BpKIPOMvALgZd.jpg', backdrop: '/t2SXZ7KLriaLyf5QT8Iar6fSOGp.jpg', grad: 'linear-gradient(160deg,#7A8A4A,#263010)',
+      overview: "In the near future, a group of war journalists attempt to survive while reporting the truth as the United States stands on the brink of civil war." }
+  ].map(m => ({ ...m, genre: m.genres.slice(0, 2).join(', '), poster: `url(${IMG}w342${m.img}) center/cover, ${m.grad}` }));
+
+  /* ══ Seeded session generator ═══════════════════════════════
+     Deterministic per (date, cinema) so the list is stable between renders. */
+  function rng(seed) {
+    return () => {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  const today0 = (() => { const d = now(); d.setHours(0, 0, 0, 0); return d; })();
+
+  const DAYS = Array.from({ length: HORIZON }, (_, i) => {
+    const d = new Date(today0); d.setDate(d.getDate() + i);
+    const wd = d.toLocaleDateString('en-AU', { weekday: 'short' });
+    const mon = d.toLocaleDateString('en-AU', { month: 'short' });
+    return {
+      idx: i, date: d, wd, mon, num: d.getDate(),
+      rel: i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : null,
+      short: `${wd} ${d.getDate()} ${mon}`,                     // Sat 11 Oct
+    };
+  });
+  const dayLabel = d => d.rel ? `${d.rel}, ${d.short}` : d.short; // Today, Mon 6 Oct
+  const dayShort = d => d.rel || d.short;                          // Today | Sat 11 Oct
+
+  const SESSIONS = [];
+  DAYS.forEach(day => {
+    const seed = day.date.getFullYear() * 400 + day.date.getMonth() * 32 + day.date.getDate();
+    CINEMAS.forEach((cinema, ci) => {
+      const r = rng(seed * 97 + ci);
+      const picks = [...MOVIES].sort(() => r() - 0.5).slice(0, 3);
+      picks.forEach(movie => {
+        const starts = [600 + 5 * Math.floor(r() * 78), 1020 + 5 * Math.floor(r() * 48)];
+        if (r() < 0.45) starts.push(1260 + 5 * Math.floor(r() * 20));
+        if (r() < 0.12) starts.push(1440 + 5 * Math.floor(r() * 10));   // 12:00–12:45 am
+        starts.forEach(startMin => SESSIONS.push({
+          day, cinema, movie, startMin,
+          format: cinema.formats[Math.floor(r() * cinema.formats.length)],
+          start: new Date(day.date.getTime() + startMin * 60000),
+        }));
+      });
+    });
+  });
+
+  /* ══ Geo + reachability (PRD §5.4) ═══════════════════════════ */
+  function haversineKm(a, b) {
+    const R = 6371, rad = x => x * Math.PI / 180;
+    const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  // Stand-in for Geoapify routing: road ≈ 1.3× straight line, slower in the inner city, +4 min to park.
+  const driveMinutes = km => Math.round(km * 1.3 / (km < 5 ? 22 : 34) * 60) + 4;
+
+  function evaluate(s, origin, t) {
+    const km = haversineKm(origin, s.cinema);
+    const travel = driveMinutes(km);
+    const slack = (s.start - t) / 60000 - travel;   // minutes to spare if you left right now
+    const status = slack < -BUFFER_MIN ? 'missed' : slack < 0 ? 'trailers' : slack < TIGHT_MIN ? 'tight' : 'easy';
+    return { ...s, km, travel, slack, status, leaveBy: new Date(s.start - travel * 60000) };
+  }
+
+  /* ══ Formatting ══════════════════════════════════════════════ */
+  const NB = ' ';   // keep "14 min", "1h 42m" from breaking across lines
+  const clock = d => d.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', hour12: true }).replace(/\s?([ap])\.?m\.?/i, `${NB}$1m`);
+  const dur = m => m < 60 ? `${m}${NB}min` : `${Math.floor(m / 60)}h${m % 60 ? NB + (m % 60) + 'm' : ''}`;
+  const runtime = m => `${Math.floor(m / 60)}h${NB}${String(m % 60).padStart(2, '0')}m`;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
+  // Minutes since midnight → "5 pm", "5:30 pm", "midnight", "12:30 am" (past 1440 = after midnight)
+  function hm(min, suffix = true) {
+    if (min === 1440) return 'midnight';
+    const h = Math.floor(min / 60) % 24, m = min % 60;
+    return `${h % 12 || 12}${m ? ':' + String(m).padStart(2, '0') : ''}${suffix ? NB + (h < 12 ? 'am' : 'pm') : ''}`;
+  }
+  // "5–9 pm", "6 am – 12 pm", "9 pm – 1 am"
+  function rangeText(a, b) {
+    if (b < 1440 && (a < 720) === (b < 720)) return `${hm(a, false)}–${hm(b)}`;
+    return `${hm(a)} – ${hm(b)}`;
+  }
+
+  function cue(e) {
+    if (e.status === 'trailers') return { cls: 'trailers', text: 'Leave now', note: 'You’ll arrive during the trailers' };
+    if (e.status === 'tight')    return { cls: 'tight', text: e.slack < 1 ? 'Leave now' : `Leave in ${Math.floor(e.slack)}${NB}min` };
+    if (e.day.idx === 0 && e.slack < 90) return { cls: '', text: `Leave in ${dur(Math.floor(e.slack))}` };
+    return { cls: '', text: `Leave by ${clock(e.leaveBy)}` };
+  }
+
+  /* ══ State ═══════════════════════════════════════════════════
+     mode 'now'  → today, starting within NOW_WINDOW, reachable from right now
+     mode 'plan' → one date × one start-time window [from, to)
+     The plan settings are kept while in 'now', so switching back restores them. */
+  function savedOrigin() {
+    try {
+      const o = JSON.parse(localStorage.getItem('pmm-origin'));
+      return o && typeof o.name === 'string' && Number.isFinite(o.lat) && Number.isFinite(o.lng) ? o : null;
+    } catch (e) { return null; }
+  }
+  const state = (() => {
+    const late = nowMin() >= 22 * 60 + 30;   // nothing left today — start on tomorrow evening
+    return {
+      origin: savedOrigin() || SUBURBS[0],
+      mode: late ? 'plan' : 'now',
+      date: late ? 1 : 0,
+      from: 1020, to: 1260,
+      km: 30,
+    };
+  })();
+
+  function compute(mode = state.mode) {
+    const t = now();
+    const pool = mode === 'now'
+      ? SESSIONS.filter(s => s.day.idx === 0 && s.start - t > -BUFFER_MIN * 60000 && s.start - t <= NOW_WINDOW * 60000)
+      : SESSIONS.filter(s => s.day.idx === state.date && s.startMin >= state.from && s.startMin < state.to);
+    const live = pool
+      .map(s => evaluate(s, state.origin, t))
+      .filter(e => e.km <= state.km && e.status !== 'missed')
+      .sort((a, b) => a.start - b.start);
+
+    const byFilm = new Map();
+    live.forEach(e => {
+      if (!byFilm.has(e.movie.title)) byFilm.set(e.movie.title, { movie: e.movie, sessions: [] });
+      byFilm.get(e.movie.title).sessions.push(e);
+    });
+    // Films ordered by their soonest catchable session.
+    return { films: [...byFilm.values()], sessionCount: live.length };
+  }
+
+  /* ══ Labels ══════════════════════════════════════════════════ */
+  const isToday = () => state.date === 0;
+  const windowOver = () => isToday() && state.to <= nowMin();
+  const windowPartlyOver = () => isToday() && state.from < nowMin() && !windowOver();
+  const nowUntil = () => clock(new Date(now().getTime() + NOW_WINDOW * 60000));
+  const planText = () => `${dayShort(DAYS[state.date])}, ${rangeText(state.from, state.to)}`;
+  const whenText = mode => (mode || state.mode) === 'now' ? 'Leaving now' : planText();
+  const outOfRange = () => haversineKm(state.origin, CBD) > COVERAGE_KM;
+
+  /* ══ Render ══════════════════════════════════════════════════ */
+  const $ = id => document.getElementById(id);
+  const arrow = '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 4 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const extIcon = '<svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true" style="display:inline;vertical-align:-1px;margin-left:4px;opacity:.6"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  let lastFilms = [];
+  const afterMidnight = e => e.startMin >= 1440 ? '<span class="late-tag">after midnight</span>' : '';
+
+  function bookLabel(e, c) {
+    return `${clock(e.start)} at ${esc(e.cinema.name)}, ${dur(e.travel)} drive. ${c.text}${c.note ? ', ' + c.note.toLowerCase() : ''}. Opens ${esc(e.cinema.chain)} to book.`;
+  }
+
+  const CAR = '<svg class="car" width="14" height="14" viewBox="0 0 16 16" role="img" aria-label="drive"><path d="M3 10.5V8.2l1.3-3.4A1.5 1.5 0 0 1 5.7 3.8h4.6a1.5 1.5 0 0 1 1.4 1l1.3 3.4v2.3M3 10.5h10M3 10.5V12.5M13 10.5V12.5M2.5 7.5h11" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.2" cy="9" r=".8" fill="currentColor"/><circle cx="10.8" cy="9" r=".8" fill="currentColor"/></svg>';
+  const urgent = e => e.status === 'tight' || e.status === 'trailers';
+  const fmtTag = (e, short) => e.format !== 'Std' && !(short && e.format === e.cinema.short) ? ` · <span class="fmt">${esc(e.format)}</span>` : '';
+  const endsAt = e => clock(new Date(e.start.getTime() + (PRE_ROLL + e.movie.runtime) * 60000));
+
+  // A1 "Quiet": title, runtime, soonest session, one count line. The leave cue only appears when it's urgent.
+  // The whole card opens the film detail; booking happens there.
+  function filmHTML(f, i) {
+    const e = f.sessions[0], c = cue(e), n = f.sessions.length - 1;
+    return `<article class="film">
+      <div class="poster" style="background:${f.movie.poster}" aria-hidden="true"></div>
+      <div class="film-body">
+        <h2 class="film-title" title="${esc(f.movie.title)}"><button class="film-open" type="button" data-film="${i}"
+          aria-label="${esc(f.movie.title)}. Next session ${clock(e.start)} at ${esc(e.cinema.name)}, ${dur(e.travel)} drive${urgent(e) ? ', ' + c.text.toLowerCase() : ''}. ${plural(f.sessions.length, 'session')}. Open for details and trailer.">${esc(f.movie.title)}</button></h2>
+        <p class="film-meta">${runtime(f.movie.runtime)}</p>
+        <div class="film-foot" aria-hidden="true">
+          <p class="feat-top"><span class="feat-time tnum">${clock(e.start)}</span>${afterMidnight(e)}${urgent(e) ? `<span class="s-cue ${c.cls}">${c.text}</span>` : ''}</p>
+          <p class="feat-where">${esc(e.cinema.short)}${fmtTag(e, true)} · ${CAR}${dur(e.travel)}</p>
+          <p class="more-q ${n ? '' : 'none'}">${n ? `+${n} more ${n === 1 ? 'session' : 'sessions'}` : 'Only session in this window'}</p>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  // Detail view: sessions grouped by cinema (soonest cinema first), each with an end time and a Book link.
+  function detailListHTML(f) {
+    const groups = new Map();
+    f.sessions.forEach(e => { if (!groups.has(e.cinema.name)) groups.set(e.cinema.name, []); groups.get(e.cinema.name).push(e); });
+    return [...groups.values()].map(list => {
+      const k = list[0].cinema, e0 = list[0];
+      const dir = `https://www.google.com/maps/dir/?api=1&origin=${state.origin.lat},${state.origin.lng}&destination=${encodeURIComponent(k.name + ', ' + k.suburb + ' VIC')}&travelmode=driving`;
+      return `<section class="fd-cin" aria-label="${esc(k.name)}">
+        <div class="fd-cin-hd"><div><p class="name">${esc(k.name)}</p><p class="trip tnum">${CAR}${dur(e0.travel)} drive · ${e0.km.toFixed(1)}${NB}km</p></div>
+          <a class="fd-dir" href="${dir}" target="_blank" rel="noopener">Directions${extIcon}</a></div>
+        ${list.map(e => { const c = cue(e); return `<div class="fd-row">
+          <span class="fd-t tnum">${clock(e.start)}${e.format !== 'Std' ? `<span class="fmt">${esc(e.format)}</span>` : ''}</span>
+          <span class="fd-sub tnum"><span class="s-cue ${c.cls}">${c.text}</span><span>Ends ~${endsAt(e)}${e.startMin >= 1440 ? ' · after midnight' : ''}</span>${c.note ? `<span>${c.note}</span>` : ''}</span>
+          <a class="fd-book ${urgent(e) ? 'hot' : ''}" href="${k.url}" target="_blank" rel="noopener" aria-label="Book ${clock(e.start)} on the ${esc(k.chain)} website">Book${extIcon}</a>
+        </div>`; }).join('')}
+      </section>`;
+    }).join('');
+  }
+
+  function suggestions() {
+    const out = [];
+    const nextKm = RADII[RADII.indexOf(state.km) + 1];
+    if (nextKm) out.push({ label: `Widen to ${nextKm} km`, run: () => { state.km = nextKm; } });
+    if (state.mode === 'now') {
+      const later = Math.ceil((nowMin() + NOW_WINDOW) / T_STEP) * T_STEP;
+      if (later < T_MAX) out.push({ label: `Later today (from ${hm(later)})`, run: () => { state.mode = 'plan'; state.date = 0; state.from = later; state.to = T_MAX; } });
+      out.push({ label: 'Tomorrow evening', run: () => { state.mode = 'plan'; state.date = 1; state.from = 1020; state.to = 1260; } });
+    } else {
+      if (windowOver()) {
+        out.push({ label: `Same time tomorrow`, run: () => { state.date = 1; } });
+        if (nowMin() < 1440 - 60) out.push({ label: 'Leave now instead', run: () => { state.mode = 'now'; } });
+      } else {
+        if (state.to < T_MAX) out.push({ label: 'Search until 1 am', run: () => { state.to = T_MAX; } });
+        if (state.from > T_MIN && !isToday()) out.push({ label: 'Start from 6 am', run: () => { state.from = T_MIN; } });
+        if (DAYS[state.date + 1]) out.push({ label: `Try ${dayShort(DAYS[state.date + 1])}`, run: () => { state.date += 1; } });
+      }
+    }
+    return out;
+  }
+
+  function render() {
+    const { films } = compute();
+    const other = compute(state.mode === 'now' ? 'plan' : 'now').films;
+    lastFilms = films;
+
+    $('summary-text').innerHTML = `<strong>${esc(state.origin.name)}</strong> · ${whenText()} · ${state.km} km`;
+    $('show-btn').textContent = films.length ? `Show ${plural(films.length, 'film')}` : 'Show results';
+    $('surprise-btn').disabled = !films.length && !other.length;
+    $('surprise-btn').title = $('surprise-btn').disabled ? 'Nothing to pick from with these filters' : 'Pick something for me';
+
+    if (outOfRange()) {
+      $('results-title').textContent = 'We only cover Melbourne for now';
+      $('results-sub').textContent = `${state.origin.name} is outside our area. Try a Melbourne suburb.`;
+      $('list').innerHTML = '';
+      return;
+    }
+
+    // The subtitle always spells out the exact date and hours being searched.
+    const where = `from ${esc(state.origin.name)}, within ${state.km} km`;
+    if (state.mode === 'now') {
+      $('results-title').textContent = films.length ? `${plural(films.length, 'film')} you can still make` : 'Nothing you can make right now';
+      $('results-sub').innerHTML = `Leaving now · starting in the next 2 hours, before <strong class="tnum">${nowUntil()}</strong> · ${where}`;
+    } else {
+      $('results-title').textContent = films.length ? `${plural(films.length, 'film')} you can make`
+        : windowOver() ? 'That window’s already over today' : 'Nothing in this window';
+      $('results-sub').innerHTML = `<strong>${dayLabel(DAYS[state.date])}</strong> · starting <strong class="tnum">${rangeText(state.from, state.to)}</strong> · ${where}`;
+    }
+
+    if (!films.length) {
+      const sug = suggestions();
+      $('list').innerHTML = `<div class="empty"><p>Nothing fits these filters. Try one of these:</p>
+        <div class="pills">${sug.map((s, i) => `<button class="pill" type="button" data-sug="${i}">${s.label}</button>`).join('')}</div></div>`;
+      $('list').querySelectorAll('[data-sug]').forEach(b => b.onclick = () => { sug[+b.dataset.sug].run(); update(); });
+      return;
+    }
+
+    $('list').innerHTML = `<div class="film-grid">${films.map(filmHTML).join('')}</div>`;
+    $('list').querySelectorAll('[data-film]').forEach(b => b.onclick = () => openFilm(lastFilms[+b.dataset.film]));
+  }
+
+  /* ══ Controls ════════════════════════════════════════════════ */
+  function timeOptions(sel, lo, hi, value) {
+    let html = '';
+    for (let m = lo; m <= hi; m += T_STEP) html += `<option value="${m}">${hm(m)}</option>`;
+    sel.innerHTML = html;
+    sel.value = value;
+  }
+
+  function renderDays() {
+    $('day-seg').innerHTML = DAYS.map(d =>
+      `<button type="button" data-day="${d.idx}" aria-pressed="${state.date === d.idx}"
+        aria-label="${d.date.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' })}">${d.rel || d.short}</button>`).join('');
+  }
+
+  function renderControls() {
+    const plan = state.mode === 'plan';
+    document.querySelectorAll('#mode-seg [data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === state.mode));
+    $('now-ctl').hidden = plan;
+    $('date-ctl').hidden = !plan;
+    $('time-ctl').hidden = !plan;
+    $('now-info').innerHTML = `Starting in the next 2 hours · before <strong class="tnum">${nowUntil()}</strong>`;
+
+    renderDays();
+
+    const nm = nowMin();
+    $('presets').innerHTML = PRESETS.map(p => {
+      const over = isToday() && p.to <= nm;
+      return `<button class="pill preset" type="button" data-preset="${p.id}"
+        aria-pressed="${state.from === p.from && state.to === p.to}" ${over ? 'disabled title="Already over today"' : ''}>
+        ${p.name}<span class="hrs tnum">${rangeText(p.from, p.to)}</span></button>`;
+    }).join('');
+    timeOptions($('from-sel'), T_MIN, T_MAX - T_STEP, state.from);
+    timeOptions($('to-sel'), T_MIN + T_STEP, T_MAX, state.to);
+    $('time-btn-text').textContent = rangeText(state.from, state.to);
+
+    // Edge cases on today's date, said plainly next to the control.
+    const note = $('time-note');
+    note.hidden = !(windowOver() || windowPartlyOver());
+    note.textContent = windowOver()
+      ? `It’s ${clock(now())} — this window has passed. Pick a later time or another day.`
+      : `It’s ${clock(now())}, so only sessions you can still reach are shown.`;
+
+    $('radius').value = state.km;
+    if (document.activeElement !== $('loc-input')) $('loc-input').value = state.origin.name;
+  }
+  function update() { renderControls(); render(); }
+
+  $('mode-seg').onclick = e => {
+    const b = e.target.closest('[data-mode]'); if (!b) return;
+    state.mode = b.dataset.mode;
+    update();
+  };
+  $('day-seg').onclick = e => {
+    const b = e.target.closest('[data-day]'); if (!b || b.disabled) return;
+    state.date = +b.dataset.day;
+    closePops();
+    update();
+  };
+  $('presets').onclick = e => {
+    const b = e.target.closest('[data-preset]'); if (!b || b.disabled) return;
+    const p = PRESETS.find(x => x.id === b.dataset.preset);
+    state.from = p.from; state.to = p.to;
+    update();
+  };
+  // Keep from < to: moving one past the other drags the other along by an hour.
+  $('from-sel').onchange = e => {
+    state.from = +e.target.value;
+    if (state.to <= state.from) state.to = Math.min(T_MAX, state.from + 60);
+    update();
+  };
+  $('to-sel').onchange = e => {
+    state.to = +e.target.value;
+    if (state.from >= state.to) state.from = Math.max(T_MIN, state.to - 60);
+    update();
+  };
+  $('radius').onchange = e => { state.km = +e.target.value; update(); };
+
+  // Desktop popovers (date, time)
+  const POPS = [['time-btn', 'time-pop', 'time-ctl']];
+  function closePops(except) {
+    POPS.forEach(([btn, pop]) => { if (pop !== except) { $(pop).classList.remove('open'); $(btn).setAttribute('aria-expanded', 'false'); } });
+  }
+  POPS.forEach(([btn, pop]) => $(btn).onclick = () => {
+    const open = !$(pop).classList.contains('open');
+    closePops(pop);
+    $(pop).classList.toggle('open', open);
+    $(btn).setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('.has-pop')) closePops(); });
+
+  // Mobile filter sheet
+  function setFilters(open) {
+    document.body.classList.toggle('filters-open', open);
+    $('summary-bar').setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (!open) $('summary-bar').focus();
+  }
+  $('summary-bar').onclick = () => setFilters(true);
+  $('panel-close').onclick = () => setFilters(false);
+  $('show-btn').onclick = () => { setFilters(false); window.scrollTo(0, 0); };
+
+  // Theme
+  $('theme-btn').onclick = () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('pmm-theme', next); } catch (e) {}
+  };
+
+  /* ── Location combobox ── */
+  const input = $('loc-input'), list = $('ac-list');
+  let matches = [], active = -1;
+
+  function openList(q) {
+    q = q.trim().toLowerCase();
+    matches = q ? SUBURBS.filter(s => s.name.toLowerCase().includes(q) || s.sub.includes(q)).slice(0, 6) : [];
+    active = matches.length ? 0 : -1;
+    list.innerHTML = matches.length
+      ? matches.map((s, i) => `<div class="ac-item" role="option" id="ac-${i}" data-i="${i}" aria-selected="${i === active}">
+          <span class="ac-name">${esc(s.name)}</span><span class="ac-sub">${esc(s.sub)}</span></div>`).join('')
+      : (q ? `<div class="ac-empty">No Melbourne suburb matches “${esc(q)}”.</div>` : '');
+    list.hidden = !q;
+    input.setAttribute('aria-expanded', !list.hidden);
+    input.setAttribute('aria-activedescendant', active >= 0 ? `ac-${active}` : '');
+  }
+  function closeList() { list.hidden = true; input.setAttribute('aria-expanded', 'false'); }
+  function choose(s) {
+    state.origin = s;
+    try { localStorage.setItem('pmm-origin', JSON.stringify(s)); } catch (e) {}
+    $('loc-note').hidden = true;
+    closeList(); input.blur(); update();
+  }
+  function moveActive(d) {
+    if (!matches.length) return;
+    active = (active + d + matches.length) % matches.length;
+    list.querySelectorAll('.ac-item').forEach((el, i) => el.setAttribute('aria-selected', i === active));
+    input.setAttribute('aria-activedescendant', `ac-${active}`);
+  }
+
+  input.addEventListener('input', () => openList(input.value));
+  input.addEventListener('focus', () => input.select());
+  input.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); moveActive(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); moveActive(-1); }
+    else if (e.key === 'Enter' && active >= 0 && !list.hidden) { e.preventDefault(); choose(matches[active]); }
+    else if (e.key === 'Escape') { closeList(); input.value = state.origin.name; }
+  });
+  // Leaving the field without choosing restores the current location rather than showing stale text.
+  input.addEventListener('blur', () => setTimeout(() => { closeList(); input.value = state.origin.name; }, 150));
+  list.addEventListener('mousedown', e => { const it = e.target.closest('[data-i]'); if (it) { e.preventDefault(); choose(matches[+it.dataset.i]); } });
+
+  $('geo-btn').onclick = () => {
+    const note = $('loc-note');
+    note.hidden = false; note.textContent = 'Finding you…';
+    if (!navigator.geolocation) { note.textContent = 'Your browser can’t share location. Type a suburb instead.'; return; }
+    navigator.geolocation.getCurrentPosition(
+      p => choose({ name: 'Your location', sub: '', lat: p.coords.latitude, lng: p.coords.longitude }),
+      () => { note.textContent = 'Couldn’t get your location. Type a suburb instead.'; },
+      { timeout: 8000 }
+    );
+  };
+
+  /* ══ Dialogs ═════════════════════════════════════════════════ */
+  let returnFocus = null;
+  function openDialog(id, focusEl) {
+    returnFocus = document.activeElement;
+    $(id).hidden = false;
+    document.body.style.overflow = 'hidden';
+    (focusEl || $(id).querySelector('[data-close]')).focus();
+  }
+  // The film detail gets a history entry, so the phone's back button closes it instead of leaving the page.
+  function hideAll() {
+    ['film-ov', 'sp-ov'].forEach(id => $(id).hidden = true);
+    stopTrailer();
+    document.body.style.overflow = document.body.classList.contains('filters-open') ? 'hidden' : '';
+    if (returnFocus && document.contains(returnFocus)) returnFocus.focus();
+  }
+  function closeDialogs() {
+    if (!$('film-ov').hidden && history.state && history.state.film) history.back();   // popstate does the hiding
+    else hideAll();
+  }
+  window.addEventListener('popstate', () => { if (!$('film-ov').hidden) hideAll(); });
+  document.querySelectorAll('[data-close]').forEach(b => b.onclick = closeDialogs);
+  document.querySelectorAll('.overlay').forEach(o => o.onclick = e => { if (e.target === o) closeDialogs(); });
+
+  let openMovie = null;
+  function stopTrailer() {
+    const f = $('fd-hero').querySelector('iframe'); if (f) f.remove();
+    $('fd-hero').classList.remove('playing'); $('fd-play').hidden = !(openMovie && openMovie.trailer);
+  }
+  $('fd-play').onclick = () => {
+    if (!openMovie || !openMovie.trailer) return;
+    // YouTube refuses embeds on file:// pages (no referrer), so the local prototype opens YouTube instead.
+    if (location.protocol === 'file:') { window.open(`https://www.youtube.com/watch?v=${openMovie.trailer}`, '_blank', 'noopener'); return; }
+    const f = document.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${openMovie.trailer}?autoplay=1&rel=0&modestbranding=1`;
+    f.title = `${openMovie.title} trailer`; f.allow = 'autoplay; encrypted-media; picture-in-picture'; f.allowFullscreen = true;
+    $('fd-hero').appendChild(f); $('fd-hero').classList.add('playing'); $('fd-play').hidden = true;
+  };
+  $('fd-more').onclick = () => {
+    const open = $('fd-syn').classList.toggle('open');
+    $('fd-more').textContent = open ? 'Less' : 'More';
+  };
+
+  function openFilm(f) {
+    const m = f.movie; openMovie = m;
+    $('fd-hero').style.backgroundImage = `url(${IMG}w780${m.backdrop})`;
+    $('fd-title').textContent = m.title;
+    $('fd-meta').innerHTML = `${m.cert ? `<span class="cert" title="Australian classification">${esc(m.cert)}</span>` : ''}<span class="tnum">${runtime(m.runtime)}</span><span aria-hidden="true">·</span><span>${m.year}</span>`;
+    $('fd-genres').innerHTML = m.genres.map(g => `<span>${esc(g)}</span>`).join('');
+    $('fd-syn').textContent = m.overview; $('fd-syn').classList.remove('open'); $('fd-more').textContent = 'More';
+    $('fd-when').textContent = `${plural(f.sessions.length, 'session')} · ${state.mode === 'now' ? `leaving now, before ${nowUntil()}` : `${dayShort(DAYS[state.date])}, ${rangeText(state.from, state.to)}`}`;
+    $('fd-list').innerHTML = detailListHTML(f);
+    stopTrailer();
+    openDialog('film-ov');
+    $('film-ov').querySelector('.drawer').scrollTop = 0;
+    // Show "More" only if the synopsis is actually clipped
+    $('fd-more').hidden = $('fd-syn').scrollHeight <= $('fd-syn').clientHeight + 2;
+    if (!(history.state && history.state.film)) history.pushState({ film: true }, '', '#' + m.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+  }
+
+  /* ── Surprise me ───────────────────────────────────────────────
+     Pick from "Leave now" or the planned search; switching re-rolls.
+     Sources with nothing in them are shown but disabled. */
+  let spMode = 'now', picks = [], pickIdx = 0;
+  function rollSurprise() {
+    picks = [...compute(spMode).films].sort(() => Math.random() - 0.5);
+    pickIdx = 0;
+  }
+  function renderSurprise() {
+    const counts = { now: compute('now').films.length, plan: compute('plan').films.length };
+    $('m-seg').innerHTML = [['now', 'Leave now'], ['plan', planText()]].map(([m, label]) =>
+      `<button type="button" data-sp="${m}" aria-pressed="${spMode === m}" ${counts[m] ? '' : 'disabled title="Nothing in this window"'}>${label}</button>`).join('');
+
+    const f = picks[pickIdx % picks.length], e = f.sessions[0], c = cue(e);
+    $('m-poster').style.background = f.movie.poster;
+    $('m-eyebrow').textContent = spMode === 'now' ? 'You could leave now for' : `For ${dayShort(DAYS[state.date]).toLowerCase() === 'today' ? 'today' : dayShort(DAYS[state.date])}`;
+    $('m-title').textContent = f.movie.title;
+    $('m-meta').textContent = `${f.movie.genre} · ${runtime(f.movie.runtime)}${e.format !== 'Std' ? ' · ' + e.format : ''}`;
+    $('m-where').textContent = `${e.cinema.name} · ${dur(e.travel)} drive`;
+    $('m-clock').textContent = clock(e.start);
+    $('m-cue').className = `s-cue ${c.cls}`;
+    $('m-cue').textContent = c.text;
+    $('m-book').href = e.cinema.url;
+    $('m-book').textContent = `Book on ${e.cinema.chain}`;
+    $('m-another').hidden = picks.length < 2;
+  }
+  function openSurprise() {
+    spMode = compute(state.mode).films.length ? state.mode : (state.mode === 'now' ? 'plan' : 'now');
+    rollSurprise();
+    if (!picks.length) return;
+    renderSurprise();
+    openDialog('sp-ov', $('m-book'));
+  }
+  $('surprise-btn').onclick = openSurprise;
+  $('m-seg').onclick = e => {
+    const b = e.target.closest('[data-sp]'); if (!b || b.disabled || b.dataset.sp === spMode) return;
+    spMode = b.dataset.sp; rollSurprise(); renderSurprise();
+  };
+  $('m-another').onclick = () => { pickIdx++; renderSurprise(); };
+  $('m-details').onclick = () => {
+    const f = picks[pickIdx % picks.length];
+    $('sp-ov').hidden = true;
+    const keep = returnFocus; openFilm(f); returnFocus = keep;
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (!$('film-ov').hidden || !$('sp-ov').hidden) closeDialogs();
+    else if (document.querySelector('.pop.open')) closePops();
+    else if (document.body.classList.contains('filters-open') && document.activeElement !== input) setFilters(false);
+  });
+
+  /* ══ Boot — countdowns refresh every 30 s ════════════════════ */
+  update();
+  setInterval(() => { if ($('film-ov').hidden && $('sp-ov').hidden) update(); }, 30000);
+  </script>
+</body>
+</html>
