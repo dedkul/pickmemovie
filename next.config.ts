@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  cacheComponents: true, // enables "use cache" for TMDb and Geoapify responses
   // Until the real app is built, the home page serves the latest static
   // prototype (public/prototype/index.html, a copy of prototypes/v10.html).
   async rewrites() {

@@ -1,0 +1,26 @@
+{
+ "results": [
+  {
+   "result_type": "suburb",
+   "name": "Fitzroy",
+   "suburb": "Fitzroy",
+   "postcode": "3065",
+   "state_code": "VIC",
+   "address_line1": "Fitzroy VIC 3065",
+   "address_line2": "Australia",
+   "lat": -37.8010382,
+   "lon": 144.9792611
+  },
+  {
+   "result_type": "suburb",
+   "name": "Fitzroy North",
+   "suburb": "Fitzroy North",
+   "postcode": "3068",
+   "state_code": "VIC",
+   "address_line1": "Fitzroy North VIC 3068",
+   "address_line2": "Australia",
+   "lat": -37.7833316,
+   "lon": 144.9837074
+  }
+ ]
+}
