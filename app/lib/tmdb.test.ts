@@ -48,6 +48,11 @@ describe("matching cinema titles to TMDb", () => {
     expect(pickMatch("Akira 4K", AKIRA, TODAY)).toBe(149);
   });
 
+  it("ignores accents and treats & as and", () => {
+    expect(pickMatch("Les Heros du Louvre", [{ id: 7, title: "Les Héros du Louvre", popularity: 1, release_date: "2026-08-01" }], TODAY)).toBe(7);
+    expect(pickMatch("Sense & Sensibility", [{ id: 8, title: "Sense and Sensibility", popularity: 1, release_date: "2026-09-01" }], TODAY)).toBe(8);
+  });
+
   // A wrong poster and synopsis is worse than none.
   it("leaves a title unmatched rather than accept a near miss", () => {
     expect(pickMatch("Hope Floats Again", HOPE, TODAY)).toBeNull();

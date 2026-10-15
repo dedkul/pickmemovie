@@ -86,3 +86,11 @@ export async function fetchShowtimes(cinema: Cinema): Promise<SerpResponse> {
   if (!res.ok) throw new Error(`SerpAPI ${res.status} for ${cinema.id}`);
   return res.json();
 }
+
+// Free call: account status doesn't count against the monthly searches.
+export async function searchesLeft(): Promise<number> {
+  const res = await fetch(`https://serpapi.com/account.json?api_key=${process.env.SERPAPI_KEY ?? ""}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`SerpAPI account ${res.status}`);
+  const data: { total_searches_left?: number } = await res.json();
+  return data.total_searches_left ?? 0;
+}

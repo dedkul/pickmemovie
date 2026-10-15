@@ -138,3 +138,6 @@ dist
 # macOS + personal Claude Code settings
 .DS_Store
 .claude/settings.local.json
+
+# showtimes snapshot written by /api/cron/refresh when no Blob store is connected
+/.data
