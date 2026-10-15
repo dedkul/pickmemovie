@@ -1,0 +1,91 @@
+/* Header and filters, from prototypes/v10.html.
+   Mobile: a one-line summary opens a full-screen sheet. Desktop (≥ 1024): one
+   slim row under the header; the time window opens as a popover. */
+
+.top {
+  position: sticky; top: 0; z-index: 40;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.topRow { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.wordmark { font-size: 19px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
+.topActions { display: flex; align-items: center; gap: 6px; }
+:global([data-theme="dark"]) .moon, :global(:root:not([data-theme="dark"])) .sun { display: none; }
+
+/* Mobile summary */
+.summaryBar {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 0 20px 14px; text-align: left;
+}
+.summaryPill {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 100px;
+  box-shadow: var(--shadow);
+  font-size: 14px; color: var(--text-2);
+}
+.summaryPill span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.summaryPill strong { color: var(--text); font-weight: 600; }
+
+.controls {
+  position: fixed; inset: 0; z-index: 60;
+  background: var(--bg);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.controls:not(.open) { display: none; }
+.panelHd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 12px 4px 20px; font-size: 17px; font-weight: 600;
+}
+.ctl { padding: 16px 20px; }
+.ctlLabel { display: block; font-size: 13px; font-weight: 500; color: var(--text-3); margin-bottom: 10px; }
+.panelFt {
+  margin-top: auto; position: sticky; bottom: 0;
+  padding: 16px 20px 20px; background: var(--bg);
+}
+
+.nowInfo { font-size: 14px; color: var(--text-2); }
+.nowInfo strong { color: var(--text); font-weight: 600; }
+
+/* Time presets carry their hours, so "Evening" is never a guess */
+.preset { display: flex; flex-direction: column; align-items: flex-start; padding: 7px 14px; border-radius: 12px; line-height: 1.25; }
+.hrs { font-size: 12px; font-weight: 400; opacity: .75; }
+
+/* Range: Starts between [from] and [to] */
+.rangeRow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-size: 14px; color: var(--text-2); }
+.timeNote { margin-top: 10px; font-size: 13px; color: var(--text-3); }
+
+/* Popover trigger — desktop only */
+.popBtn { display: none; }
+
+@media (min-width: 1024px) {
+  .summaryBar, .panelHd, .panelFt { display: none; }
+  .controls, .controls:not(.open) {
+    position: static; display: flex; flex-direction: row; align-items: center; flex-wrap: wrap;
+    gap: 10px; padding: 0 0 14px; overflow: visible; background: none; z-index: auto;
+  }
+  .ctl { padding: 0; }
+  .ctlLabel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .loc { width: 260px; }
+
+  .hasPop { position: relative; }
+  .popBtn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 100px;
+    border: 1px solid var(--line-2); background: var(--surface);
+    font-size: 14px; font-weight: 500; white-space: nowrap;
+  }
+  .popBtn:hover { border-color: var(--text-3); }
+  .popBtn svg { color: var(--text-3); }
+  .pop {
+    position: absolute; top: calc(100% + 8px); left: 0; z-index: 70;
+    width: 420px; padding: 16px;
+    background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(0,0,0,.14);
+  }
+  .pop:not(.popOpen) { display: none; }
+  .divider { width: 1px; height: 24px; background: var(--line-2); margin: 0 4px; }
+}
+@media (max-width: 1023px) { .divider, .rrLead { display: none; } }

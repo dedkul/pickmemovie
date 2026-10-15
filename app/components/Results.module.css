@@ -1,0 +1,55 @@
+/* Results heading, film grid and A1 "Quiet" card, from prototypes/v10.html */
+
+.hd { padding: 28px 0 20px; }
+.title { font-size: 26px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; }
+.sub { margin-top: 6px; font-size: 15px; color: var(--text-2); }
+.sub strong { color: var(--text); font-weight: 600; }
+
+/* Every card has the same parts in the same places; grid-auto-rows: 1fr
+   makes every row as tall as the tallest card, so the grid never staggers. */
+.grid { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: 1fr; gap: 16px; padding-bottom: 32px; }
+
+/* The whole card opens the film (stretched link on the title button). */
+.film {
+  position: relative; display: flex; gap: 14px; padding: 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+  box-shadow: var(--shadow);
+  transition: border-color .15s, transform .15s;
+}
+.film:hover { border-color: var(--line-2); }
+.film:has(.open:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.film > :global(.poster) { width: 84px; flex-shrink: 0; align-self: flex-start; }
+.body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.filmTitle {
+  font-size: 17px; font-weight: 600; letter-spacing: -.01em; line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.open { text-align: left; font: inherit; letter-spacing: inherit; }
+.open::after { content: ''; position: absolute; inset: 0; border-radius: var(--r); }
+.open:focus-visible { outline: none; }
+.meta { margin-top: 2px; font-size: 13px; color: var(--text-3); }
+.foot { margin-top: auto; padding-top: 10px; }
+.featTop { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+.featTop :global(.late-tag) { display: inline; font-size: 12px; }
+.featTime { font-size: 17px; font-weight: 600; }
+.featWhere { margin-top: 2px; font-size: 13px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.more { margin-top: 4px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+.more.none { font-weight: 400; color: var(--text-3); }
+
+.empty { padding-bottom: 40px; }
+.empty p { color: var(--text-2); margin-bottom: 14px; }
+.note { padding: 8px 0 40px; font-size: 13px; color: var(--text-3); }
+
+@media (min-width: 720px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .hd { padding: 36px 0 24px; }
+  .title { font-size: 30px; }
+  .grid { gap: 20px; }
+  .film { gap: 18px; padding: 16px; }
+  .film > :global(.poster) { width: 108px; }
+}
+@media (min-width: 1440px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

@@ -13,3 +13,10 @@ export function addDays(iso: string, n: number): string {
   d.setUTCDate(d.getUTCDate() + n);
   return d.toISOString().slice(0, 10);
 }
+
+// Minutes since Melbourne midnight at an instant.
+export function melbourneMinutes(at: Date): number {
+  const parts = new Intl.DateTimeFormat("en-AU", { timeZone: TZ, hour: "numeric", minute: "numeric", hourCycle: "h23" }).formatToParts(at);
+  const get = (type: string) => Number(parts.find(p => p.type === type)?.value ?? 0);
+  return get("hour") * 60 + get("minute");
+}

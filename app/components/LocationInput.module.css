@@ -1,0 +1,34 @@
+/* "Leaving from" combobox, from prototypes/v10.html */
+
+.field {
+  position: relative; display: flex; align-items: center;
+  background: var(--surface); border: 1px solid var(--line-2); border-radius: 10px;
+  transition: border-color .15s;
+}
+.field:focus-within { border-color: var(--accent); }
+.lead { position: absolute; left: 12px; color: var(--text-3); pointer-events: none; }
+.input {
+  flex: 1; min-width: 0;
+  background: none; border: none; outline: none;
+  padding: 10px 40px 10px 36px;
+  font-size: 15px; font-weight: 500;
+}
+.input::placeholder { color: var(--text-3); font-weight: 400; }
+.locate { position: absolute; right: 4px; width: 34px; height: 34px; }
+.note { margin-top: 8px; font-size: 13px; color: var(--text-2); }
+
+.dropdown {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 70;
+  background: var(--surface); border: 1px solid var(--line-2); border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.14); overflow: hidden;
+}
+.item { display: block; width: 100%; text-align: left; padding: 10px 14px; cursor: pointer; }
+.item[aria-selected="true"] { background: var(--bg-2); }
+.name { display: block; font-size: 14px; font-weight: 500; }
+.sub  { display: block; font-size: 13px; color: var(--text-3); }
+.empty { padding: 12px 14px; font-size: 14px; color: var(--text-2); }
+
+@media (min-width: 1024px) {
+  .input { padding-top: 8px; padding-bottom: 8px; font-size: 14px; }
+  .note { position: absolute; margin-top: 4px; }
+}

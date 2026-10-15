@@ -1,26 +1,152 @@
-@import "tailwindcss";
+/* Ported from prototypes/v10.html. Tokens, base and the primitives shared
+   across components live here; each component's own rules are in its CSS module. */
 
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+button, select, input { font: inherit; color: inherit; }
+button { background: none; border: none; cursor: pointer; }
+svg { display: block; flex-shrink: 0; }
+
+/* ── Tokens ───────────────────────────────────────────────
+   Light = pastel lavender ground (default). Dark = cool slate.
+   One accent, used only for "act now" and the primary button.
+   Text tiers all ≥ 4.5:1 on --bg. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg:          #F4F1F8;
+  --bg-2:        #EAE5F2;
+  --surface:     #FCFBFE;
+  --line:        rgba(34, 30, 51, .09);
+  --line-2:      rgba(34, 30, 51, .18);
+  --text:        #221E33;
+  --text-2:      #4E4864;
+  --text-3:      #6A6482;
+  --accent:      #5048C8;
+  --accent-ink:  #FFFFFF;
+  --accent-soft: #E3E0FA;
+  --on-soft:     #3B34A8;
+  --shadow:      0 1px 2px rgba(34,30,51,.05), 0 6px 20px rgba(34,30,51,.05);
+  --r: 12px;
+  --wrap: 1280px;
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  --bg:          #131519;
+  --bg-2:        #1F2228;
+  --surface:     #1A1D22;
+  --line:        rgba(255, 255, 255, .07);
+  --line-2:      rgba(255, 255, 255, .15);
+  --text:        #ECEDF0;
+  --text-2:      #B3B7C1;
+  --text-3:      #8E939E;
+  --accent:      #ABA6FF;
+  --accent-ink:  #131519;
+  --accent-soft: rgba(171, 166, 255, .14);
+  --on-soft:     #CBC8FF;
+  --shadow:      none;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Always keep the scrollbar track, so the layout doesn't jump when the list
+   grows past one screen. lockScroll() pads for it while a popup is open. */
+html { overflow-y: scroll; }
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  transition: background .2s, color .2s;
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.tnum { font-variant-numeric: tabular-nums; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 20px; }
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn-quiet {
+  padding: 8px 14px; border-radius: 100px;
+  font-size: 14px; font-weight: 500; color: var(--text-2);
+  transition: background .15s, color .15s;
+}
+.btn-quiet:hover:not(:disabled) { background: var(--bg-2); color: var(--text); }
+.btn-quiet:disabled { opacity: .45; cursor: not-allowed; }
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: grid; place-items: center; color: var(--text-2);
+  transition: background .15s, color .15s;
+}
+.icon-btn:hover { background: var(--bg-2); color: var(--text); }
+.btn-primary {
+  display: block; width: 100%; padding: 13px; border-radius: 100px;
+  background: var(--accent); color: var(--accent-ink);
+  font-size: 15px; font-weight: 600; text-align: center; text-decoration: none;
+  transition: filter .15s;
+}
+.btn-primary:hover { filter: brightness(1.08); }
+
+/* Pills — one selected style everywhere */
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill {
+  padding: 8px 14px; border-radius: 100px;
+  border: 1px solid var(--line-2); background: var(--surface);
+  font-size: 14px; font-weight: 500; color: var(--text-2);
+  transition: background .12s, color .12s, border-color .12s;
+}
+.pill:hover:not(:disabled) { color: var(--text); border-color: var(--text-3); }
+.pill[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+.pill:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Segmented: Leave now | Plan ahead */
+.seg {
+  display: inline-flex; padding: 3px; gap: 2px;
+  background: var(--bg-2); border-radius: 100px;
+}
+.seg button {
+  padding: 6px 14px; border-radius: 100px;
+  font-size: 14px; font-weight: 500; color: var(--text-2);
+  transition: background .12s, color .12s;
+}
+.seg button:hover:not(:disabled) { color: var(--text); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.seg button:disabled { opacity: .45; cursor: not-allowed; }
+
+.select-wrap { position: relative; display: inline-flex; align-items: center; }
+.select-wrap select {
+  appearance: none; -webkit-appearance: none;
+  padding: 8px 32px 8px 12px; border-radius: 10px;
+  border: 1px solid var(--line-2); background: var(--surface);
+  font-size: 14px; font-weight: 500; cursor: pointer;
+}
+.select-wrap.round select { border-radius: 100px; padding: 9px 36px 9px 14px; }
+.select-wrap svg { position: absolute; right: 11px; pointer-events: none; color: var(--text-3); }
+
+/* ── Session bits shared by the card and both dialogs ─────── */
+.poster { width: 100%; aspect-ratio: 2 / 3; border-radius: 8px; background: var(--bg-2) center / cover; }
+.car { display: inline-block; vertical-align: -2px; margin-right: 3px; opacity: .8; }
+.fmt { font-weight: 600; color: var(--text-3); }
+.late-tag { display: block; font-size: 11px; font-weight: 500; color: var(--text-3); }
+.sample-tag { font-size: 12px; font-weight: 500; color: var(--text-3); white-space: nowrap; }
+.s-cue { font-size: 13px; font-weight: 500; color: var(--text-2); white-space: nowrap; }
+.s-cue.tight, .s-cue.trailers { background: var(--accent); color: var(--accent-ink); padding: 1px 10px; border-radius: 100px; font-weight: 600; }
+
+/* ── Dialogs (film detail, surprise): native <dialog>, centred at every size.
+   :where() keeps these at zero specificity so each dialog's module sets its own size. ── */
+:where(dialog.popup) {
+  margin: auto; padding: 0; border: none; color: var(--text);
+  background: var(--surface);
+  max-width: calc(100% - 24px); max-height: calc(100dvh - 24px);
+  animation: fd-in .18s ease-out;
+}
+:where(dialog.popup)::backdrop { background: rgba(10, 9, 16, .68); }
+@keyframes fd-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+
+@media (min-width: 1024px) {
+  .wrap { padding: 0 32px; }
+}
+@media (min-width: 1440px) {
+  :root { --wrap: 1480px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }
