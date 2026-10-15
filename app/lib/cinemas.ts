@@ -21,5 +21,5 @@ export const CINEMAS: Cinema[] = [
   { id: "palace-westgarth", name: "Palace Westgarth", short: "Westgarth", chain: "Palace", suburb: "Northcote", lat: -37.7786, lng: 144.9989, url: "https://www.palacecinemas.com.au", query: "Palace Westgarth showtimes" },
   { id: "lido", name: "Lido Cinemas", short: "Lido", chain: "Lido", suburb: "Hawthorn", lat: -37.8217, lng: 145.0315, url: "https://www.lidocinemas.com.au", query: "Lido Cinemas Hawthorn showtimes" },
   { id: "hoyts-highpoint", name: "Hoyts Highpoint", short: "Highpoint", chain: "Hoyts", suburb: "Maribyrnong", lat: -37.7738, lng: 144.888, url: "https://www.hoyts.com.au", query: "Hoyts Highpoint showtimes" },
-  { id: "hoyts-chadstone", name: "Hoyts Chadstone", short: "Chadstone", chain: "Hoyts", suburb: "Chadstone", lat: -37.8862, lng: 145.083, url: "https://www.hoyts.com.au", query: "Hoyts Chadstone showtimes" },
+  { id: "hoyts-chadstone", name: "Hoyts Chadstone", short: "Chadstone", chain: "Hoyts", suburb: "Chadstone", lat: -37.8862, lng: 145.083, url: "https://www.hoyts.com.au", query: "Hoyts Chadstone cinema showtimes" },
 ];
