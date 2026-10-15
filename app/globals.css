@@ -129,14 +129,15 @@ body {
 .s-cue { font-size: 13px; font-weight: 500; color: var(--text-2); white-space: nowrap; }
 .s-cue.tight, .s-cue.trailers { background: var(--accent); color: var(--accent-ink); padding: 1px 10px; border-radius: 100px; font-weight: 600; }
 
-/* ── Dialogs (film detail, surprise): native <dialog>, centred at every size ── */
-dialog.popup {
+/* ── Dialogs (film detail, surprise): native <dialog>, centred at every size.
+   :where() keeps these at zero specificity so each dialog's module sets its own size. ── */
+:where(dialog.popup) {
   margin: auto; padding: 0; border: none; color: var(--text);
   background: var(--surface);
   max-width: calc(100% - 24px); max-height: calc(100dvh - 24px);
   animation: fd-in .18s ease-out;
 }
-dialog.popup::backdrop { background: rgba(10, 9, 16, .68); }
+:where(dialog.popup)::backdrop { background: rgba(10, 9, 16, .68); }
 @keyframes fd-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
 
 @media (min-width: 1024px) {
