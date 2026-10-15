@@ -21,7 +21,10 @@ export function cleanTitle(title: string): string {
   return title.replace(/`/g, "'").replace(/\s+(4K|3D|IMAX)$/i, "").trim();
 }
 
-const norm = (s: string) => s.toLowerCase().replace(/[’']/g, "'").replace(/[^\p{L}\p{N}']+/gu, " ").trim();
+// Listings and TMDb disagree on accents and ampersands ("Les Heros du Louvre",
+// "Sense & Sensibility"), so compare without them.
+const norm = (s: string) =>
+  s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/&/g, " and ").replace(/[’']/g, "'").replace(/[^\p{L}\p{N}']+/gu, " ").trim();
 
 // Exact title matches only: a wrong poster and synopsis is worse than none.
 // Titles repeat ("Silenced" 2011 vs 2026), so a recent release wins over a more
