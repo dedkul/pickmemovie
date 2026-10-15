@@ -8,11 +8,11 @@ import { EMPTY_SNAPSHOT, type Snapshot } from "./snapshot";
 // no Vercel project.
 const PATHNAME = "showtimes.json";
 const LOCAL_FILE = ".data/showtimes.json";
-const useBlob = () => Boolean(process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN);
+const blobConnected = () => Boolean(process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN);
 
 export async function readSnapshot(): Promise<Snapshot> {
   let text: string | null = null;
-  if (useBlob()) {
+  if (blobConnected()) {
     const blob = await get(PATHNAME, { access: "private", useCache: false });
     if (blob?.stream) text = await new Response(blob.stream).text();
   } else {
@@ -23,7 +23,7 @@ export async function readSnapshot(): Promise<Snapshot> {
 
 export async function writeSnapshot(snapshot: Snapshot): Promise<void> {
   const body = JSON.stringify(snapshot);
-  if (useBlob()) {
+  if (blobConnected()) {
     await put(PATHNAME, body, { access: "private", contentType: "application/json", addRandomSuffix: false, allowOverwrite: true });
   } else {
     await mkdir(".data", { recursive: true });
