@@ -61,6 +61,9 @@
       color-scheme: dark;
     }
 
+    /* Always keep the scrollbar track, so the layout doesn't jump when the list
+       grows past one screen. lockScroll() pads for it while a popup is open. */
+    html { overflow-y: scroll; }
     body {
       background: var(--bg);
       color: var(--text);
@@ -1020,11 +1023,21 @@
   });
   document.addEventListener('click', e => { if (!e.target.closest('.has-pop')) closePops(); });
 
+  // Lock page scroll under popups without the layout shifting: hiding the
+  // scrollbar frees its width, so pad the page by exactly that much.
+  function lockScroll(on) {
+    const h = document.documentElement;
+    if (on && h.style.overflow === 'hidden') return; // already locked
+    const bar = on ? window.innerWidth - h.clientWidth : 0;
+    h.style.overflow = on ? 'hidden' : '';
+    h.style.paddingRight = bar ? bar + 'px' : '';
+  }
+
   // Mobile filter sheet
   function setFilters(open) {
     document.body.classList.toggle('filters-open', open);
     $('summary-bar').setAttribute('aria-expanded', open);
-    document.body.style.overflow = open ? 'hidden' : '';
+    lockScroll(open);
     if (!open) $('summary-bar').focus();
   }
   $('summary-bar').onclick = () => setFilters(true);
@@ -1096,14 +1109,14 @@
   function openDialog(id, focusEl) {
     returnFocus = document.activeElement;
     $(id).hidden = false;
-    document.body.style.overflow = 'hidden';
+    lockScroll(true);
     (focusEl || $(id).querySelector('[data-close]')).focus();
   }
   // The film detail gets a history entry, so the phone's back button closes it instead of leaving the page.
   function hideAll() {
     ['film-ov', 'sp-ov'].forEach(id => $(id).hidden = true);
     stopTrailer();
-    document.body.style.overflow = document.body.classList.contains('filters-open') ? 'hidden' : '';
+    lockScroll(document.body.classList.contains('filters-open'));
     if (returnFocus && document.contains(returnFocus)) returnFocus.focus();
   }
   function closeDialogs() {
