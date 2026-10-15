@@ -28,7 +28,7 @@ This is a portfolio piece demonstrating product thinking and frontend engineerin
 
 ### Non-Goals
 
-- **No real-time multi-chain showtime scraping.** Showtime data is realistic seeded mock data (see §6).
+- **No live per-request showtime scraping.** Real showtimes are fetched once a day for a fixed set of cinemas and cached; seeded mock data is the fallback (see §6.2).
 - No ticket purchasing in-app. Booking happens on the cinema's site via deep link.
 - No user accounts, saved preferences, watchlists, reviews, or ratings.
 - No native mobile app. Responsive web only.
@@ -124,14 +124,16 @@ reachable = (now + travel_time) ≤ (session_start + 10-minute buffer)
 - API key already held by the developer.
 - Cached client- or server-side to avoid redundant calls.
 
-### 6.2 Showtime Data — Seeded Mock (realistic)
+### 6.2 Showtime Data — SerpAPI, daily (real, with fallback)
 
-- A hand-crafted dataset of cinemas (Event, Hoyts, Village, Reading, Palace, Dendy, etc.) across target metros (Sydney/Melbourne), each with:
-  - Cinema name, chain, coordinates, booking URL.
-  - A schedule of sessions per movie: date, start time, format.
-- Movies in the mock set are mapped to real TMDb IDs so metadata is genuine.
-- Sessions are generated across the upcoming week with believable spacing so any selected window returns results.
-- **Rationale:** real multi-chain showtimes require licensed feeds or fragile scraping — out of scope for a demo shown ~20 times. Seeded data is fully controllable, never breaks live, and is indistinguishable from real in a demo. (A single real scraper for one chain is a possible future upgrade, see §9.)
+*Revised 2026-10-14; this replaces the original seeded-mock-only plan.*
+
+- **Source:** SerpAPI Google search (`"<cinema> showtimes"`, `gl=au`). One search per cinema returns about 7 days of sessions, with film title, times and format (Standard, LUX, 4K…).
+- **Scope:** 7 Melbourne cinemas (Cinema Nova, Hoyts Melbourne Central, Village Crown, Palace Westgarth, Lido, Hoyts Highpoint, Hoyts Chadstone). The free plan gives 250 searches a month; 7 × 31 = 217 leaves room for retries.
+- **Refresh:** once a day by a scheduled job that writes a snapshot to storage. Page requests never call SerpAPI.
+- **Fallback, per cinema:** today's fetch → last good snapshot (still valid, since it covers 7 days) → seeded mock sessions, labelled as sample times in the UI.
+- **Film matching:** each listing title is matched to TMDb by exact title. Recent releases win over older namesakes, and "4K" listings match the restored classic. Titles with no exact match show without TMDb details rather than with a wrong one.
+- **Booking:** results carry no per-session booking link, so Book opens the chain's site.
 
 ### 6.3 Location & Routing — Geoapify (real, free tier)
 

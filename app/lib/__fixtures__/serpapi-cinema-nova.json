@@ -1,0 +1,933 @@
+{
+ "search_metadata": {
+  "created_at": "2026-10-14 00:27:28 UTC"
+ },
+ "showtimes": [
+  {
+   "day": "Today",
+   "movies": [
+    {
+     "name": "Verity",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Verity&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XJ_wVkZeSLvxMIcYVJ7oxDDJrGfKW0PP_Tdf97ZGOjrcoIzi1Tc5jO1QzZbu5hVxlYKyWFWCqs5stebsJ-uUiRLaeYxvLAeggp-msZdtKIxoQ0-QBT2XZkYqQfObP036ZMDbBi0%3D&sa=X&ved=2ahUKEwjE5sD6n7iXAxUbO7kGHR_uGBcQxyZ6BAhhEBI",
+     "showing": [
+      {
+       "time": [
+        "11:30am",
+        "1:50pm",
+        "4:25pm",
+        "6:55pm",
+        "9:15pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "The Social Reckoning",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=The+Social+Reckoning&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XG-JsorSuK_sW5HsPnZVIcCNtjNJ4sFh_RwsNblLxTPY7pKUp808HQoj_Gy7w-eR9Vk1YHp1sjA3mk_9wNO58a72S0bB-5NxpR0IriRqwpWcFAgnOuN3xI6XP4Q-iqGMJQdQ1bM%3D&sa=X&ved=2ahUKEwjE5sD6n7iXAxUbO7kGHR_uGBcQxyZ6BAhhEBo",
+     "showing": [
+      {
+       "time": [
+        "12:15pm",
+        "2:30pm",
+        "4:45pm",
+        "7:00pm",
+        "9:15pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Heart of the Beast",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Heart+of+the+Beast&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XE2t58koBuxfVhLK8dk8KiMWoithKPWHZI6DIfiy9QW5tsHuSD_KzkHpyzRQwsT2Vv_51uxyEvmjz9rqjspVZklqWyqUZo70HhvFUir5zaTnZcn32Fl91bCVT1mP7tpAJi_J588%3D&sa=X&ved=2ahUKEwjE5sD6n7iXAxUbO7kGHR_uGBcQxyZ6BAhhECI",
+     "showing": [
+      {
+       "time": [
+        "2:05pm",
+        "6:45pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Digger",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Digger&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XJd5L91uDgWnb6Ys8n6vbGxWED6H_xOsLuCL4LKEcn-OTGWW-jkk-LWPmXnLzxdzLIJrojaYj-NcOQEVMQUxAs0VJOmeOcAhPjilUdP6vjLJiQEdhlnJM7yukPhEtBkNoCv5UtA%3D",
+     "showing": [
+      {
+       "time": [
+        "11:00am",
+        "1:30pm",
+        "4:00pm",
+        "6:40pm",
+        "9:10pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Coyote vs. Acme",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Coyote+vs.+Acme&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XG2lD_yrrHQ_Ub7lKoT9IXspRvCyYM7YuxjPXLJad-38NwK9WKERSeFN7JlLYodylDAxmCCzrIX2CVBsGvSimkxL4cP_T8xaABtXiwyibS_rHDjgYunNASPH2eXQMJ54Fju2jUg%3D",
+     "showing": [
+      {
+       "time": [
+        "1:25pm",
+        "6:30pm",
+        "8:35pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Hadestown: The Musical",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Hadestown:+The+Musical&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XCL2fCcIggmnwOcC1qBnO5txpM6eBQTq9mIsLZ-pm1amq964nPTKruAO1jO1knWp26Hz8tP1KSTudaVLtdj4aFlU0NbSXAQcR2OJlK7P2PQyRvA-XFuwkrevUqh6s7MVh2rVAtA%3D",
+     "showing": [
+      {
+       "time": [
+        "6:30pm",
+        "6:40pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "The Odyssey",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=The+Odyssey&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XNBezGY-ulhAJCL4yxZH_7X2zW6Tpfe1ZYx5ZtJhq83kRjzz3zaukfxM-pMktiTkgVjMjDK04jDo50q3-bmfFsz9E-aNzU67NaR2uvdyr78m9b_rpAxT1OouPPj-mmfX-UpsfjI%3D",
+     "showing": [
+      {
+       "time": [
+        "12:45pm",
+        "4:00pm",
+        "7:15pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "The Great Arch",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=The+Great+Arch&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XEPzH2AQFcAzYFF4d43e331fDPwnm8BYiHuCGCFp39HKcnp4ncIPZT7i4msPm0OePsdTeEB32DQcrn8k9ZuYaKOYUiEF-OkHymht8ZK84b4KhaNadrCPJS4xUG2tcj_EAOzy-Bg%3D",
+     "showing": [
+      {
+       "time": [
+        "11:45am",
+        "1:55pm",
+        "4:05pm",
+        "6:20pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Tony",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Tony&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XICoNpC6HlNjvGfw5r1Ghnk8C74zR0SnXFhDtNlpANK6KxVbC9jJHPhAN23IdtMf04UihLT_y2ONCmLX2NnraJ2h3S8sRnYCNPBO3Ew9x0LnzqV0Vz4u8X7tbv6eXt3Qw1u2k0I%3D",
+     "showing": [
+      {
+       "time": [
+        "12:20pm",
+        "2:25pm",
+        "4:30pm",
+        "6:35pm",
+        "8:40pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Life Goes This Way",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Life+Goes+This+Way&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XA7CGWKxf4gKt542c-BvtttuzUo2YlabTbf7P6GzrjwGUtaH_VmDPYH3dbjuqiu6rxxw7kA94ok58NCzdUdBbDfyEE0_d2v1XEQ9Ke2yzdCQ3tn_4WsnDoo0JB4Zk8ngDQwpfVE%3D",
+     "showing": [
+      {
+       "time": [
+        "8:30pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "The Invite",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=The+Invite&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XE_xEppWQNSCEfWbADAQpm2fbr4bwYFVGZfMbsIfJZCXa-5804mzgi7SipsRzI-JBL58KCLytcOHlwzycDBhNRcAnBezYweP8o4slG4aK9c3LKgD9w6o3ZKSLVzRfUwngFTNt-8%3D",
+     "showing": [
+      {
+       "time": [
+        "2:20pm",
+        "4:40pm",
+        "6:50pm",
+        "9:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "De Gaulle: Résistance",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=De+Gaulle:+R%C3%A9sistance&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XPmQD1PqijoHbFo45vlFJdc_liAJSje2edGdtT7FUuMWOiYJQLIHOk6kiqZ6ubpUllBYwDQAY6HlE2n-S1n1C8_s2w3J7wHy3K528guacLXRan9LigD2QVpF6YjmCXa77_yVSwk%3D",
+     "showing": [
+      {
+       "time": [
+        "11:35am"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "& Sons",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=%26+Sons&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XIRCgtcOZ5khpC-mWWfXFBlTCCKsXNIPr7186xtOOSnRVI-n6RXf5M-OluYHKf10YqVato4VtK5rjkzembyv-LO02WFc_4jZHGqknwE8jnaMU08V2Op8BicziwJl5SuvfUAUfjM%3D",
+     "showing": [
+      {
+       "time": [
+        "11:25am"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Love in Separate Beds",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Love+in+Separate+Beds&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XL6VHENffMRqNlGikQrOy76XOFWlDFsrVE0nmM74YK1UqSV0ncBSkqj2s06MX-5iPA2moWpP-3yHIwe9tlFs04wJ6AbCip7ONdfgMT2Iic_UCp5bmin_dD2hT_ISZn2u_rqKXLw%3D",
+     "showing": [
+      {
+       "time": [
+        "1:10pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Hope",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Hope&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XGvL-ygKl___0uy5zsdQPmfrFaqbl-9wtFIQitGdfjYpQzfvEpwh_8Pj4Lb5oW4hrvatfubZj0WO2ccvRo1gLC1g3K968-VbTHSslGPdm3cfhn-pwGCaAs4OsaxC_eX9pyopeqc%3D",
+     "showing": [
+      {
+       "time": [
+        "11:20am",
+        "3:30pm",
+        "8:30pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Broken English",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Broken+English&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XNV2FW6hORPSJL6jFBqTwOFQhZYxnZ-Udizg7lsqg5xT3uWu220mIDO6YXW3N0btqV4g0-p67VnS3DObjtKAxcEkTQSkuHneA-xnfgAeiN0KCwEt8SvpTBYDQ2OoNmyQxtCAIkM%3D",
+     "showing": [
+      {
+       "time": [
+        "12:00pm",
+        "7:20pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Ninja Scroll 4K",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Ninja+Scroll+4K&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XMdmdWb3086h-jxZLCWmnvJ8JsE3mKsVZHsxk0ILSW1gPVcEXEevn6VghMIwwe6sVF6pssu1NDhKZ0FB-CEEYcn5TAHwwKM1BAEh8HQxN-jGRFg7kjAyZWATOPCMFhxrZddRgyI%3D",
+     "showing": [
+      {
+       "time": [
+        "4:40pm"
+       ],
+       "type": "4K"
+      }
+     ]
+    },
+    {
+     "name": "Oasis: Don't Look Back in Anger",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Oasis:+Don%27t+Look+Back+in+Anger&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XGQ3lbvyUQUnIeSNQ7RZwVVL_Zfvqakxd7sFjA7db-XTLCRlewraB1qxXPTBJ-8rtZrForXeXCPHUAWY05FPiazWjuw4eweJtsBI7i4gE63KijJqzJltlvGfYnq0CHTxrAyuW10%3D",
+     "showing": [
+      {
+       "time": [
+        "4:10pm",
+        "8:50pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Teenage Sex and Death at Camp Miasma",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Teenage+Sex+and+Death+at+Camp+Miasma&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XJa__GdM3kGq0KqyKI6aFlz5Wg9NKwkqoSNTbRbUJqFKREyZ3VlEUOl_LATbBBGhlj11CzdjOpvQKrMic0ukPsz-TYwGDMko6-GW5cfwcioll7VVtobP-LDbPtcHs8GRhKYet8s%3D",
+     "showing": [
+      {
+       "time": [
+        "11:50am",
+        "4:20pm",
+        "8:50pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Palestine 36",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Palestine+36&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XO7W1adnm15iz-IjNNwasfuBjyzXzIsX01OZMGqEG4MomngCZ422QvNeegli7nnX0Yit6PmyxOmKySwJSEyETXTbX4yroHz8ufc__bOktpIbb3w255yjHm2tdzK23b52Dydv1XY%3D",
+     "showing": [
+      {
+       "time": [
+        "1:45pm",
+        "6:30pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "A Brief Affair",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=A+Brief+Affair&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XGPoW-B0u_Ta3b41OPYyP6bWbkZLA8EcQ9BHEiCGBNpAk9YRn_gcjIE2qRHdjIQe7siraGyOKZFlHvs0H24_EgwBEtLQX3zfomQ25ZQEhEf809tG_ZOo8lh68-w4T3HEBqWA_z0%3D",
+     "showing": [
+      {
+       "time": [
+        "11:00am"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Silenced",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Silenced&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XAL3lXFdk3QiGt8ztPkk5Ds-rf7Qtdv0pYe2xor63bLfXJ2rQTT7_6fLiUpIPetDGOzMemei45bwkiwNNIbikTf8RDR9hqOtqeNR3EOdGnjRdMYXVb86GZ4HlsvcetBtt6TrZ-Q%3D",
+     "showing": [
+      {
+       "time": [
+        "2:35pm",
+        "6:25pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "On the Sea",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=On+the+Sea&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XKUIAR4KE16VMjOf3LM4m6LF6NUpLMhEU3euPZ8WSfrFJfnEygIDofFtANaeu79sXZYLXPiMf45kreJVh-OfvJJmHD-No8kFRv8rkBIj_PcZRRR9kBQ7qEpk-uk8O_0BbYnyIy8%3D",
+     "showing": [
+      {
+       "time": [
+        "12:35pm",
+        "2:45pm",
+        "6:45pm",
+        "8:55pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Obsession",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Obsession&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XEYdEoZ3RUHDtA2GnnDdkjr8_wddAkFC-Wlvjg0n44gSaJJ0I46lpPLm0sTh-Utc6LW_g16v0DhR1KGrvpR48HcCVOh4iNqPg3CWa5IJML0GaJ2zXkWvJNxWAmACq-PoDvh0f3A%3D",
+     "showing": [
+      {
+       "time": [
+        "5:10pm",
+        "9:20pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Malavia",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Malavia&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XAjei1hQJW7c5752NBHbRSzKWeYSQg-VyRF4cxyVWbsCC4vUvLNiAbwKxhc6N5GuqNwPEVUGe2GwVaD0PdkGY5C1sfJio9OMvQpZrbdNyqtozf1tdVe6mbhmt3GAN7W754GjlCs%3D",
+     "showing": [
+      {
+       "time": [
+        "3:40pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "I Want Your Sex",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=I+Want+Your+Sex&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XCX1tCRpddy7GKQW6jRJwLZ4fIzoL_5DaViB3tkM4o1r9Qpz_f6sqqgt0YRZKz6hRVyZ9_FjWdGA9ONO1m0VtwnEZ5yanUoVwR9ZaFWan_K_T-fpmTEXv1I1mT7erfO54aqKTv4%3D",
+     "showing": [
+      {
+       "time": [
+        "4:35pm",
+        "8:25pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Project Hail Mary",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Project+Hail+Mary&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XAn8r2sg_lIb4fLt3Bxh3M2DWYC4xL2ay4EAFDLsx9xw2o3vIHqPefGgJ0zEgsKrDOFDIZMSSHSAqaVfo75cQ8A6q5a_gfS26XKC145131fnDnJkREUP82lsW0Fpb4FLUgr2hEs%3D",
+     "showing": [
+      {
+       "time": [
+        "3:15pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "It Ends",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=It+Ends&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XLyEDyG-7zrviksjHVrFpY4iEXq9hzmJbP9hquUHb0jPDQCitm9TsBux27uepM8Iu54Oprtk6_ix61UsliQgEAo3PqU3o4jSAWl0Qhx90JjAJNh1ok1awfcuql4r6HwpS7_J9bA%3D",
+     "showing": [
+      {
+       "time": [
+        "4:55pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Don`t Look Now",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Don%60t+Look+Now&si=APenkKlikuSFV5Zn0CcM560bGMYxPork-kjkM9d4OinI68WHtpsFjNVZgWz8gwbRwnghrGCzU_EmIxJjSXMkoSfRNzvpC8seDcPGifi2bAkxahJA4pCupK3bJGiMscIUve4iAdiucjMYiF-FWixqbfqcLKnvm8MNPkd-fuwF6FZIxtfJWJOgTws%3D",
+     "showing": [
+      {
+       "time": [
+        "9:25pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Case 137",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Case+137&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XLBf4O-C_gCp4NA2Zn4yulwk3cTt3jmKlBCJ7nXVW0FxzJ97Z-VYtfxViD1NdUan7hJ7-s9nE0ha2gRfX9JjS76w24A8JXlVQrt7RlLLxO2o7zwIGIs2bq-HORMk5HK-bCWhzrE%3D",
+     "showing": [
+      {
+       "time": [
+        "11:10am"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "On the Road",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=On+the+Road&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XBE3B8pDYljX4WpJUvChzwuRppiIk3gRVTQmSYdGSJuHPqq-dbjOU5aGrDt4VXbGPirHDK8JCVZspGPOI1afN3jaIzXPYqBjeUQK2-1UAX0aTPWDyJMVZKFZEeYX--PMs1WeY6U%3D",
+     "showing": [
+      {
+       "time": [
+        "1:25pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Time and Tide",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Time+and+Tide&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XBNM_c4ViOL4debfhmCjOO1UfSgZCHw3f8m0TeQBf6YeU2WKhdaKaL0gZo3ZsNjyhG4yukyISNfIbDREIqxEIMl55_10egCrj76VIsu8IX9CGDG1U5t9pCItXpXmeWz0NyhWVaU%3D",
+     "showing": [
+      {
+       "time": [
+        "12:20pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Solaris",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Solaris&si=APenkKlikuSFV5Zn0CcM560bGMYxPork-kjkM9d4OinI68WHtr5gjUfU1c5RbBy4M7oTEB0NhRGAR53Khd-2PTu2kIldONGzpnrTYALEU0DmJUT0uOjHhAoUSLpZdCwHaZeslPepmCR9bBwq5bTOcvI1XEHnH-1NlPL71xSgEDFREP_SPOTs0sU%3D",
+     "showing": [
+      {
+       "time": [
+        "2:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Blue Velvet",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Blue+Velvet&si=APenkKlsOMFuBZLoy--im5siVBMfs4mvK5LhrB47M1xy1bYJz7Sg2iIww3vS8qxsla5G2rRKy3YB1ZpofpQcQMpCuoWpNieIblwgxP5O0sTdB-_x1EqcnreAa-RQLwCVE7SxXCxNm76ckHPeUo6z7znJzpgO48NzfnsMLWiLiKPXn6NfiLCIz1o%3D",
+     "showing": [
+      {
+       "time": [
+        "2:20pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Akira 4K",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Akira+4K&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XNEAtx0L4kw2CA3xDRKl5KTis5e1ha7pQCdmbOUDj3HpP58OhVzbfFvH9IZKIB5KMQJwPjlB7MI2ULvDPb5KgSuyRThhFhuno93UOKHoS67EiDz8HhMdaReRYV8o_NfDy9EpQzY%3D",
+     "showing": [
+      {
+       "time": [
+        "9:15pm"
+       ],
+       "type": "4K"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Tomorrow",
+   "movies": [
+    {
+     "name": "Hadestown: The Musical",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Hadestown:+The+Musical&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XCL2fCcIggmnwOcC1qBnO5txpM6eBQTq9mIsLZ-pm1amq964nPTKruAO1jO1knWp26Hz8tP1KSTudaVLtdj4aFlU0NbSXAQcR2OJlK7P2PQyRvA-XFuwkrevUqh6s7MVh2rVAtA%3D",
+     "showing": [
+      {
+       "time": [
+        "6:40pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "La bola negra",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=La+bola+negra&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XC3aQeQznCSCi0UKHIc6vVeoDsPbDnuMiOoAGhfYnZtnA0ky8d-pSKNhgFG-VW7rK-tc0urlI3oqRN0etKEsGOCfcmf-7wiU6uDvp3XtGiDtSh2PA-OLkjR2SE15Bvs660XNntE%3D",
+     "showing": [
+      {
+       "time": [
+        "10:30am",
+        "1:30pm",
+        "4:30pm",
+        "6:00pm",
+        "7:30pm",
+        "9:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "NAZA",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=NAZA&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XM9TxueHZbyigE8tTnz-vIlv9KhGgsV7IgWx6meFEZrz0stLu4aGQkdMnxYq5u2hVpUPq39llKcIjPG1neC7ItGXngH04nS4NiVzRqbT0kOoxQGpzGvl5eJYkIbOQpBaMC722Ks%3D",
+     "showing": [
+      {
+       "time": [
+        "7:00pm",
+        "8:50pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Jebediah: Are We Ok?",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Jebediah:+Are+We+Ok%3F&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XLG976yQMEJxJkMvo3k1aLr5ad2KzNnPT4N4mXjATSZZgKngPD6BAuSrkMD4sI4G_zxxbFwfyozcBQZu9aoSQq3Jjp1v5wak9l1pZBivv71NbviHKyjsHUwaW5zYWTorSxCgXB0%3D",
+     "showing": [
+      {
+       "time": [
+        "4:50pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Sweetheart",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Sweetheart&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XEfxMhPuVtjPDGHfFTDu0NDQ0OIQXkXPw7lA49NkqS4bUgYGZxqFqIauniWyVFNgcspf26vBkLguo09yMIZAXb_X4NOGxpgrCobAha8ch746-cOW4U-e_OSKX6TFjQNyVYR_Bio%3D",
+     "showing": [
+      {
+       "time": [
+        "3:40pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Twenty Years of the Met in Cinemas: An Anniversary Celebration",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Twenty+Years+of+the+Met+in+Cinemas:+An+Anniversary+Celebration&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XNQ_w1i8e5S2wXWa1pgNw4R4xhx0vQ5lkBal7G0W6AwoZjPvTPDI8KEGY2mp6RRdJHWt0FfovVDv8xHqFIticA0zCEgASyr0yX-5ci3hwViP4gDecD6uTHYY0HklOznzf2muIZ8%3D",
+     "showing": [
+      {
+       "time": [
+        "1:30pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "The Echo Chamber",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=The+Echo+Chamber&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XPNIUQrri1J1wF_HJdlR9X08M4OdodVXNie5bbG1kmedcbqXUHsyVfUDy8aprcVawn3tbeQZqz_mv_8W5qdVN4iX_2xrKHOLAVX9y4WYpGCC0z5vdCAkmEqxokk4IUYAJ0H9HIo%3D",
+     "showing": [
+      {
+       "time": [
+        "6:15pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "A Beautiful Day",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=A+Beautiful+Day&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XCjCioZpbQbsaTuYfpvNiT4RDtnV_H93pH2qNs4XY4lHReSDJ0qFiGy-HEh0NLmG6aPgZ3MLsEV2J6seHP4v51HtLhYivaowcVo-Ytie-48xC-DPvhJfEMwk3eV1Veo3kyeKGx0%3D",
+     "showing": [
+      {
+       "time": [
+        "1:30pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Videodrome",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Videodrome&si=APenkKlikuSFV5Zn0CcM560bGMYxPork-kjkM9d4OinI68WHttKW_j82s8FtkN7BqNGLUMlD4hJ1KCO0VG2odw8ke0PD_4m7eio-YBE9N4Q9-pLwi4Hrvf-z7H47CWZyLf0n-pETSxtLcdtLBBMoMgCiRdVppEaVL0wd0bnvfYW-e4xlMocAMsY%3D",
+     "showing": [
+      {
+       "time": [
+        "9:25pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Twin Stars",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Twin+Stars&si=APenkKkWOQvWRbceg1oTd0WcoUqsLxzbE5msb77jCKE2Fvr3E1BcCNO0MYfzQsvXwNKSZxkEw9is6N7u4iRrq_inxDc75ZeLoA1bVh4yHctL746Ysr0swnbpDsr0sthI7P4AH3oB22P4eoNrtnnPjisTYjKxCZq1dvap9pg12GQAdT5RTj3VucD61AoTnX1CJFqJxEvAWjD-TwC_dvn0oFN21fkDvP4XQw%3D%3D",
+     "showing": [
+      {
+       "time": [
+        "11:00am"
+       ],
+       "type": "Standard"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Fri",
+   "date": "16 Oct",
+   "movies": [
+    {
+     "name": "La bola negra",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=La+bola+negra&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XC3aQeQznCSCi0UKHIc6vVeoDsPbDnuMiOoAGhfYnZtnA0ky8d-pSKNhgFG-VW7rK-tc0urlI3oqRN0etKEsGOCfcmf-7wiU6uDvp3XtGiDtSh2PA-OLkjR2SE15Bvs660XNntE%3D",
+     "showing": [
+      {
+       "time": [
+        "10:30am",
+        "1:30pm",
+        "4:30pm",
+        "6:00pm",
+        "7:30pm",
+        "9:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "NAZA",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=NAZA&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XM9TxueHZbyigE8tTnz-vIlv9KhGgsV7IgWx6meFEZrz0stLu4aGQkdMnxYq5u2hVpUPq39llKcIjPG1neC7ItGXngH04nS4NiVzRqbT0kOoxQGpzGvl5eJYkIbOQpBaMC722Ks%3D",
+     "showing": [
+      {
+       "time": [
+        "7:00pm",
+        "8:50pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Life Goes This Way",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Life+Goes+This+Way&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XA7CGWKxf4gKt542c-BvtttuzUo2YlabTbf7P6GzrjwGUtaH_VmDPYH3dbjuqiu6rxxw7kA94ok58NCzdUdBbDfyEE0_d2v1XEQ9Ke2yzdCQ3tn_4WsnDoo0JB4Zk8ngDQwpfVE%3D",
+     "showing": [
+      {
+       "time": [
+        "2:05pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "The History of Concrete",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=The+History+of+Concrete&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XPVMlclk0c59xxpAqV1SVJMUawgUQLMXNlqMkyeNqwCP6cYYBdj93BK3Nw-8jBHiY2Pxj8ube5jchBfP-lQ3ux3l532BWCypzMMz9iglLzH-AR1Bjl8RrvrSwxsH5KtHIW_YO_M%3D",
+     "showing": [
+      {
+       "time": [
+        "9:10pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Sweetheart",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Sweetheart&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XEfxMhPuVtjPDGHfFTDu0NDQ0OIQXkXPw7lA49NkqS4bUgYGZxqFqIauniWyVFNgcspf26vBkLguo09yMIZAXb_X4NOGxpgrCobAha8ch746-cOW4U-e_OSKX6TFjQNyVYR_Bio%3D",
+     "showing": [
+      {
+       "time": [
+        "10:15am"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Love in Separate Beds",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Love+in+Separate+Beds&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XL6VHENffMRqNlGikQrOy76XOFWlDFsrVE0nmM74YK1UqSV0ncBSkqj2s06MX-5iPA2moWpP-3yHIwe9tlFs04wJ6AbCip7ONdfgMT2Iic_UCp5bmin_dD2hT_ISZn2u_rqKXLw%3D",
+     "showing": [
+      {
+       "time": [
+        "4:30pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Twenty Years of the Met in Cinemas: An Anniversary Celebration",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Twenty+Years+of+the+Met+in+Cinemas:+An+Anniversary+Celebration&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XNQ_w1i8e5S2wXWa1pgNw4R4xhx0vQ5lkBal7G0W6AwoZjPvTPDI8KEGY2mp6RRdJHWt0FfovVDv8xHqFIticA0zCEgASyr0yX-5ci3hwViP4gDecD6uTHYY0HklOznzf2muIZ8%3D",
+     "showing": [
+      {
+       "time": [
+        "3:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Videodrome",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Videodrome&si=APenkKlikuSFV5Zn0CcM560bGMYxPork-kjkM9d4OinI68WHttKW_j82s8FtkN7BqNGLUMlD4hJ1KCO0VG2odw8ke0PD_4m7eio-YBE9N4Q9-pLwi4Hrvf-z7H47CWZyLf0n-pETSxtLcdtLBBMoMgCiRdVppEaVL0wd0bnvfYW-e4xlMocAMsY%3D",
+     "showing": [
+      {
+       "time": [
+        "7:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "A Sad and Beautiful World",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=A+Sad+and+Beautiful+World&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XDCWzx5bMKd86YY0BF_QgA0efBxT59BOpFCEI0MMOrb1FJkKkFe84iqbdVQFWiN8dQrFSbd9C2wIciud1BGolCAW7WbA6886p_SqKzs3TEScK6yptmYniWFD3lu6BawjM3ZWyHQ%3D",
+     "showing": [
+      {
+       "time": [
+        "6:50pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Sat",
+   "date": "17 Oct",
+   "movies": [
+    {
+     "name": "Hadestown: The Musical",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Hadestown:+The+Musical&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XCL2fCcIggmnwOcC1qBnO5txpM6eBQTq9mIsLZ-pm1amq964nPTKruAO1jO1knWp26Hz8tP1KSTudaVLtdj4aFlU0NbSXAQcR2OJlK7P2PQyRvA-XFuwkrevUqh6s7MVh2rVAtA%3D",
+     "showing": [
+      {
+       "time": [
+        "12:40pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "La bola negra",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=La+bola+negra&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XC3aQeQznCSCi0UKHIc6vVeoDsPbDnuMiOoAGhfYnZtnA0ky8d-pSKNhgFG-VW7rK-tc0urlI3oqRN0etKEsGOCfcmf-7wiU6uDvp3XtGiDtSh2PA-OLkjR2SE15Bvs660XNntE%3D",
+     "showing": [
+      {
+       "time": [
+        "10:30am",
+        "1:30pm",
+        "4:30pm",
+        "6:00pm",
+        "7:30pm",
+        "9:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "NAZA",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=NAZA&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XM9TxueHZbyigE8tTnz-vIlv9KhGgsV7IgWx6meFEZrz0stLu4aGQkdMnxYq5u2hVpUPq39llKcIjPG1neC7ItGXngH04nS4NiVzRqbT0kOoxQGpzGvl5eJYkIbOQpBaMC722Ks%3D",
+     "showing": [
+      {
+       "time": [
+        "7:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Jebediah: Are We Ok?",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Jebediah:+Are+We+Ok%3F&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XLG976yQMEJxJkMvo3k1aLr5ad2KzNnPT4N4mXjATSZZgKngPD6BAuSrkMD4sI4G_zxxbFwfyozcBQZu9aoSQq3Jjp1v5wak9l1pZBivv71NbviHKyjsHUwaW5zYWTorSxCgXB0%3D",
+     "showing": [
+      {
+       "time": [
+        "8:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "The History of Concrete",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=The+History+of+Concrete&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XPVMlclk0c59xxpAqV1SVJMUawgUQLMXNlqMkyeNqwCP6cYYBdj93BK3Nw-8jBHiY2Pxj8ube5jchBfP-lQ3ux3l532BWCypzMMz9iglLzH-AR1Bjl8RrvrSwxsH5KtHIW_YO_M%3D",
+     "showing": [
+      {
+       "time": [
+        "1:00pm",
+        "3:30pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Sweetheart",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Sweetheart&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XEfxMhPuVtjPDGHfFTDu0NDQ0OIQXkXPw7lA49NkqS4bUgYGZxqFqIauniWyVFNgcspf26vBkLguo09yMIZAXb_X4NOGxpgrCobAha8ch746-cOW4U-e_OSKX6TFjQNyVYR_Bio%3D",
+     "showing": [
+      {
+       "time": [
+        "10:50am"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Liste De Mariage",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Liste+De+Mariage&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XM5MdoIgWbuahLCTlYiUNI52UpLmomygSWzGoPRlwjlyMMh8rGnfi8RQ7U0nVxFc5Au8-jk_GVBznBmrbgICMFu05jCRvgpYD1DgZE1inMnHO_pIDkFCmi_VYi3xfJgwKWPG8ec%3D",
+     "showing": [
+      {
+       "time": [
+        "6:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Sun",
+   "date": "18 Oct",
+   "movies": [
+    {
+     "name": "Hadestown: The Musical",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Hadestown:+The+Musical&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XCL2fCcIggmnwOcC1qBnO5txpM6eBQTq9mIsLZ-pm1amq964nPTKruAO1jO1knWp26Hz8tP1KSTudaVLtdj4aFlU0NbSXAQcR2OJlK7P2PQyRvA-XFuwkrevUqh6s7MVh2rVAtA%3D",
+     "showing": [
+      {
+       "time": [
+        "1:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "La bola negra",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=La+bola+negra&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XC3aQeQznCSCi0UKHIc6vVeoDsPbDnuMiOoAGhfYnZtnA0ky8d-pSKNhgFG-VW7rK-tc0urlI3oqRN0etKEsGOCfcmf-7wiU6uDvp3XtGiDtSh2PA-OLkjR2SE15Bvs660XNntE%3D",
+     "showing": [
+      {
+       "time": [
+        "10:30am",
+        "1:30pm",
+        "4:30pm",
+        "6:00pm",
+        "7:30pm",
+        "9:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Life Goes This Way",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Life+Goes+This+Way&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XA7CGWKxf4gKt542c-BvtttuzUo2YlabTbf7P6GzrjwGUtaH_VmDPYH3dbjuqiu6rxxw7kA94ok58NCzdUdBbDfyEE0_d2v1XEQ9Ke2yzdCQ3tn_4WsnDoo0JB4Zk8ngDQwpfVE%3D",
+     "showing": [
+      {
+       "time": [
+        "10:30am"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Jebediah: Are We Ok?",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Jebediah:+Are+We+Ok%3F&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XLG976yQMEJxJkMvo3k1aLr5ad2KzNnPT4N4mXjATSZZgKngPD6BAuSrkMD4sI4G_zxxbFwfyozcBQZu9aoSQq3Jjp1v5wak9l1pZBivv71NbviHKyjsHUwaW5zYWTorSxCgXB0%3D",
+     "showing": [
+      {
+       "time": [
+        "12:40pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Sweetheart",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Sweetheart&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XEfxMhPuVtjPDGHfFTDu0NDQ0OIQXkXPw7lA49NkqS4bUgYGZxqFqIauniWyVFNgcspf26vBkLguo09yMIZAXb_X4NOGxpgrCobAha8ch746-cOW4U-e_OSKX6TFjQNyVYR_Bio%3D",
+     "showing": [
+      {
+       "time": [
+        "6:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Love in Separate Beds",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Love+in+Separate+Beds&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XL6VHENffMRqNlGikQrOy76XOFWlDFsrVE0nmM74YK1UqSV0ncBSkqj2s06MX-5iPA2moWpP-3yHIwe9tlFs04wJ6AbCip7ONdfgMT2Iic_UCp5bmin_dD2hT_ISZn2u_rqKXLw%3D",
+     "showing": [
+      {
+       "time": [
+        "3:45pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    },
+    {
+     "name": "Twenty Years of the Met in Cinemas: An Anniversary Celebration",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Twenty+Years+of+the+Met+in+Cinemas:+An+Anniversary+Celebration&si=APenkKnBlllJXMN-DBfmV3x4g6XbZbeeMEzOUDQPFlgOwiu8XNQ_w1i8e5S2wXWa1pgNw4R4xhx0vQ5lkBal7G0W6AwoZjPvTPDI8KEGY2mp6RRdJHWt0FfovVDv8xHqFIticA0zCEgASyr0yX-5ci3hwViP4gDecD6uTHYY0HklOznzf2muIZ8%3D",
+     "showing": [
+      {
+       "time": [
+        "12:30pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "day": "Mon",
+   "date": "19 Oct",
+   "movies": [
+    {
+     "name": "Videodrome",
+     "link": "https://www.google.com/search?sca_esv=8347cae270e83a03&gl=au&hl=en&sxsrf=APpeQnu_c8CzgeUPkli4INZ4vE_7yN3irA:1791937653788&q=Videodrome&si=APenkKlikuSFV5Zn0CcM560bGMYxPork-kjkM9d4OinI68WHttKW_j82s8FtkN7BqNGLUMlD4hJ1KCO0VG2odw8ke0PD_4m7eio-YBE9N4Q9-pLwi4Hrvf-z7H47CWZyLf0n-pETSxtLcdtLBBMoMgCiRdVppEaVL0wd0bnvfYW-e4xlMocAMsY%3D",
+     "showing": [
+      {
+       "time": [
+        "7:00pm"
+       ],
+       "type": "Standard"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
