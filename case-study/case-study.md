@@ -67,9 +67,10 @@ Cinema sites tell you what's on. They don't tell you what you can still make. At
 
 ## Next
 
+- Watch five people use it on a Friday night, when they're really choosing a film.
+- Measure searches, film opens and clicks through to booking.
 - Public transport (needs a transit API and timetables, so v1 is car only).
-- A usability test of the centred popup on phones.
-- Sessions just after midnight from the night before.
+- A second city. One search returns 7 days and the app shows 3, so refreshing every second day would fit about 14 cinemas in the free plan.
 
 ---
 
@@ -99,6 +100,7 @@ Cinema sites tell you what's on. They don't tell you what you can still make. At
 | 20 | Keep the prototype's look in the real app | The original plan said Tailwind, which meant restyling everything and drifting from v10 | **Port the v10 CSS as it is** and remove Tailwind. The live app matches the approved prototype. |
 | 21 | — | Drive times from the routing API assume no traffic and end at the door | **4 minutes for parking and walking in** are added to every drive, and a session counts as "tight" with under 20 minutes to spare. |
 | 22 | The poster on the phone card looks off | Measured: 15 px above the poster, 31 px below | Poster 84 → **104 px** so it sits with an even 15 px all round. The first fix after launch. |
+| 23 | How do people send feedback? | Two X links in the footer ("Tell me on X" and "Follow") did the same job | **One link** to the X profile, which has the Follow button and takes replies, shown as a pale pill after "Found a bug, or want a cinema added?" |
 
 ## Appendix B · The card exploration
 
