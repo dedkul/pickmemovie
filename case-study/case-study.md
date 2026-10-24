@@ -1,53 +1,80 @@
-# PickMeMovie: designing with AI in the loop
+# PickMeMovie: what can I still make tonight?
 
-> **Draft.** Built from the working sessions and the prototypes in `/prototypes`. Lines marked ✏️ need your own words or a check before this goes on the portfolio.
+A Melbourne showtime finder that only shows the sessions you can still get to. I designed, prototyped and shipped it, with Claude Code as my pair.
 
-**Role:** UI/UX designer and developer (solo)
-**Tools:** Claude Code (AI pair), static HTML prototypes, Next.js, TMDb, Geoapify, Vercel
-**Status:** Front-end design almost final. The card design is the last open decision.
-**Design file:** [Figma: PickMeMovie Design Iterations](https://www.figma.com/design/UWsVpX6D5IQsqTTNWPgj7Q) (Versions, Card exploration, Decision log, Film detail iteration and Responsive screens pages)
+**Role:** junior product designer, solo
+**Timeline:** September to October 2026
+**Built with:** HTML prototypes, Figma, Claude Code, Next.js, Vercel, TMDb, Geoapify, SerpAPI
+**Live:** [pickmemovie.vercel.app](https://pickmemovie.vercel.app) · **Code:** [github.com/dedkul/pickmemovie](https://github.com/dedkul/pickmemovie)
+**Deck:** [Figma, page 06 · Case study](https://www.figma.com/design/UWsVpX6D5IQsqTTNWPgj7Q)
+
+![The live app](img/live-desktop-dark.png)
 
 ---
 
-## 1. The problem
+## Why I made this
 
-Cinema websites tell you *what's on*. They don't tell you *what you can still make*. If I'm in Fitzroy at 6:40 pm, a 7:00 pm session in Chadstone is listed, but it's useless to me.
+I wanted to learn how to prototype with AI. So I picked a simple, everyday problem and pushed it past Figma, all the way to real data, real APIs and a real URL. The problem is small on purpose. The workflow is what I came to learn.
 
-PickMeMovie answers one question: **"I'm free now, or in this window. What can I actually get to?"** Every session is checked against travel time plus a 10-minute trailer buffer. Each result then says *leave now*, *leave in 12 min* or *leave by 7:45 pm*.
+- **Prototype in code.** Ten rounds of static HTML before a single line of app code.
+- **Design with a partner.** Claude Code as my pair, with standing permission to challenge every decision I made.
+- **Ship it for real.** APIs, a daily data refresh and hosting on Vercel, three things I had never touched before.
 
-## 2. How I worked with AI
+## The problem
 
-I didn't want "AI, build me an app". I wanted a workflow where I stay the designer and the AI speeds up the parts that are slow for one person.
+Cinema sites tell you what's on. They don't tell you what you can still make. At 6:40 pm in Fitzroy, a 6:50 pm session at Hoyts Chadstone (about 25 minutes away) is listed next to a 7:00 pm one at Cinema Nova (7 minutes away), as if both were possible.
 
-**The ground rules I set up:**
+**One rule decides every session:** drive + parking ≤ start + 10 min. Drive times come from Geoapify, plus 4 minutes to park and walk in. The 10 minutes are the trailers. Each film then says *Leave now*, *Leave in 12 min* or *Leave by 7:45 pm*.
 
-1. **Prototype in throwaway HTML before writing any real code.** Every round is a new single file (`v5.html` → `v8.html`), so I can compare versions and nothing gets overwritten.
-2. **Give the AI permission to push back.** In every brief I asked it to challenge my decisions, and to ask questions when it had gaps instead of guessing.
-3. **Rules in the repo, not in my head.** A `CLAUDE.md` file holds the engineering rules: surgical changes, read before writing, "fail loud", and token budgets. A persistent memory holds the design direction and past decisions, so each session starts from where the last one stopped.
-4. **I describe symptoms; the AI finds causes, and it has to prove them.** It checks its work with headless screenshots and measurements, not "looks fine to me".
-5. **Variants, then a decision.** When I'm unsure, the AI builds several options in a single "lab" page with stress-test toggles, and I choose.
+## How I worked with Claude
 
-✏️ *A sentence on why you set it up this way: what you were afraid AI would do badly, and what you hoped it would do well.*
+1. **Prototype in throwaway HTML first.** Every round is a new file, v5 to v10, so nothing gets overwritten.
+2. **Let it push back.** Every brief asked Claude to challenge my decisions and to ask instead of guessing.
+3. **Keep the rules in the repo.** `CLAUDE.md` holds how we work; a memory file holds what we decided.
+4. **I describe symptoms, it proves causes.** Fixes are checked with screenshots and measurements.
+5. **Variants, then a decision.** When I was unsure, Claude built options side by side and I chose.
 
-## 3. Where it started
+## Process
 
-Earlier rounds (v3–v4, not kept) set the visual direction:
-- one typeface (DM Sans)
-- a pastel lavender light theme and a slate dark theme
-- one accent colour, used only for "act now"
+**Ten rounds of HTML (v5 to v10).** v5 was the first that felt right. v6 to v8 added the three-day picker, real hours on every preset and equal-height cards. v9 brought the chosen card and a film detail panel. v10 replaced the panel with one centred popup at every size.
 
-I tried and dropped a serif display font, amber accents and glassmorphism. ✏️ *Check this list against your memory of those rounds.*
+**The card lab.** Eight card variants on one page with the same data, tested at their worst case (Appendix B). Round one tried a list, tiles, a time strip and poster-first; the list won. Round two made it lighter, and I chose **A1 · Quiet**. Lesson: don't judge density with fake content.
 
-**v5** was the first version that felt right: a film-first grid with live reachability against the real clock. Reviewing it, I had four complaints:
+**Where Claude pushed back, and who won**
 
-![v5: the starting point](img/v5-before.png)
+| I asked for | Claude pushed back | What shipped |
+|---|---|---|
+| A calendar to pick the date | Cinemas only publish 7 to 10 days ahead | Today, Tomorrow, day after. I cut it further than Claude did. |
+| Morning / afternoon / evening presets | "Morning" hides the hours | One "starts between" window; every preset shows its hours |
+| A centred popup instead of the side panel | Phones usually use bottom sheets; worth a usability test | My popup, at every size |
 
-- The day picker was a vague "Today ▾".
-- "Morning + afternoon + evening" never said what hours those meant.
-- Cards were different heights, so the grid looked messy.
-- "Surprise me" ignored *when* you wanted to go.
+**From mock data to a real app.** Google showtimes through SerpAPI → a daily Vercel Cron job → a saved snapshot in Vercel Blob → the Next.js app, with TMDb for films and Geoapify for drive times. The free plan's 250 searches a month set the scope: eight cinemas would use 248, leaving no room for a retry, so it's **seven cinemas once a day** (217). If a refresh fails, each cinema falls back to its last good copy, then to clearly labelled sample times.
 
-## 4. Decision log
+## One design, three sizes, two themes
+
+| Phone | Phone, film detail | Tablet |
+|---|---|---|
+| ![Phone light](img/live-phone-light.png) | ![Phone dark film](img/live-phone-dark-film.png) | ![Tablet light](img/live-tablet-light.png) |
+
+## What I learnt
+
+- **AI is best at breadth.** Eight card variants with stress-test toggles in one sitting. Side by side, the choice was obvious.
+- **Scope is still my job.** Claude gave me a three-week calendar. I said three days.
+- **Describe the symptom, not your theory.** I was sure cards changed width because of their session count. Claude measured it and found a one-line CSS bug.
+- **Constraints are design input.** A free plan decided how many cinemas, how fresh the data is and what the fallback looks like.
+- **Shipping teaches what Figma can't.** API keys, environment variables, scheduled jobs and deploys stopped being scary once I'd done each one.
+- **Make it prove things.** Screenshots at every size after every change.
+
+## Next
+
+- Watch five people use it on a Friday night, when they're really choosing a film.
+- Measure searches, film opens and clicks through to booking.
+- Public transport (needs a transit API and timetables, so v1 is car only).
+- A second city. One search returns 7 days and the app shows 3, so refreshing every second day would fit about 14 cinemas in the free plan.
+
+---
+
+## Appendix A · Decision log
 
 | # | What I asked for | What the AI pushed back with | What we chose, and why |
 |---|---|---|---|
@@ -60,17 +87,22 @@ I tried and dropped a serif display font, amber accents and glassmorphism. ✏�
 | 7 | — (raised by the AI) | Typing your suburb on every visit is friction | Remember the last location **on the device only**. |
 | 8 | Equal card heights | Uneven heights come from uneven content, so give every card the same anatomy | v6: soonest session plus one "N more" line that opens a sheet. Every grid row is forced to the same height. |
 | 9 | "Cards get wider when I switch days. I think it's the number of sessions" | **My diagnosis was close but wrong.** The real cause was CSS: plain `1fr` grid columns grow to fit text that can't wrap | One-line fix (`minmax(0, 1fr)`). It was measured, not eyeballed: v7 widths varied (for example 448 px vs 346 px in the same grid); v8 is identical at every size tested. |
-| 10 | Card A is best but text-heavy | Some of that heaviness comes from the placeholder posters. Test with real ones first | Pulled the real TMDb posters into the lab, then explored four lighter versions of A (section 5). |
-| 11 | Can SerpAPI make it a real app, not just mock data? | Tested first: one search per cinema returns 7 days (~18 films, ~50 sessions a day, with formats like LUX and DBOX). But the free plan is 250 searches a month | **8 cinemas refreshed once a day** (~240 searches a month). Results are cached, so visitors cost nothing, with mock data as a fallback if the quota runs out. A real running app, not a mock-up. |
-| 12 | A trailer, without adding complexity | TMDb already returns YouTube trailers in the same call as the film details | A **"Watch trailer"** link in the film sheet only. The cards stay clean. |
+| 10 | Card A is best but text-heavy | Some of that heaviness comes from the placeholder posters. Test with real ones first | Pulled the real TMDb posters into the lab, then explored four lighter versions of A (Appendix B). |
+| 11 | Can SerpAPI make it a real app, not just mock data? | Tested first: one search per cinema returns 7 days (~18 films, ~50 sessions a day, with formats like LUX and DBOX). But the free plan is 250 searches a month | Cinemas refreshed **once a day**, cached, so visitors cost nothing, with a fallback if the quota runs out. First planned as 8 cinemas; cut to 7 in decision 19. |
+| 12 | A trailer, without adding complexity | TMDb already returns YouTube trailers in the same call as the film details | A **"Watch trailer"** link in the film detail only. The cards stay clean. |
 | 13 | Genres and details from TMDb | The same call also gives runtime, poster and the Australian rating (e.g. MA 15+) | One cached TMDb lookup per film, matched by title from the showtimes data. |
 | 14 | Final card: A1 (keep A3 around) | AI recommended A3 + A1's urgent-only rule; I chose A1 for its minimalism | **A1 Quiet** in v9. A3 stays in the lab as a possible refinement. |
 | 15 | "+6 more times" is the wrong word | Agreed. Australian cinemas (Hoyts, Village) call them **sessions**, not showtimes or times | UX copy pass: "sessions" everywhere, "Only session in this window", and a friendlier empty state ("Nothing fits these filters. Try one of these:"). |
 | 16 | Trailer and synopsis, but behind a click | Competitive look (IMDb, MUBI GO, Roku, Plex, CGV on Mobbin): film pages lead with a hero plus a Trailer action, and group sessions by cinema. None tell you when to leave | The **whole card opens a film detail view**: a full-screen sheet on phones, a side panel on desktop. It has a backdrop with "Play trailer", the AU rating, runtime, genres, a 3-line synopsis with "More", and sessions grouped by cinema with **estimated end time**, **Directions** and **Book**. The phone back button closes it. |
-| 17 | "Show the details in a popup in the middle of the screen, not a sidebar. Better for mobile too" | Phones usually use bottom sheets or full screen, and a centred popup gives up about 24 px of height. Worth checking in a usability test | **v10: one centred popup at every size** (max 640 px wide). The hero with close and trailer stays pinned, and only the details scroll. The v9 side panel left a mostly empty, full-height column on desktop and became a full-screen takeover on tablets. One component instead of two layouts. Surprise me now opens the same way. v9 is kept as the iteration. |
-| 18 | "Switching Leave now / Plan ahead nudges the whole page sideways. It feels sloppy" | Right diagnosis: the scrollbar appears and disappears (long vs short list, and popups locking scroll), so the page width changes by 15 px. **The textbook fix (`scrollbar-gutter: stable`) didn't hold up when measured** in Chrome, so we didn't ship it | The page always keeps its scroll track, and popups pad for the scrollbar's exact width while they're open. Measured: v9 moved 7.5 px on a wide screen; v10 now stays at the same pixel in every state. |
+| 17 | "Show the details in a popup in the middle of the screen, not a sidebar. Better for mobile too" | Phones usually use bottom sheets or full screen, and a centred popup gives up about 24 px of height. Worth checking in a usability test | **v10: one centred popup at every size** (max 640 px wide). The hero with close and trailer stays pinned, and only the details scroll. One component instead of two layouts. Surprise me now opens the same way. v9 is kept as the iteration. |
+| 18 | "Switching Leave now / Plan ahead nudges the whole page sideways. It feels sloppy" | Right diagnosis: the scrollbar appears and disappears, so the page width changes by 15 px. **The textbook fix (`scrollbar-gutter: stable`) didn't hold up when measured** in Chrome, so we didn't ship it | The page always keeps its scroll track, and popups pad for the scrollbar's exact width while they're open. Measured: v9 moved 7.5 px on a wide screen; v10 stays at the same pixel in every state. |
+| 19 | Build plan: 8 cinemas | 8 × 31 days = 248 of 250 searches, with no room for a single retry | **7 cinemas** (217 searches a month). Dropped IMAX Melbourne, Palace Como and Village Southland; kept a spread from the CBD to Highpoint and Chadstone. |
+| 20 | Keep the prototype's look in the real app | The original plan said Tailwind, which meant restyling everything and drifting from v10 | **Port the v10 CSS as it is** and remove Tailwind. The live app matches the approved prototype. |
+| 21 | — | Drive times from the routing API assume no traffic and end at the door | **4 minutes for parking and walking in** are added to every drive, and a session counts as "tight" with under 20 minutes to spare. |
+| 22 | The poster on the phone card looks off | Measured: 15 px above the poster, 31 px below | Poster 84 → **104 px** so it sits with an even 15 px all round. The first fix after launch. |
+| 23 | How do people send feedback? | Two X links in the footer ("Tell me on X" and "Follow") did the same job | **One link** to the X profile, which has the Follow button and takes replies, shown as a pale pill after "Found a bug, or want a cinema added?" |
 
-## 5. The card exploration
+## Appendix B · The card exploration
 
 The card is what people actually look at, so it got its own lab page (`prototypes/cards.html`). Every variant renders the same data. Toggles switch between few and many sessions, the three days, light and dark, and real versus placeholder posters, so each design is tested at its worst case, not its best.
 
@@ -87,13 +119,11 @@ The card is what people actually look at, so it got its own lab page (`prototype
 - **D** is the most film-first, but it hides the times, and times are the whole point of the product.
 - I preferred **A**.
 
-**Real posters versus placeholders.** The same card A, before and after real posters:
+**Real posters versus placeholders**
 
 | Placeholder | Real TMDb poster |
 |---|---|
 | ![A placeholder](img/cards-A-placeholder.png) | ![A real](img/cards-A.png) |
-
-With real artwork, the poster carries the film's identity, so the text doesn't have to. The lesson: **don't judge density with fake content.**
 
 **Round 2: lighter versions of A**
 
@@ -108,40 +138,11 @@ With real artwork, the poster carries the film's identity, so the text doesn't h
 - **A3:** the other times as tappable chips that swap into the main slot.
 - **A4:** a timeline of ticks: the least text, but vague.
 
-**Decision:** **A1 · Quiet**. It's the most minimal, and the detail view now carries everything the card leaves out. A3 is kept as a possible refinement.
+**v10 at tablet and phone (light)**
 
-**v9: the card opens a film detail view**
-
-| Desktop side panel | Phone sheet (light) |
+| Tablet | Phone |
 |---|---|
-| ![v9 detail](img/v9-detail.png) | ![v9 detail mobile](img/v9-detail-mobile-light.png) |
-
-**v10: side panel → centred popup (decision 17)**
-
-| v9 · side panel | v10 · centred popup |
-|---|---|
-| ![v9 sidebar](img/v9-sidebar-desktop.png) | ![v10 popup](img/v10-popup-desktop.png) |
-| **v10 · tablet (light)** | **v10 · phone (light)** |
 | ![v10 tablet](img/v10-popup-tablet-light.png) | ![v10 phone](img/v10-popup-mobile-light.png) |
-
-Why: one pattern and one component at every size; details open where the eye already is (mid-grid), not at the edge; the dimmed grid behind keeps it feeling like a quick look. Trade-off: slightly less height on phones than a full-screen sheet, so the hero is pinned and only the body scrolls. Every screen at mobile (390), tablet (834) and desktop (1440), in both themes, is in the Figma file (pages 04 and 05).
-
-## 6. What I learned about designing with AI
-
-✏️ *Make this section yours. Draft points from the sessions:*
-
-- **It's best at breadth.** Eight card variants with stress-test toggles in one sitting is something I wouldn't have made by hand. Seeing them side by side made the choice obvious in a way that sketching didn't.
-- **Scope is still my job.** The AI over-built the date picker (a 3-week calendar). I'm the one who said "just 3 days". It gave the trade-offs, and I made the product call.
-- **Ask it to argue with you.** The most useful moments were pushback: the time window, the after-midnight edge case, real posters before judging density.
-- **Describe the symptom, not your theory.** My explanation of the width bug was plausible and wrong. The AI measured it, found the real cause and proved the fix with numbers.
-- **Messy input is fine, but check what got through.** I gave most feedback by voice. When part of a message came through garbled, the AI flagged the missing answer instead of making one up.
-- **Make it verify.** Screenshots at phone and desktop sizes, plus measurements, after every change. "It should work" wasn't accepted.
-
-## 7. Next
-
-1. ~~Pick the final card~~ Done: A1 in v9, popup detail in v10.
-2. Build the Next.js app: SerpAPI for real showtimes (8 cinemas, daily, cached), TMDb for film details and trailers, Geoapify for suburb search and drive times, and the reachability logic carried over from the prototype.
-3. Deploy on Vercel and finish this case study with the live link and real usage screenshots.
 
 ---
 
