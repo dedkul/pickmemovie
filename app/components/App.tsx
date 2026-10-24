@@ -10,6 +10,7 @@ import type { ShownSession } from "@/app/lib/snapshot";
 import type { Film } from "@/app/lib/tmdb";
 import FilmDialog from "./FilmDialog";
 import Results from "./Results";
+import SiteFooter from "./SiteFooter";
 import SurpriseDialog from "./SurpriseDialog";
 import TopBar from "./TopBar";
 
@@ -113,6 +114,7 @@ export default function App({ dates, serverNow, sessions, films, cinemas }: Prop
         onOpen={group => setOpenFilm({ group, mode: filters.mode })}
         onSuggest={patch}
       />
+      <SiteFooter />
       {openFilm && (
         <FilmDialog open={openFilm} film={films[openFilm.group.title]} origin={origin} when={openFilm.mode === "now" ? `leaving now, before ${labels.nowUntil}` : planText} onClose={() => setOpenFilm(null)} />
       )}
