@@ -1,4 +1,4 @@
-.foot { border-top: 1px solid var(--line); }
+.foot { margin-top: auto; border-top: 1px solid var(--line); }
 .row { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; padding: 20px 0 32px; font-size: 13px; color: var(--text-3); }
 .row p { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
 .row a { color: var(--text-2); font-weight: 500; text-decoration: none; }

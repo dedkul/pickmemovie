@@ -273,6 +273,19 @@
     .empty p { color: var(--text-2); margin-bottom: 14px; }
     .foot { padding: 8px 0 40px; font-size: 13px; color: var(--text-3); }
 
+    /* ── Site footer: pinned to the bottom on short pages; one X link as a pale pill, plus the source link. ── */
+    body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+    body > .wrap { width: 100%; }
+    .site-foot { margin-top: auto; border-top: 1px solid var(--line); }
+    .sf-row { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; padding: 20px 0 32px; font-size: 13px; color: var(--text-3); }
+    .sf-row p { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+    .sf-row a { color: var(--text-2); text-decoration: none; font-weight: 500; }
+    .sf-row a:hover { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+    .sf-row .sf-x { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; background: var(--accent-soft); color: var(--text); }
+    .sf-row .sf-x:hover { text-decoration: none; filter: brightness(.97); }
+    .sf-x svg { width: 13px; height: 13px; fill: currentColor; }
+    @media (max-width: 599px) { .sf-row { flex-direction: column; align-items: flex-start; } }
+
     /* ── Film detail: centred popup at every size (v10; v9 used a side panel) ──
        Hero stays pinned so close + trailer never scroll away; only the body scrolls. */
     .fd-ov { align-items: center; padding: 12px; background: rgba(10, 9, 16, .68); }
@@ -538,8 +551,15 @@
       <p class="results-sub" id="results-sub"></p>
     </div>
     <div id="list"></div>
-    <p class="foot">Prototype · sample showtimes · travel is by car only (public transport isn’t supported yet), estimated from distance. End times assume about 15 minutes of ads and trailers. Film info and posters from TMDb. You can still make a session if you arrive within 10 minutes of the start — that's the trailers. Try <code>?now=21:30</code> to see late-night edge cases.</p>
+    <p class="foot" style="padding-bottom:24px">Prototype · sample showtimes · travel is by car only (public transport isn’t supported yet), estimated from distance. End times assume about 15 minutes of ads and trailers. Film info and posters from TMDb. You can still make a session if you arrive within 10 minutes of the start — that's the trailers. Try <code>?now=21:30</code> to see late-night edge cases.</p>
   </main>
+
+  <footer class="site-foot wrap">
+    <div class="sf-row">
+      <p>Found a bug or want a cinema added? DM me, or follow along for what I build next. <a class="sf-x" href="https://x.com/feat_ashish" aria-label="Message or follow Ashish on X, @feat_ashish"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@feat_ashish</a></p>
+      <a href="https://github.com/dedkul/pickmemovie">Source on GitHub</a>
+    </div>
+  </footer>
 
   <!-- Film detail: trailer, synopsis, and every session grouped by cinema -->
   <div class="overlay fd-ov" id="film-ov" hidden>
