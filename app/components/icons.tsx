@@ -20,12 +20,24 @@ export const Chevron = ({ size = 12 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
 );
 
-export const Moon = ({ className }: { className?: string }) => (
-  <svg className={className} width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /></svg>
-);
-
-export const Sun = ({ className }: { className?: string }) => (
-  <svg className={className} width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" /><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+// One drawing that morphs between moon and sun, driven by [data-theme] in
+// TopBar.module.css. The moon is a circle with a second circle (the cut) sliding
+// in to carve the crescent. Non-scaling strokes keep the line weight steady as the body scales.
+export const ThemeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true">
+    <defs>
+      <mask id="ti-mask" maskUnits="userSpaceOnUse" x="-8" y="-8" width="32" height="32">
+        <rect x="-8" y="-8" width="32" height="32" fill="#fff" />
+        <circle className="ti-cut" cx="12" cy="3.8" r="4.4" fill="#000" />
+      </mask>
+      <clipPath id="ti-clip"><circle cx="8" cy="8" r="5.6" /></clipPath>
+    </defs>
+    <g className="ti-core" fill="none" stroke="currentColor" strokeWidth="1.7">
+      <circle cx="8" cy="8" r="5.6" mask="url(#ti-mask)" vectorEffect="non-scaling-stroke" />
+      <g clipPath="url(#ti-clip)"><circle className="ti-cut" cx="12" cy="3.8" r="4.4" vectorEffect="non-scaling-stroke" /></g>
+    </g>
+    <path className="ti-rays" d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
 );
 
 export const Car = () => (

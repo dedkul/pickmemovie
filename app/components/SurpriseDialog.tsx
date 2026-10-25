@@ -6,6 +6,7 @@ import { cue, type FilmGroup, type Mode } from "@/app/lib/reachability";
 import type { Film } from "@/app/lib/tmdb";
 import { Close } from "./icons";
 import { isSpecialFormat, Poster, SampleTag } from "./session-bits";
+import Seg from "./Seg";
 import s from "./SurpriseDialog.module.css";
 import { useModal } from "./use-modal";
 
@@ -40,12 +41,12 @@ export default function SurpriseDialog({ groups, films, startMode, eyebrowPlan, 
   return (
     <dialog ref={ref} className={`popup ${s.modal}`} aria-labelledby="m-title">
       <button className={`icon-btn ${s.close}`} type="button" aria-label="Close" onClick={onClose}><Close /></button>
-      <div className={`seg ${s.seg}`} role="group" aria-label="Pick from">
+      <Seg className={s.seg} aria-label="Pick from">
         {([["now", "Leave now"], ["plan", planText]] as const).map(([m, label]) => (
           <button key={m} type="button" aria-pressed={mode === m} disabled={!groups[m].length}
             title={groups[m].length ? undefined : "Nothing in this window"} onClick={() => switchTo(m)}>{label}</button>
         ))}
-      </div>
+      </Seg>
       <div className={s.head}>
         <Poster film={film} />
         <div>
