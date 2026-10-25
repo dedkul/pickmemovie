@@ -42,6 +42,9 @@
       --shadow:      0 1px 2px rgba(34,30,51,.05), 0 6px 20px rgba(34,30,51,.05);
       --r: 12px;
       --wrap: 1280px;
+      /* Motion: strong curves; the built-in keywords are too soft */
+      --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
       color-scheme: light;
     }
     [data-theme="dark"] {
@@ -99,7 +102,15 @@
       transition: background .15s, color .15s;
     }
     .icon-btn:hover { background: var(--bg-2); color: var(--text); }
-    [data-theme="dark"] .i-moon, :root:not([data-theme="dark"]) .i-sun { display: none; }
+    /* Theme icon: one drawing that morphs. Light shows the moon (what you switch to),
+       dark shows the sun. The moon is a circle with a second circle sliding in to
+       cut the crescent; for the sun, the cut slides away, the body shrinks, rays return. */
+    .ti-core, .ti-rays, .ti-cut { transform-box: view-box; transform-origin: 8px 8px; transition: transform .3s var(--ease-in-out); }
+    .ti-rays { transition: transform .3s var(--ease-in-out), opacity .2s var(--ease-out); }
+    [data-theme="dark"] .ti-core { transform: scale(.54); }
+    [data-theme="dark"] .ti-cut  { transform: translate(7px, -7px); }
+    [data-theme="dark"] .ti-rays { transition-delay: .08s; }   /* rays wait for the cut to clear */
+    :root:not([data-theme="dark"]) .ti-rays { opacity: 0; transform: rotate(-45deg) scale(.6); }
 
     /* Mobile summary */
     .summary-bar {
@@ -184,16 +195,23 @@
 
     /* Segmented: Leave now | Plan ahead */
     .seg {
+      position: relative;
       display: inline-flex; padding: 3px; gap: 2px;
       background: var(--bg-2); border-radius: 100px;
     }
     .seg button {
+      position: relative; z-index: 1;
       padding: 6px 14px; border-radius: 100px;
       font-size: 14px; font-weight: 500; color: var(--text-2);
-      transition: background .12s, color .12s;
+      transition: color .12s;
     }
     .seg button:hover:not(:disabled) { color: var(--text); }
-    .seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+    .seg button[aria-pressed="true"] { color: var(--text); }
+    /* The highlight is one layer under the buttons; syncSeg() clips it to the pressed
+       button, so a change slides the clip instead of jumping. The shadow sits on the
+       wrapper because clip-path would cut it off the layer itself. */
+    .seg-ind { position: absolute; inset: 0; pointer-events: none; filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.12)); }
+    .seg-ind > span { position: absolute; inset: 0; background: var(--surface); clip-path: inset(50%); transition: clip-path .24s var(--ease-in-out); }
     .seg button:disabled { opacity: .45; cursor: not-allowed; }
     .seg .sub { font-weight: 400; opacity: .75; }
 
@@ -293,7 +311,7 @@
       position: relative; width: 100%; max-width: 640px; max-height: calc(100dvh - 24px);
       display: flex; flex-direction: column; overflow: hidden;
       background: var(--surface); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.35);
-      animation: fd-in .18s ease-out;
+      animation: fd-in .2s var(--ease-out);
     }
     .drawer > .fd-body { overflow-y: auto; overscroll-behavior: contain; }
     .fd-hero { flex: none; }
@@ -348,7 +366,10 @@
       position: fixed; inset: 0; z-index: 100;
       background: rgba(16, 14, 24, .5);
       display: flex; align-items: flex-end; justify-content: center;
+      animation: ov-in .2s var(--ease-out);
     }
+    /* The dim fades in with the popup instead of snapping on under it */
+    @keyframes ov-in { from { background-color: transparent; } }
     .modal {
       position: relative; width: 100%; max-width: 440px; max-height: 88vh; overflow-y: auto;
       background: var(--surface); border-radius: 20px 20px 0 0;
@@ -356,7 +377,7 @@
     }
     /* v10: Surprise me is a centred popup on phones too, matching the film detail */
     #sp-ov { align-items: center; padding: 12px; }
-    #sp-ov .modal { border-radius: 16px; animation: fd-in .18s ease-out; }
+    #sp-ov .modal { border-radius: 16px; animation: fd-in .2s var(--ease-out); }
     .modal-close { position: absolute; top: 10px; right: 10px; }
     .m-head { display: grid; grid-template-columns: 96px 1fr; gap: 16px; }
     .m-head.small { grid-template-columns: 56px 1fr; align-items: center; padding-right: 32px; }
@@ -406,6 +427,13 @@
         box-shadow: 0 12px 32px rgba(0,0,0,.14);
       }
       .pop:not(.open) { display: none; }
+      /* Grows out of its button; the presets follow a beat apart */
+      .pop.open { transform-origin: top left; animation: pop-in .18s var(--ease-out); }
+      .pop.open .preset { animation: rise .2s var(--ease-out) backwards; }
+      .pop.open .preset:nth-child(2) { animation-delay: 30ms; }
+      .pop.open .preset:nth-child(3) { animation-delay: 60ms; }
+      .pop.open .preset:nth-child(4) { animation-delay: 90ms; }
+      .pop.open .preset:nth-child(5) { animation-delay: 120ms; }
       .pop.time-pop { width: 420px; }
       .divider { width: 1px; height: 24px; background: var(--line-2); margin: 0 4px; }
 
@@ -429,6 +457,13 @@
       .film-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
 
+    @keyframes pop-in { from { opacity: 0; transform: translateY(-4px) scale(.97); } }
+    @keyframes rise   { from { opacity: 0; transform: translateY(4px); } }
+    /* Switching Leave now / Plan ahead: the controls that appear rise in.
+       .reveal is added only on that switch, so the sheet opening doesn't replay it. */
+    .reveal #now-ctl, .reveal #date-ctl, .reveal #time-ctl { animation: rise .2s var(--ease-out) backwards; }
+    .reveal #time-ctl { animation-delay: 40ms; }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition: none !important; animation: none !important; }
     }
@@ -443,8 +478,21 @@
       <div class="top-actions">
         <button class="btn-quiet" id="surprise-btn" type="button">Surprise me</button>
         <button class="icon-btn" id="theme-btn" type="button" aria-label="Switch theme">
-          <svg class="i-moon" width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-          <svg class="i-sun" width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true">
+            <defs>
+              <mask id="ti-mask" maskUnits="userSpaceOnUse" x="-8" y="-8" width="32" height="32">
+                <rect x="-8" y="-8" width="32" height="32" fill="#fff"/>
+                <circle class="ti-cut" cx="12" cy="3.8" r="4.4" fill="#000"/>
+              </mask>
+              <clipPath id="ti-clip"><circle cx="8" cy="8" r="5.6"/></clipPath>
+            </defs>
+            <!-- non-scaling strokes keep the line weight steady while the body scales -->
+            <g class="ti-core" fill="none" stroke="currentColor" stroke-width="1.7">
+              <circle cx="8" cy="8" r="5.6" mask="url(#ti-mask)" vector-effect="non-scaling-stroke"/>
+              <g clip-path="url(#ti-clip)"><circle class="ti-cut" cx="12" cy="3.8" r="4.4" vector-effect="non-scaling-stroke"/></g>
+            </g>
+            <path class="ti-rays" d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
         </button>
       </div>
     </div>
@@ -967,6 +1015,31 @@
         aria-label="${d.date.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' })}">${d.rel || d.short}</button>`).join('');
   }
 
+  // Slide a .seg's highlight to its pressed button. Groups that re-render their
+  // buttons get a fresh highlight, so it starts from the last clip and slides on.
+  // animate=false snaps (first paint, resize, a group that was hidden).
+  function syncSeg(seg, animate = true) {
+    let ind = seg.querySelector('.seg-ind');
+    if (!ind) {
+      ind = document.createElement('span');
+      ind.className = 'seg-ind'; ind.setAttribute('aria-hidden', 'true');
+      ind.innerHTML = '<span></span>';
+      seg.prepend(ind);
+      if (seg.dataset.clip) ind.firstChild.style.clipPath = seg.dataset.clip;
+    }
+    const on = seg.querySelector('button[aria-pressed="true"]'), pill = ind.firstChild;
+    if (!on || !seg.clientWidth) return;   // hidden: the ResizeObserver places it once shown
+    const r = seg.clientWidth - on.offsetLeft - on.offsetWidth, b = seg.clientHeight - on.offsetTop - on.offsetHeight;
+    const clip = `inset(${on.offsetTop}px ${r}px ${b}px ${on.offsetLeft}px round 100px)`;
+    const snap = !animate || !seg.dataset.clip;
+    if (snap) pill.style.transition = 'none';
+    else pill.offsetWidth;   // commit a fresh highlight's starting clip before moving it
+    pill.style.clipPath = seg.dataset.clip = clip;
+    if (snap) { pill.offsetWidth; pill.style.transition = ''; }
+  }
+  const segRO = new ResizeObserver(entries => entries.forEach(e => syncSeg(e.target, false)));
+  document.querySelectorAll('.seg').forEach(seg => segRO.observe(seg));
+
   function renderControls() {
     const plan = state.mode === 'plan';
     document.querySelectorAll('#mode-seg [data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === state.mode));
@@ -978,12 +1051,17 @@
     renderDays();
 
     const nm = nowMin();
-    $('presets').innerHTML = PRESETS.map(p => {
-      const over = isToday() && p.to <= nm;
-      return `<button class="pill preset" type="button" data-preset="${p.id}"
-        aria-pressed="${state.from === p.from && state.to === p.to}" ${over ? 'disabled title="Already over today"' : ''}>
-        ${p.name}<span class="hrs tnum">${rangeText(p.from, p.to)}</span></button>`;
-    }).join('');
+    // Built once, then updated in place, so their entrance plays when the popover
+    // opens rather than on every click inside it.
+    if (!$('presets').children.length) $('presets').innerHTML = PRESETS.map(p =>
+      `<button class="pill preset" type="button" data-preset="${p.id}">
+        ${p.name}<span class="hrs tnum">${rangeText(p.from, p.to)}</span></button>`).join('');
+    PRESETS.forEach((p, i) => {
+      const b = $('presets').children[i], over = isToday() && p.to <= nm;
+      b.setAttribute('aria-pressed', state.from === p.from && state.to === p.to);
+      b.disabled = over;
+      if (over) b.title = 'Already over today'; else b.removeAttribute('title');
+    });
     timeOptions($('from-sel'), T_MIN, T_MAX - T_STEP, state.from);
     timeOptions($('to-sel'), T_MIN + T_STEP, T_MAX, state.to);
     $('time-btn-text').textContent = rangeText(state.from, state.to);
@@ -995,14 +1073,20 @@
       ? `It’s ${clock(now())} — this window has passed. Pick a later time or another day.`
       : `It’s ${clock(now())}, so only sessions you can still reach are shown.`;
 
+    syncSeg($('mode-seg'));
+    syncSeg($('day-seg'));
+
     $('radius').value = state.km;
     if (document.activeElement !== $('loc-input')) $('loc-input').value = state.origin.name;
   }
   function update() { renderControls(); render(); }
 
   $('mode-seg').onclick = e => {
-    const b = e.target.closest('[data-mode]'); if (!b) return;
+    const b = e.target.closest('[data-mode]'); if (!b || b.dataset.mode === state.mode) return;
     state.mode = b.dataset.mode;
+    const c = $('controls');
+    c.classList.remove('reveal'); c.offsetWidth; c.classList.add('reveal');
+    clearTimeout(c.revealT); c.revealT = setTimeout(() => c.classList.remove('reveal'), 400);
     update();
   };
   $('day-seg').onclick = e => {
@@ -1195,6 +1279,8 @@
     const counts = { now: compute('now').films.length, plan: compute('plan').films.length };
     $('m-seg').innerHTML = [['now', 'Leave now'], ['plan', planText()]].map(([m, label]) =>
       `<button type="button" data-sp="${m}" aria-pressed="${spMode === m}" ${counts[m] ? '' : 'disabled title="Nothing in this window"'}>${label}</button>`).join('');
+
+    syncSeg($('m-seg'));
 
     const f = picks[pickIdx % picks.length], e = f.sessions[0], c = cue(e);
     $('m-poster').style.background = f.movie.poster;
