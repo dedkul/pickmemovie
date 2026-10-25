@@ -141,3 +141,6 @@ dist
 
 # showtimes snapshot written by /api/cron/refresh when no Blob store is connected
 /.data
+
+# personal notes; kept locally, not published
+/case-study
