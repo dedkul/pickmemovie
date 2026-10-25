@@ -10,7 +10,15 @@
 .topRow { display: flex; align-items: center; justify-content: space-between; height: 60px; }
 .wordmark { font-size: 19px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
 .topActions { display: flex; align-items: center; gap: 6px; }
-:global([data-theme="dark"]) .moon, :global(:root:not([data-theme="dark"])) .sun { display: none; }
+/* Theme icon (ThemeIcon in icons.tsx): light shows the moon (what you switch to),
+   dark shows the sun. For the sun the cut slides away, the body shrinks and the
+   rays turn in, waiting a beat so they don't cross the crescent. */
+.topActions :global(:is(.ti-core, .ti-rays, .ti-cut)) { transform-box: view-box; transform-origin: 8px 8px; transition: transform .3s var(--ease-in-out); }
+.topActions :global(.ti-rays) { transition: transform .3s var(--ease-in-out), opacity .2s var(--ease-out); }
+:global([data-theme="dark"]) .topActions :global(.ti-core) { transform: scale(.54); }
+:global([data-theme="dark"]) .topActions :global(.ti-cut) { transform: translate(7px, -7px); }
+:global([data-theme="dark"]) .topActions :global(.ti-rays) { transition-delay: .08s; }
+:global(:root:not([data-theme="dark"])) .topActions :global(.ti-rays) { opacity: 0; transform: rotate(-45deg) scale(.6); }
 
 /* Mobile summary */
 .summaryBar {
@@ -45,6 +53,10 @@
   margin-top: auto; position: sticky; bottom: 0;
   padding: 16px 20px 20px; background: var(--bg);
 }
+
+/* Switching Leave now / Plan ahead: the controls that appear rise in */
+.reveal .appear { animation: rise .2s var(--ease-out) backwards; }
+.reveal .hasPop.appear { animation-delay: 40ms; }
 
 .nowInfo { font-size: 14px; color: var(--text-2); }
 .nowInfo strong { color: var(--text); font-weight: 600; }
@@ -86,6 +98,16 @@
     box-shadow: 0 12px 32px rgba(0,0,0,.14);
   }
   .pop:not(.popOpen) { display: none; }
+  /* Grows out of its button; the presets follow a beat apart */
+  .popOpen { transform-origin: top left; animation: pop-in .18s var(--ease-out); }
+  .popOpen .preset { animation: rise .2s var(--ease-out) backwards; }
+  .popOpen .preset:nth-child(2) { animation-delay: 30ms; }
+  .popOpen .preset:nth-child(3) { animation-delay: 60ms; }
+  .popOpen .preset:nth-child(4) { animation-delay: 90ms; }
+  .popOpen .preset:nth-child(5) { animation-delay: 120ms; }
   .divider { width: 1px; height: 24px; background: var(--line-2); margin: 0 4px; }
 }
 @media (max-width: 1023px) { .divider, .rrLead { display: none; } }
+
+@keyframes pop-in { from { opacity: 0; transform: translateY(-4px) scale(.97); } }
+@keyframes rise   { from { opacity: 0; transform: translateY(4px); } }

@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { clock, hm, plural, rangeText, type Day } from "@/app/lib/format";
 import { PRESETS, RADII, T_MAX, T_MIN, T_STEP, windowOver, windowPartlyOver, type Filters, type Origin } from "@/app/lib/reachability";
 import type { Labels } from "./App";
-import { Chevron, ClockIcon, Close, Moon, Pin, Sun } from "./icons";
+import { Chevron, ClockIcon, Close, Pin, ThemeIcon } from "./icons";
 import LocationInput from "./LocationInput";
 import { lockScroll } from "./lock-scroll";
+import Seg from "./Seg";
 import s from "./TopBar.module.css";
 
 type Props = {
@@ -27,6 +28,8 @@ const times = (lo: number, hi: number) => Array.from({ length: (hi - lo) / T_STE
 export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, days, labels, filmCount, canSurprise, onSurprise }: Props) {
   const [sheet, setSheet] = useState(false); // mobile filter sheet
   const [timeOpen, setTimeOpen] = useState(false); // desktop time popover
+  const [reveal, setReveal] = useState(false); // controls that appear on a mode switch rise in
+  const revealT = useRef<ReturnType<typeof setTimeout>>(undefined);
   const summaryRef = useRef<HTMLButtonElement>(null);
   const timeCtl = useRef<HTMLDivElement>(null);
   const plan = f.mode === "plan";
@@ -50,6 +53,16 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
     return () => { document.removeEventListener("click", onClick); document.removeEventListener("keydown", onKey); };
   }, [timeOpen, sheet]);
 
+  // Only on the switch itself, so opening the sheet doesn't replay the entrance.
+  function setMode(mode: Filters["mode"]) {
+    if (mode === f.mode) return;
+    onFilters({ mode });
+    setReveal(true);
+    clearTimeout(revealT.current);
+    revealT.current = setTimeout(() => setReveal(false), 400);
+  }
+  useEffect(() => () => clearTimeout(revealT.current), []);
+
   function toggleTheme() {
     const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
@@ -70,7 +83,7 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
           <button className="btn-quiet" type="button" onClick={onSurprise} disabled={!canSurprise}
             title={canSurprise ? "Pick something for me" : "Nothing to pick from with these filters"}>Surprise me</button>
           <button className="icon-btn" type="button" aria-label="Switch theme" onClick={toggleTheme}>
-            <Moon className={s.moon} /><Sun className={s.sun} />
+            <ThemeIcon />
           </button>
         </div>
       </div>
@@ -83,7 +96,7 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
       </button>
 
       <div className="wrap">
-        <div className={`${s.controls} ${sheet ? s.open : ""}`} id="controls" role="group" aria-label="Filters">
+        <div className={`${s.controls} ${sheet ? s.open : ""} ${reveal ? s.reveal : ""}`} id="controls" role="group" aria-label="Filters">
           <div className={s.panelHd}>
             Filters
             <button className="icon-btn" type="button" aria-label="Close filters" onClick={() => setSheetOpen(false)}><Close /></button>
@@ -96,33 +109,33 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
 
           <div className={s.ctl}>
             <span className={s.ctlLabel} id="mode-label">When</span>
-            <div className="seg" role="group" aria-labelledby="mode-label">
-              <button type="button" aria-pressed={f.mode === "now"} onClick={() => onFilters({ mode: "now" })}>Leave now</button>
-              <button type="button" aria-pressed={plan} onClick={() => onFilters({ mode: "plan" })}>Plan ahead</button>
-            </div>
+            <Seg aria-labelledby="mode-label">
+              <button type="button" aria-pressed={f.mode === "now"} onClick={() => setMode("now")}>Leave now</button>
+              <button type="button" aria-pressed={plan} onClick={() => setMode("plan")}>Plan ahead</button>
+            </Seg>
           </div>
 
           {/* Leave now: no date/time to pick, so say exactly what window is used */}
           {!plan && (
-            <div className={s.ctl}>
+            <div className={`${s.ctl} ${s.appear}`}>
               <p className={s.nowInfo}>Starting in the next 2 hours · before <strong className="tnum">{labels.nowUntil}</strong></p>
             </div>
           )}
 
           {plan && (
-            <div className={s.ctl}>
+            <div className={`${s.ctl} ${s.appear}`}>
               <span className={s.ctlLabel} id="date-label">Day</span>
-              <div className="seg" role="group" aria-labelledby="date-label">
+              <Seg aria-labelledby="date-label">
                 {days.map(d => (
                   <button key={d.idx} type="button" aria-pressed={f.date === d.idx} aria-label={d.long}
                     onClick={() => { onFilters({ date: d.idx }); setTimeOpen(false); }}>{d.rel || d.short}</button>
                 ))}
-              </div>
+              </Seg>
             </div>
           )}
 
           {plan && (
-            <div className={`${s.ctl} ${s.hasPop}`} ref={timeCtl}>
+            <div className={`${s.ctl} ${s.hasPop} ${s.appear}`} ref={timeCtl}>
               <span className={s.ctlLabel} id="time-label">Starting between</span>
               <button className={s.popBtn} type="button" aria-expanded={timeOpen} aria-controls="time-pop" onClick={() => setTimeOpen(o => !o)}>
                 <ClockIcon /><span className="tnum">{rangeText(f.from, f.to)}</span>

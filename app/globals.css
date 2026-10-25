@@ -27,6 +27,9 @@ svg { display: block; flex-shrink: 0; }
   --shadow:      0 1px 2px rgba(34,30,51,.05), 0 6px 20px rgba(34,30,51,.05);
   --r: 12px;
   --wrap: 1280px;
+  /* Motion: strong curves; the built-in keywords are too soft */
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   color-scheme: light;
 }
 [data-theme="dark"] {
@@ -104,16 +107,22 @@ body > .wrap { width: 100%; }
 
 /* Segmented: Leave now | Plan ahead */
 .seg {
+  position: relative;
   display: inline-flex; padding: 3px; gap: 2px;
   background: var(--bg-2); border-radius: 100px;
 }
 .seg button {
+  position: relative; z-index: 1;
   padding: 6px 14px; border-radius: 100px;
   font-size: 14px; font-weight: 500; color: var(--text-2);
-  transition: background .12s, color .12s;
+  transition: color .12s;
 }
 .seg button:hover:not(:disabled) { color: var(--text); }
-.seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.seg button[aria-pressed="true"] { color: var(--text); }
+/* The highlight (Seg.tsx) slides by clip-path. The shadow sits on the wrapper
+   because clip-path would cut it off the layer itself. */
+.seg-ind { position: absolute; inset: 0; pointer-events: none; filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.12)); }
+.seg-ind > span { position: absolute; inset: 0; background: var(--surface); clip-path: inset(50%); transition: clip-path .24s var(--ease-in-out); }
 .seg button:disabled { opacity: .45; cursor: not-allowed; }
 
 .select-wrap { position: relative; display: inline-flex; align-items: center; }
@@ -141,9 +150,11 @@ body > .wrap { width: 100%; }
   margin: auto; padding: 0; border: none; color: var(--text);
   background: var(--surface);
   max-width: calc(100% - 24px); max-height: calc(100dvh - 24px);
-  animation: fd-in .18s ease-out;
+  animation: fd-in .2s var(--ease-out);
 }
-:where(dialog.popup)::backdrop { background: rgba(10, 9, 16, .68); }
+/* The dim fades in with the popup instead of snapping on under it */
+:where(dialog.popup)::backdrop { background: rgba(10, 9, 16, .68); animation: dim-in .2s var(--ease-out); }
+@keyframes dim-in { from { background-color: transparent; } }
 @keyframes fd-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
 
 @media (min-width: 1024px) {
