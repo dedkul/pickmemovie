@@ -129,7 +129,7 @@ reachable = (now + travel_time) ≤ (session_start + 10-minute buffer)
 *Revised 2026-10-14; this replaces the original seeded-mock-only plan.*
 
 - **Source:** SerpAPI Google search (`"<cinema> showtimes"`, `gl=au`). One search per cinema returns about 7 days of sessions, with film title, times and format (Standard, LUX, 4K…).
-- **Scope:** 7 Melbourne cinemas (Cinema Nova, Hoyts Melbourne Central, Village Crown, Palace Westgarth, Lido, Hoyts Highpoint, Hoyts Chadstone). The free plan gives 250 searches a month; 7 × 31 = 217 leaves room for retries.
+- **Scope:** 7 Sydney cinemas (Event George St, Palace Central, Hoyts Entertainment Quarter, Dendy Newtown, Ritz Randwick, Hayden Orpheum, Palace Norton Street). The free plan gives 250 searches a month; 7 × 31 = 217 leaves room for retries.
 - **Refresh:** once a day by a scheduled job that writes a snapshot to storage. Page requests never call SerpAPI.
 - **Fallback, per cinema:** today's fetch → last good snapshot (still valid, since it covers 7 days) → seeded mock sessions, labelled as sample times in the UI.
 - **Film matching:** each listing title is matched to TMDb by exact title. Recent releases win over older namesakes, and "4K" listings match the restored classic. Titles with no exact match show without TMDb details rather than with a wrong one.

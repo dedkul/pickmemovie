@@ -23,9 +23,9 @@ describe("parseTime", () => {
 });
 
 describe("parseShowtimes on real SerpAPI responses", () => {
-  // Search ran at 00:27 UTC on 14 Oct = 11:27 am in Melbourne.
+  // Search ran at 00:27 UTC on 14 Oct = 11:27 am in Sydney.
   for (const [name, res] of [["Hoyts Melbourne Central", hoyts], ["Cinema Nova", nova]] as const) {
-    it(`${name}: every session lands on a real Melbourne date, nothing unreadable`, () => {
+    it(`${name}: every session lands on a real Sydney date, nothing unreadable`, () => {
       const { sessions, problems } = parseShowtimes(res as SerpResponse, "x");
       expect(problems).toEqual([]);
       expect(sessions.length).toBeGreaterThan(100);
@@ -46,9 +46,9 @@ describe("parseShowtimes dates", () => {
   const res = (created_at: string, showtimes: SerpResponse["showtimes"]): SerpResponse => ({ search_metadata: { created_at }, showtimes });
   const movie = [{ name: "Film", showing: [{ time: ["7:00pm"], type: "Standard" }] }];
 
-  // Vercel runs in UTC. A refresh at 12:30 am Melbourne is still the previous
-  // day in UTC; "Today" must mean the Melbourne day or every session is off by one.
-  it("resolves Today in Melbourne time, not UTC", () => {
+  // Vercel runs in UTC. A refresh at 12:30 am Sydney is still the previous
+  // day in UTC; "Today" must mean the Sydney day or every session is off by one.
+  it("resolves Today in Sydney time, not UTC", () => {
     const { sessions } = parseShowtimes(res("2026-10-13 13:30:00 UTC", [{ day: "Today", movies: movie }]), "x");
     expect(sessions[0].date).toBe("2026-10-14");
   });

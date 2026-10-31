@@ -5,8 +5,8 @@ import { mockSessions } from "./mock-sessions";
 import type { SerpResponse } from "./serpapi";
 import { EMPTY_SNAPSHOT, mergeRefresh, needsFetch, sessionsFor, type Snapshot } from "./snapshot";
 
-const HOYTS = "hoyts-melbourne-central";
-const DAY1 = new Date("2026-10-14T18:00:00Z"); // the daily run: 5 am Thursday in Melbourne
+const HOYTS = "event-george-st"; // any listed cinema; the fixture is a recorded Hoyts response
+const DAY1 = new Date("2026-10-14T18:00:00Z"); // the daily run: 5 am Thursday in Sydney
 const HOURS = (h: number) => new Date(DAY1.getTime() + h * 3600_000);
 const ok = { ok: true as const, res: hoyts as SerpResponse };
 const down = { ok: false as const, error: "SerpAPI 503" };
@@ -57,6 +57,14 @@ describe("mergeRefresh", () => {
   it("leaves cinemas it didn't fetch untouched", () => {
     const next = mergeRefresh(firstRun, {}, HOURS(24));
     expect(next.cinemas[HOYTS]).toEqual(firstRun.cinemas[HOYTS]);
+  });
+
+  // After a city switch the stored snapshot still holds the old city's cinemas;
+  // their films must not leak into the new city's samples or TMDb lookups.
+  it("drops cinemas that are no longer in the list", () => {
+    const stale: Snapshot = { ...firstRun, cinemas: { ...firstRun.cinemas, "cinema-nova": firstRun.cinemas[HOYTS] } };
+    const next = mergeRefresh(stale, {}, HOURS(24));
+    expect(Object.keys(next.cinemas)).toEqual([HOYTS]);
   });
 });
 

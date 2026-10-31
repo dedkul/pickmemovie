@@ -4,7 +4,7 @@ import { estimateDriveMinutes, haversineKm } from "./geo";
 import type { ShownSession } from "./snapshot";
 
 // Ported from prototypes/v10.html (PRD §5.4). All times are minutes since
-// today's Melbourne midnight, so tomorrow 7 pm = 1440 + 1140. (A DST change
+// today's Sydney midnight, so tomorrow 7 pm = 1440 + 1140. (A DST change
 // inside the 3-day window can make a later day's times an hour off.)
 
 export const BUFFER_MIN = 10; // arriving up to 10 min late still makes it: that's the trailers
@@ -47,7 +47,7 @@ export type FilmGroup = { title: string; sessions: Evaluated[] };
 
 export type Context = {
   dates: string[]; // [today, tomorrow, day after]
-  now: number; // minutes since today's Melbourne midnight
+  now: number; // minutes since today's Sydney midnight
   origin: Origin;
   cinemas: Cinema[];
   driveMinutes: Record<string, number> | null; // by cinema id, from routing; null = not loaded yet

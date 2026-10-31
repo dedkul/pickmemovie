@@ -33,8 +33,8 @@ export function rangeText(a: number, b: number): string {
 
 export type Day = { idx: number; date: string; rel: string | null; short: string; long: string };
 
-// The 3 pickable days from a Melbourne ISO date. Formatted in UTC because the
-// ISO date already is the Melbourne date.
+// The 3 pickable days from a Sydney ISO date. Formatted in UTC because the
+// ISO date already is the Sydney date.
 export function makeDays(dates: string[]): Day[] {
   return dates.map((date, idx) => {
     const d = new Date(`${date}T00:00:00Z`);

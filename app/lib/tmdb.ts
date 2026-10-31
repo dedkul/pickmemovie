@@ -1,5 +1,5 @@
 import { cacheLife } from "next/cache";
-import { addDays } from "./melbourne-time";
+import { addDays } from "./sydney-time";
 
 export type Film = {
   tmdbId: number;
@@ -76,7 +76,7 @@ async function tmdb<T>(path: string, params: Record<string, string>): Promise<T>
   return res.json();
 }
 
-// `today` (Melbourne ISO date) is an argument so it's part of the cache key.
+// `today` (Sydney ISO date) is an argument so it's part of the cache key.
 export async function matchFilm(title: string, today: string): Promise<number | null> {
   "use cache";
   cacheLife("days");

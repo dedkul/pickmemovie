@@ -10,7 +10,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "PickMeMovie",
-  description: "Melbourne cinema sessions you can still make, worked out from where you are.",
+  description: "Sydney cinema sessions you can still make, worked out from where you are.",
 };
 
 // Theme before first paint: saved choice, else the OS setting.
