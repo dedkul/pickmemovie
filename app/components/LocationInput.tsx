@@ -83,7 +83,7 @@ export default function LocationInput({ origin, onChoose }: { origin: Origin; on
               </div>
             ))}
             {!matches.length && (
-              <div className={s.empty}>{result.error ? "Suggestions aren’t available right now. Try your location instead." : `No Melbourne suburb matches “${q}”.`}</div>
+              <div className={s.empty}>{result.error ? "Suggestions aren’t available right now. Try your location instead." : `No Sydney suburb matches “${q}”.`}</div>
             )}
           </div>
         )}

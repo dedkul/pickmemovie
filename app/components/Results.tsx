@@ -28,8 +28,8 @@ export default function Results({ groups, films, filters: f, now, days, origin, 
 
   // The subtitle always spells out the exact date and hours being searched.
   if (outOfRange) {
-    title = "We only cover Melbourne for now";
-    sub = `${origin.name} is outside our area. Try a Melbourne suburb.`;
+    title = "We only cover Sydney for now";
+    sub = `${origin.name} is outside our area. Try a Sydney suburb.`;
   } else if (f.mode === "now") {
     title = n ? `${plural(n, "film")} you can still make` : "Nothing you can make right now";
     sub = <>Leaving now · starting in the next 2 hours, before <strong className="tnum">{labels.nowUntil}</strong> · {where}</>;

@@ -15,11 +15,11 @@ export type Cinema = {
 };
 
 export const CINEMAS: Cinema[] = [
-  { id: "cinema-nova", name: "Cinema Nova", short: "Nova", chain: "Cinema Nova", suburb: "Carlton", lat: -37.7983, lng: 144.9671, url: "https://www.cinemanova.com.au", query: "Cinema Nova Carlton showtimes" },
-  { id: "hoyts-melbourne-central", name: "Hoyts Melbourne Central", short: "Hoyts MC", chain: "Hoyts", suburb: "CBD", lat: -37.8102, lng: 144.9628, url: "https://www.hoyts.com.au", query: "Hoyts Melbourne Central showtimes" },
-  { id: "village-crown", name: "Village Crown", short: "Crown", chain: "Village", suburb: "Southbank", lat: -37.8237, lng: 144.958, url: "https://villagecinemas.com.au", query: "Village Cinemas Crown showtimes" },
-  { id: "palace-westgarth", name: "Palace Westgarth", short: "Westgarth", chain: "Palace", suburb: "Northcote", lat: -37.7786, lng: 144.9989, url: "https://www.palacecinemas.com.au", query: "Palace Westgarth showtimes" },
-  { id: "lido", name: "Lido Cinemas", short: "Lido", chain: "Lido", suburb: "Hawthorn", lat: -37.8217, lng: 145.0315, url: "https://www.lidocinemas.com.au", query: "Lido Cinemas Hawthorn showtimes" },
-  { id: "hoyts-highpoint", name: "Hoyts Highpoint", short: "Highpoint", chain: "Hoyts", suburb: "Maribyrnong", lat: -37.7738, lng: 144.888, url: "https://www.hoyts.com.au", query: "Hoyts Highpoint showtimes" },
-  { id: "hoyts-chadstone", name: "Hoyts Chadstone", short: "Chadstone", chain: "Hoyts", suburb: "Chadstone", lat: -37.8862, lng: 145.083, url: "https://www.hoyts.com.au", query: "Hoyts Chadstone cinema showtimes" },
+  { id: "event-george-st", name: "Event George St", short: "George St", chain: "Event", suburb: "Sydney", lat: -33.8746, lng: 151.2065, url: "https://www.eventcinemas.com.au", query: "Event Cinemas George Street Sydney showtimes" },
+  { id: "palace-central", name: "Palace Central", short: "Central", chain: "Palace", suburb: "Chippendale", lat: -33.8843, lng: 151.1995, url: "https://www.palacecinemas.com.au", query: "Palace Central Sydney showtimes" },
+  { id: "hoyts-eq", name: "Hoyts Entertainment Quarter", short: "Hoyts EQ", chain: "Hoyts", suburb: "Moore Park", lat: -33.8913, lng: 151.2253, url: "https://www.hoyts.com.au", query: "Hoyts Entertainment Quarter Moore Park showtimes" },
+  { id: "dendy-newtown", name: "Dendy Newtown", short: "Newtown", chain: "Dendy", suburb: "Newtown", lat: -33.8968, lng: 151.1794, url: "https://www.dendy.com.au", query: "Dendy Cinemas Newtown showtimes" },
+  { id: "ritz-randwick", name: "Ritz Cinema", short: "Ritz", chain: "Ritz", suburb: "Randwick", lat: -33.9213, lng: 151.2412, url: "https://www.ritzcinemas.com.au", query: "Ritz Cinema Randwick showtimes" },
+  { id: "hayden-orpheum", name: "Hayden Orpheum", short: "Orpheum", chain: "Orpheum", suburb: "Cremorne", lat: -33.8299, lng: 151.2272, url: "https://www.orpheum.com.au", query: "Hayden Orpheum Cremorne showtimes" },
+  { id: "palace-norton-st", name: "Palace Norton Street", short: "Norton St", chain: "Palace", suburb: "Leichhardt", lat: -33.8828, lng: 151.1566, url: "https://www.palacecinemas.com.au", query: "Palace Norton Street showtimes" },
 ];

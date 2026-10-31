@@ -79,7 +79,7 @@ export default function FilmDialog({ open: { group }, film, origin, when, onClos
         <h3 className={s.sec}>{plural(group.sessions.length, "session")} · {when}</h3>
         {[...byCinema.values()].map(list => {
           const k = list[0].cinema, e0 = list[0];
-          const dir = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${encodeURIComponent(`${k.name}, ${k.suburb} VIC`)}&travelmode=driving`;
+          const dir = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${encodeURIComponent(`${k.name}, ${k.suburb} NSW`)}&travelmode=driving`;
           return (
             <section key={k.id} className={s.cin} aria-label={k.name}>
               <div className={s.cinHd}>

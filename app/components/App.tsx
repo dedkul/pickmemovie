@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Cinema } from "@/app/lib/cinemas";
 import { clock, dayShort, makeDays, rangeText } from "@/app/lib/format";
 import { CBD, COVERAGE_KM, haversineKm } from "@/app/lib/geo";
-import { melbourneMinutes } from "@/app/lib/melbourne-time";
+import { sydneyMinutes } from "@/app/lib/sydney-time";
 import { compute, initialFilters, NOW_WINDOW, type Context, type FilmGroup, type Filters, type Mode, type Origin } from "@/app/lib/reachability";
 import type { ShownSession } from "@/app/lib/snapshot";
 import type { Film } from "@/app/lib/tmdb";
@@ -22,7 +22,7 @@ type Props = {
   cinemas: Cinema[];
 };
 
-const DEFAULT_ORIGIN: Origin = { name: "Fitzroy", sub: "VIC 3065", lat: -37.7984, lng: 144.9785 };
+const DEFAULT_ORIGIN: Origin = { name: "Surry Hills", sub: "NSW 2010", lat: -33.8886, lng: 151.2094 };
 
 function savedOrigin(): Origin | null {
   try {
@@ -38,7 +38,7 @@ function clockOffset(): number {
   const p = new URLSearchParams(location.search).get("now");
   if (!p || !/^\d{1,2}:\d{2}$/.test(p)) return 0;
   const [h, m] = p.split(":").map(Number);
-  return h * 60 + m - melbourneMinutes(new Date());
+  return h * 60 + m - sydneyMinutes(new Date());
 }
 
 export type Labels = { nowUntil: string; planText: string; when: (mode: Mode) => string };
@@ -59,10 +59,10 @@ export default function App({ dates, serverNow, sessions, films, cinemas }: Prop
   useEffect(() => { paused.current = Boolean(openFilm || surprise); }, [openFilm, surprise]);
   useEffect(() => {
     const offset = clockOffset();
-    const tick = () => { if (!paused.current) setNow(melbourneMinutes(new Date()) + offset); };
+    const tick = () => { if (!paused.current) setNow(sydneyMinutes(new Date()) + offset); };
     /* eslint-disable react-hooks/set-state-in-effect -- browser-only state, read after hydration */
     tick();
-    if (offset) setFilters(initialFilters(melbourneMinutes(new Date()) + offset));
+    if (offset) setFilters(initialFilters(sydneyMinutes(new Date()) + offset));
     const saved = savedOrigin();
     if (saved) setOrigin(saved);
     /* eslint-enable react-hooks/set-state-in-effect */

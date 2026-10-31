@@ -1,6 +1,6 @@
 # PickMeMovie
 
-Melbourne cinema sessions you can still make, worked out from where you are. Live at [pickmemovie.vercel.app](https://pickmemovie.vercel.app).
+Sydney cinema sessions you can still make, worked out from where you are. Live at [pickmemovie.vercel.app](https://pickmemovie.vercel.app).
 
 Found a bug, or want a cinema added? Tell me on X: [@feat_ashish](https://x.com/feat_ashish).
 

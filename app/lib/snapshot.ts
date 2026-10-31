@@ -33,8 +33,9 @@ export type FetchOutcome = { ok: true; res: SerpResponse } | { ok: false; error:
 
 // A failed or empty fetch keeps the cinema's last good sessions. One search
 // covers about 7 days, so yesterday's data still answers the next 3.
+// Cinemas no longer in CINEMAS are dropped, so their titles stop feeding samples and TMDb lookups.
 export function mergeRefresh(prev: Snapshot, outcomes: Record<string, FetchOutcome>, now: Date): Snapshot {
-  const cinemas = { ...prev.cinemas };
+  const cinemas = Object.fromEntries(Object.entries(prev.cinemas).filter(([id]) => CINEMAS.some(c => c.id === id)));
   for (const [id, outcome] of Object.entries(outcomes)) {
     const parsed = outcome.ok ? parseShowtimes(outcome.res, id) : null;
     const at = now.toISOString();

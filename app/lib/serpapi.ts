@@ -1,7 +1,7 @@
 import type { Cinema } from "./cinemas";
-import { addDays, melbourneDate } from "./melbourne-time";
+import { addDays, sydneyDate } from "./sydney-time";
 
-// One session at one cinema. `date` is the night you go out (Melbourne), and
+// One session at one cinema. `date` is the night you go out (Sydney), and
 // `startMin` is minutes after that date's midnight; after-midnight sessions run
 // past 1440 so they stay with the night before, as in the prototype.
 export type Session = {
@@ -54,7 +54,7 @@ export function parseShowtimes(res: SerpResponse, cinemaId: string): { sessions:
   if (!created || !res.showtimes?.length) return { sessions, problems: ["no showtimes in response"] };
 
   // created_at looks like "2026-10-14 00:27:16 UTC"
-  const base = melbourneDate(new Date(created.replace(" UTC", "Z").replace(" ", "T")));
+  const base = sydneyDate(new Date(created.replace(" UTC", "Z").replace(" ", "T")));
   for (const day of res.showtimes) {
     const date = resolveDay(day, base);
     if (!date) { problems.push(`unreadable day: ${day.day} ${day.date ?? ""}`.trim()); continue; }
@@ -79,7 +79,7 @@ export async function fetchShowtimes(cinema: Cinema): Promise<SerpResponse> {
     q: cinema.query,
     gl: "au",
     hl: "en",
-    location: "Melbourne,Victoria,Australia",
+    location: "Sydney,New South Wales,Australia",
     api_key: process.env.SERPAPI_KEY ?? "",
   });
   const res = await fetch(`https://serpapi.com/search.json?${params}`, { cache: "no-store" });

@@ -2,7 +2,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import App from "@/app/components/App";
 import { CINEMAS } from "@/app/lib/cinemas";
-import { addDays, melbourneDate, melbourneMinutes } from "@/app/lib/melbourne-time";
+import { addDays, sydneyDate, sydneyMinutes } from "@/app/lib/sydney-time";
 import { sessionsFor, type Snapshot } from "@/app/lib/snapshot";
 import { getCachedSnapshot } from "@/app/lib/snapshot-store";
 import { getFilm, matchFilm, type Film } from "@/app/lib/tmdb";
@@ -18,12 +18,12 @@ export default function Page() {
 async function Showtimes() {
   await connection(); // "today" is per request, never baked in at build time
   const at = new Date();
-  const today = melbourneDate(at);
+  const today = sydneyDate(at);
   const dates = [today, addDays(today, 1), addDays(today, 2)];
   const snapshot = await getCachedSnapshot();
   const sessions = sessionsFor(snapshot, dates);
   const films = await loadFilms([...new Set(sessions.map(s => s.title))], snapshot, today);
-  return <App dates={dates} serverNow={melbourneMinutes(at)} sessions={sessions} films={films} cinemas={CINEMAS} />;
+  return <App dates={dates} serverNow={sydneyMinutes(at)} sessions={sessions} films={films} cinemas={CINEMAS} />;
 }
 
 // Title → TMDb details, or null when there's no exact match or TMDb is down:

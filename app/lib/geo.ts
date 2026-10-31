@@ -1,7 +1,7 @@
 // Pure geometry, kept apart from geoapify.ts (which uses next/cache) so client
 // components can import it.
 
-export const CBD = { lat: -37.8136, lng: 144.9631 };
+export const CBD = { lat: -33.8688, lng: 151.2093 };
 export const COVERAGE_KM = 60;
 
 export function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {

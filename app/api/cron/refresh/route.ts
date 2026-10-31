@@ -1,6 +1,6 @@
 import { revalidateTag } from "next/cache";
 import { CINEMAS } from "@/app/lib/cinemas";
-import { melbourneDate } from "@/app/lib/melbourne-time";
+import { sydneyDate } from "@/app/lib/sydney-time";
 import { fetchShowtimes, searchesLeft } from "@/app/lib/serpapi";
 import { mergeRefresh, needsFetch, type FetchOutcome } from "@/app/lib/snapshot";
 import { readSnapshot, writeSnapshot } from "@/app/lib/snapshot-store";
@@ -36,7 +36,7 @@ export async function GET(request: Request) {
   // Match titles to TMDb; drop titles no longer showing. Unmatched titles are
   // retried each run (TMDb adds films), and a failed lookup is simply left out.
   const titles = new Set(Object.values(next.cinemas).flatMap(c => c.sessions.map(s => s.title)));
-  const today = melbourneDate(now);
+  const today = sydneyDate(now);
   const films: Record<string, number | null> = {};
   for (const title of titles) {
     if (next.films[title] != null) { films[title] = next.films[title]; continue; }
