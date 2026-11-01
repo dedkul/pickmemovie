@@ -72,11 +72,24 @@ I skipped high-fidelity mockups and went straight to throwaway HTML, a new file 
 
 The card is what people actually look at, so it got its own lab: eight variants on one page with the same data, and toggles to test each at its worst case (one session or ten, light or dark, real or placeholder posters).
 
-| A · List line | B · Session tiles (my idea) |
-|---|---|
-| ![Card A](docs/readme/card-A.png) | ![Card B](docs/readme/card-B.png) |
-| **C · Time strip** | **D · Poster first** |
-| ![Card C](docs/readme/card-C.png) | ![Card D](docs/readme/card-D.png) |
+<table>
+  <tr>
+    <th width="50%">A · List line</th>
+    <th width="50%">B · Session tiles (my idea)</th>
+  </tr>
+  <tr>
+    <td valign="top"><img src="docs/readme/card-A.png" alt="Card A: the soonest session as a line of text"></td>
+    <td valign="top"><img src="docs/readme/card-B.png" alt="Card B: every session as a tile"></td>
+  </tr>
+  <tr>
+    <th>C · Time strip</th>
+    <th>D · Poster first</th>
+  </tr>
+  <tr>
+    <td valign="top"><img src="docs/readme/card-C.png" alt="Card C: sessions in a scrolling strip"></td>
+    <td valign="top" align="center"><img src="docs/readme/card-D.png" alt="Card D: a large poster with the time underneath" width="180"></td>
+  </tr>
+</table>
 
 My own idea, B, was very scannable but kept empty slots for films with one or two sessions. D was the most cinematic but hid the times, and the times are the whole point. A won, and a second round made it lighter:
 
