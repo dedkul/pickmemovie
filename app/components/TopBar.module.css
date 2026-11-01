@@ -8,7 +8,6 @@
   border-bottom: 1px solid var(--line);
 }
 .topRow { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-.wordmark { font-size: 1.1875rem; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
 .topActions { display: flex; align-items: center; gap: 6px; }
 /* Theme icon (ThemeIcon in icons.tsx): light shows the moon (what you switch to),
    dark shows the sun. For the sun the cut slides away, the body shrinks and the

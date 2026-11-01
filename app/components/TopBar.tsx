@@ -9,6 +9,7 @@ import LocationInput from "./LocationInput";
 import { lockScroll } from "./lock-scroll";
 import Seg from "./Seg";
 import s from "./TopBar.module.css";
+import BrandTitle from "./brand/BrandTitle";
 
 type Props = {
   filters: Filters;
@@ -121,7 +122,7 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
   return (
     <header className={s.top}>
       <div className={`wrap ${s.topRow}`}>
-        <a className={s.wordmark} href="#">PickMeMovie</a>
+        <BrandTitle />
         <div className={s.topActions}>
           <button className="btn-quiet" type="button" onClick={onSurprise} disabled={!canSurprise}
             title={canSurprise ? "Pick something for me" : "Nothing to pick from with these filters"}>Surprise me</button>

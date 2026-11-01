@@ -6,6 +6,17 @@ Found a bug, or want a cinema added? Tell me on X: [@feat_ashish](https://x.com/
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Link previews and icons
+
+`app/layout.tsx` defines Open Graph and Twitter large-image previews using
+`public/share/pickmemovie.jpg` (1200 × 630). The production base URL is
+`https://pickmemovie.vercel.app`; update `metadataBase` if the domain changes.
+The logo mark (a lens with a diamond cutout) lives in `app/icon.svg`, with `app/favicon.ico` for browser
+compatibility and `app/apple-icon.png` for home-screen bookmarks.
+
+After deploying, share the public production URL. Messaging apps control whether
+previews appear and may cache an older preview; an existing message may not update.
+
 ## Getting Started
 
 First, run the development server:
