@@ -8,7 +8,7 @@
   border-bottom: 1px solid var(--line);
 }
 .topRow { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-.wordmark { font-size: 19px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
+.wordmark { font-size: 1.1875rem; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
 .topActions { display: flex; align-items: center; gap: 6px; }
 /* Theme icon (ThemeIcon in icons.tsx): light shows the moon (what you switch to),
    dark shows the sun. For the sun the cut slides away, the body shrinks and the
@@ -31,7 +31,7 @@
   padding: 11px 14px;
   background: var(--surface); border: 1px solid var(--line); border-radius: 100px;
   box-shadow: var(--shadow);
-  font-size: 14px; color: var(--text-2);
+  font-size: .875rem; color: var(--text-2);
 }
 .summaryPill span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .summaryPill strong { color: var(--text); font-weight: 600; }
@@ -45,10 +45,10 @@
 .controls:not(.open) { display: none; }
 .panelHd {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 12px 4px 20px; font-size: 17px; font-weight: 600;
+  padding: 12px 12px 4px 20px; font-size: 1.0625rem; font-weight: 600;
 }
 .ctl { padding: 16px 20px; }
-.ctlLabel { display: block; font-size: 13px; font-weight: 500; color: var(--text-3); margin-bottom: 10px; }
+.ctlLabel { display: block; font-size: .8125rem; font-weight: 500; color: var(--text-3); margin-bottom: 10px; }
 .panelFt {
   margin-top: auto; position: sticky; bottom: 0;
   padding: 16px 20px 20px; background: var(--bg);
@@ -58,16 +58,19 @@
 .reveal .appear { animation: rise .2s var(--ease-out) backwards; }
 .reveal .hasPop.appear { animation-delay: 40ms; }
 
-.nowInfo { font-size: 14px; color: var(--text-2); }
+.nowInfo { font-size: .875rem; color: var(--text-2); }
 .nowInfo strong { color: var(--text); font-weight: 600; }
 
 /* Time presets carry their hours, so "Evening" is never a guess */
 .preset { display: flex; flex-direction: column; align-items: flex-start; padding: 7px 14px; border-radius: 12px; line-height: 1.25; }
-.hrs { font-size: 12px; font-weight: 400; opacity: .75; }
+/* text-3, not opacity: .75 opacity on text-2 fell under 4.5:1 */
+.hrs { font-size: .75rem; font-weight: 400; color: var(--text-3); }
+.preset[aria-pressed="true"] .hrs { color: inherit; opacity: .8; }
+.preset:disabled .hrs { color: inherit; }
 
 /* Range: Starts between [from] and [to] */
-.rangeRow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-size: 14px; color: var(--text-2); }
-.timeNote { margin-top: 10px; font-size: 13px; color: var(--text-3); }
+.rangeRow { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; font-size: .875rem; color: var(--text-2); }
+.timeNote { margin-top: 10px; font-size: .8125rem; color: var(--text-3); }
 
 /* Popover trigger — desktop only */
 .popBtn { display: none; }
@@ -87,9 +90,9 @@
     display: inline-flex; align-items: center; gap: 8px;
     padding: 8px 12px; border-radius: 100px;
     border: 1px solid var(--line-2); background: var(--surface);
-    font-size: 14px; font-weight: 500; white-space: nowrap;
+    font-size: .875rem; font-weight: 500; white-space: nowrap;
   }
-  .popBtn:hover { border-color: var(--text-3); }
+  @media (hover: hover) { .popBtn:hover { border-color: var(--text-3); } }
   .popBtn svg { color: var(--text-3); }
   .pop {
     position: absolute; top: calc(100% + 8px); left: 0; z-index: 70;

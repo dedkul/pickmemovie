@@ -19,9 +19,10 @@ type Props = {
   labels: Labels;
   onOpen: (g: FilmGroup) => void;
   onSuggest: (p: Partial<Filters>) => void;
+  onChangeSuburb: () => void;
 };
 
-export default function Results({ groups, films, filters: f, now, days, origin, outOfRange, labels, onOpen, onSuggest }: Props) {
+export default function Results({ groups, films, filters: f, now, days, origin, outOfRange, labels, onOpen, onSuggest, onChangeSuburb }: Props) {
   const n = groups.length;
   let title: string, sub: React.ReactNode;
   const where = `from ${origin.name}, within ${f.km} km`;
@@ -40,10 +41,13 @@ export default function Results({ groups, films, filters: f, now, days, origin, 
 
   return (
     <main className="wrap">
-      <div className={s.hd} aria-live="polite">
-        <h1 className={s.title}>{title}</h1>
+      {/* Only the title is live: the subtitle's "before 8:40 pm" changes every minute */}
+      <div className={s.hd}>
+        <h1 className={s.title} aria-live="polite">{title}</h1>
         <p className={s.sub}>{sub}</p>
       </div>
+
+      {outOfRange && <button className={`pill ${s.outCta}`} type="button" onClick={onChangeSuburb}>Change suburb</button>}
 
       {!outOfRange && !n && (
         <div className={s.empty}>

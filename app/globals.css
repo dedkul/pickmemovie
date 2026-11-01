@@ -56,10 +56,9 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
-  font-size: 15px;
+  font-size: .9375rem;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
-  transition: background .2s, color .2s;
   /* Column so the footer can sit on the bottom edge when results are short. */
   min-height: 100vh;
   min-height: 100dvh;
@@ -74,34 +73,30 @@ body > .wrap { width: 100%; }
 /* ── Buttons ──────────────────────────────────────────────── */
 .btn-quiet {
   padding: 8px 14px; border-radius: 100px;
-  font-size: 14px; font-weight: 500; color: var(--text-2);
-  transition: background .15s, color .15s;
+  font-size: .875rem; font-weight: 500; color: var(--text-2);
+  transition: background .15s, color .15s, scale .15s ease-out;
 }
-.btn-quiet:hover:not(:disabled) { background: var(--bg-2); color: var(--text); }
 .btn-quiet:disabled { opacity: .45; cursor: not-allowed; }
 .icon-btn {
   width: 38px; height: 38px; border-radius: 50%;
   display: grid; place-items: center; color: var(--text-2);
-  transition: background .15s, color .15s;
+  transition: background .15s, color .15s, scale .15s ease-out;
 }
-.icon-btn:hover { background: var(--bg-2); color: var(--text); }
 .btn-primary {
   display: block; width: 100%; padding: 13px; border-radius: 100px;
   background: var(--accent); color: var(--accent-ink);
-  font-size: 15px; font-weight: 600; text-align: center; text-decoration: none;
-  transition: filter .15s;
+  font-size: .9375rem; font-weight: 600; text-align: center; text-decoration: none;
+  transition: filter .15s, scale .15s ease-out;
 }
-.btn-primary:hover { filter: brightness(1.08); }
 
 /* Pills — one selected style everywhere */
 .pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .pill {
   padding: 8px 14px; border-radius: 100px;
   border: 1px solid var(--line-2); background: var(--surface);
-  font-size: 14px; font-weight: 500; color: var(--text-2);
-  transition: background .12s, color .12s, border-color .12s;
+  font-size: .875rem; font-weight: 500; color: var(--text-2);
+  transition: background .12s, color .12s, border-color .12s, scale .15s ease-out;
 }
-.pill:hover:not(:disabled) { color: var(--text); border-color: var(--text-3); }
 .pill[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
 .pill:disabled { opacity: .45; cursor: not-allowed; }
 
@@ -114,10 +109,9 @@ body > .wrap { width: 100%; }
 .seg button {
   position: relative; z-index: 1;
   padding: 6px 14px; border-radius: 100px;
-  font-size: 14px; font-weight: 500; color: var(--text-2);
+  font-size: .875rem; font-weight: 500; color: var(--text-2);
   transition: color .12s;
 }
-.seg button:hover:not(:disabled) { color: var(--text); }
 .seg button[aria-pressed="true"] { color: var(--text); }
 /* The highlight (Seg.tsx) slides by clip-path. The shadow sits on the wrapper
    because clip-path would cut it off the layer itself. */
@@ -130,7 +124,7 @@ body > .wrap { width: 100%; }
   appearance: none; -webkit-appearance: none;
   padding: 8px 32px 8px 12px; border-radius: 10px;
   border: 1px solid var(--line-2); background: var(--surface);
-  font-size: 14px; font-weight: 500; cursor: pointer;
+  font-size: .875rem; font-weight: 500; cursor: pointer;
 }
 .select-wrap.round select { border-radius: 100px; padding: 9px 36px 9px 14px; }
 .select-wrap svg { position: absolute; right: 11px; pointer-events: none; color: var(--text-3); }
@@ -139,9 +133,9 @@ body > .wrap { width: 100%; }
 .poster { width: 100%; aspect-ratio: 2 / 3; border-radius: 8px; background: var(--bg-2) center / cover; }
 .car { display: inline-block; vertical-align: -2px; margin-right: 3px; opacity: .8; }
 .fmt { font-weight: 600; color: var(--text-3); }
-.late-tag { display: block; font-size: 11px; font-weight: 500; color: var(--text-3); }
-.sample-tag { font-size: 12px; font-weight: 500; color: var(--text-3); white-space: nowrap; }
-.s-cue { font-size: 13px; font-weight: 500; color: var(--text-2); white-space: nowrap; }
+.late-tag { display: block; font-size: .75rem; font-weight: 500; color: var(--text-3); }
+.sample-tag { font-size: .75rem; font-weight: 500; color: var(--text-3); white-space: nowrap; }
+.s-cue { font-size: .8125rem; font-weight: 500; color: var(--text-2); white-space: nowrap; }
 .s-cue.tight, .s-cue.trailers { background: var(--accent); color: var(--accent-ink); padding: 1px 10px; border-radius: 100px; font-weight: 600; }
 
 /* ── Dialogs (film detail, surprise): native <dialog>, centred at every size.
@@ -156,6 +150,29 @@ body > .wrap { width: 100%; }
 :where(dialog.popup)::backdrop { background: rgba(10, 9, 16, .68); animation: dim-in .2s var(--ease-out); }
 @keyframes dim-in { from { background-color: transparent; } }
 @keyframes fd-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+
+/* Hover only where a pointer can hover: on touch, :hover sticks after a tap. */
+@media (hover: hover) {
+  .btn-quiet:hover:not(:disabled) { background: var(--bg-2); color: var(--text); }
+  .icon-btn:hover { background: var(--bg-2); color: var(--text); }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .pill:hover:not(:disabled) { color: var(--text); border-color: var(--text-3); }
+  .seg button:hover:not(:disabled) { color: var(--text); }
+}
+/* Press feedback */
+@media (prefers-reduced-motion: no-preference) {
+  :is(.btn-quiet, .icon-btn, .btn-primary, .pill):not(:disabled):active { scale: .96; }
+}
+/* A theme switch swaps every colour in one frame (TopBar toggleTheme);
+   only the sun/moon icon keeps its morph. */
+:root.theme-swap *:not(:is(.ti-core, .ti-cut, .ti-rays)) { transition: none !important; }
+
+/* Phones: iOS zooms the page when a focused field's text is under 16px */
+@media (max-width: 1023px) {
+  .select-wrap select { font-size: 1rem; }
+}
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 @media (min-width: 1024px) {
   .wrap { padding: 0 32px; }

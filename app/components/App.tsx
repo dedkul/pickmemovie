@@ -52,6 +52,7 @@ export default function App({ dates, serverNow, sessions, films, cinemas }: Prop
   const [drive, setDrive] = useState<{ key: string; minutes: Record<string, number> } | null>(null);
   const [openFilm, setOpenFilm] = useState<OpenFilm | null>(null);
   const [surprise, setSurprise] = useState(false);
+  const [editLocation, setEditLocation] = useState(0);
 
   // Countdowns refresh every 30 s, but not under an open dialog: its contents
   // were worked out when it opened and shouldn't shift while being read.
@@ -108,11 +109,13 @@ export default function App({ dates, serverNow, sessions, films, cinemas }: Prop
         filmCount={outOfRange ? 0 : shown.length}
         canSurprise={!outOfRange && Boolean(groups.now.length || groups.plan.length)}
         onSurprise={() => setSurprise(true)}
+        editLocation={editLocation}
       />
       <Results
         groups={shown} films={films} filters={filters} now={now} days={days} origin={origin} outOfRange={outOfRange} labels={labels}
         onOpen={group => setOpenFilm({ group, mode: filters.mode })}
         onSuggest={patch}
+        onChangeSuburb={() => setEditLocation(n => n + 1)}
       />
       <SiteFooter />
       {openFilm && (

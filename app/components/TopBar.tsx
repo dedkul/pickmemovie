@@ -21,23 +21,38 @@ type Props = {
   filmCount: number;
   canSurprise: boolean;
   onSurprise: () => void;
+  editLocation: number; // bumped by "Change suburb": open the filters and focus the location
 };
+
+// While the phone sheet covers the page, everything around it leaves the tab
+// order. Returns what it changed so the caller can put it back.
+function inertAround(el: HTMLElement): HTMLElement[] {
+  const changed: HTMLElement[] = [];
+  for (let node = el; node.parentElement && node !== document.body; node = node.parentElement)
+    for (const sib of node.parentElement.children)
+      if (sib !== node && sib instanceof HTMLElement && !sib.inert) { sib.inert = true; changed.push(sib); }
+  return changed;
+}
+
+const listFmt = new Intl.ListFormat("en-AU", { type: "conjunction" });
 
 const times = (lo: number, hi: number) => Array.from({ length: (hi - lo) / T_STEP + 1 }, (_, i) => lo + i * T_STEP);
 
-export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, days, labels, filmCount, canSurprise, onSurprise }: Props) {
+export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, days, labels, filmCount, canSurprise, onSurprise, editLocation }: Props) {
   const [sheet, setSheet] = useState(false); // mobile filter sheet
   const [timeOpen, setTimeOpen] = useState(false); // desktop time popover
   const [reveal, setReveal] = useState(false); // controls that appear on a mode switch rise in
   const revealT = useRef<ReturnType<typeof setTimeout>>(undefined);
   const summaryRef = useRef<HTMLButtonElement>(null);
+  const sheetClose = useRef<HTMLButtonElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
   const timeCtl = useRef<HTMLDivElement>(null);
+  const timeBtn = useRef<HTMLButtonElement>(null);
   const plan = f.mode === "plan";
 
   function setSheetOpen(open: boolean) {
     setSheet(open);
     lockScroll(open);
-    if (!open) summaryRef.current?.focus();
   }
 
   // Outside click closes the popover; Escape closes the popover, then the sheet.
@@ -45,13 +60,37 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
     const onClick = (e: MouseEvent) => { if (!timeCtl.current?.contains(e.target as Node)) setTimeOpen(false); };
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape" || document.querySelector("dialog[open]")) return;
-      if (timeOpen) setTimeOpen(false);
-      else if (sheet && !(document.activeElement instanceof HTMLInputElement)) { setSheet(false); lockScroll(false); summaryRef.current?.focus(); }
+      if (timeOpen) {
+        const inside = timeCtl.current?.contains(document.activeElement);
+        setTimeOpen(false);
+        if (inside) timeBtn.current?.focus(); // the popover is gone; don't drop focus on the page
+      }
+      else if (sheet && !(document.activeElement instanceof HTMLInputElement)) { setSheet(false); lockScroll(false); }
     };
     document.addEventListener("click", onClick);
     document.addEventListener("keydown", onKey);
     return () => { document.removeEventListener("click", onClick); document.removeEventListener("keydown", onKey); };
   }, [timeOpen, sheet]);
+
+  // The open sheet is modal: focus starts in it and the page behind is inert.
+  // Closing hands focus back to the summary once it's interactive again.
+  // Widening past the phone layout closes it, since the controls go inline.
+  useEffect(() => {
+    if (!sheet) return;
+    const behind = inertAround(controlsRef.current!), summary = summaryRef.current;
+    sheetClose.current?.focus();
+    const wide = matchMedia("(min-width: 1024px)");
+    const onWide = () => { if (wide.matches) { setSheet(false); lockScroll(false); } };
+    wide.addEventListener("change", onWide);
+    return () => { behind.forEach(el => (el.inert = false)); summary?.focus(); wide.removeEventListener("change", onWide); };
+  }, [sheet]);
+
+  useEffect(() => {
+    if (!editLocation) return;
+    /* eslint-disable-next-line react-hooks/set-state-in-effect -- a request from outside, once per click */
+    if (!matchMedia("(min-width: 1024px)").matches) { setSheet(true); lockScroll(true); }
+    requestAnimationFrame(() => document.getElementById("loc-input")?.focus());
+  }, [editLocation]);
 
   // Only on the switch itself, so opening the sheet doesn't replay the entrance.
   function setMode(mode: Filters["mode"]) {
@@ -64,8 +103,11 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
   useEffect(() => () => clearTimeout(revealT.current), []);
 
   function toggleTheme() {
-    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
+    const root = document.documentElement;
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.classList.add("theme-swap"); // every colour swaps in one frame (globals.css)
+    root.dataset.theme = next;
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-swap")));
     try { localStorage.setItem("pmm-theme", next); } catch {}
   }
 
@@ -74,6 +116,7 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
   const setTo = (to: number) => onFilters({ to, from: f.from >= to ? Math.max(T_MIN, to - 60) : f.from });
 
   const over = windowOver(f, now), partly = windowPartlyOver(f, now);
+  const gone = PRESETS.filter(p => f.date === 0 && p.to <= now).map(p => p.name);
 
   return (
     <header className={s.top}>
@@ -96,10 +139,10 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
       </button>
 
       <div className="wrap">
-        <div className={`${s.controls} ${sheet ? s.open : ""} ${reveal ? s.reveal : ""}`} id="controls" role="group" aria-label="Filters">
+        <div ref={controlsRef} className={`${s.controls} ${sheet ? s.open : ""} ${reveal ? s.reveal : ""}`} id="controls" role="group" aria-label="Filters">
           <div className={s.panelHd}>
             Filters
-            <button className="icon-btn" type="button" aria-label="Close filters" onClick={() => setSheetOpen(false)}><Close /></button>
+            <button ref={sheetClose} className="icon-btn" type="button" aria-label="Close filters" onClick={() => setSheetOpen(false)}><Close /></button>
           </div>
 
           <div className={`${s.ctl} ${s.loc}`}>
@@ -137,7 +180,7 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
           {plan && (
             <div className={`${s.ctl} ${s.hasPop} ${s.appear}`} ref={timeCtl}>
               <span className={s.ctlLabel} id="time-label">Starting between</span>
-              <button className={s.popBtn} type="button" aria-expanded={timeOpen} aria-controls="time-pop" onClick={() => setTimeOpen(o => !o)}>
+              <button ref={timeBtn} className={s.popBtn} type="button" aria-expanded={timeOpen} aria-controls="time-pop" onClick={() => setTimeOpen(o => !o)}>
                 <ClockIcon /><span className="tnum">{rangeText(f.from, f.to)}</span>
               </button>
               <div className={`${s.pop} ${timeOpen ? s.popOpen : ""}`} id="time-pop">
@@ -146,7 +189,7 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
                     const past = f.date === 0 && p.to <= now;
                     return (
                       <button key={p.id} className={`pill ${s.preset}`} type="button" aria-pressed={f.from === p.from && f.to === p.to}
-                        disabled={past} title={past ? "Already over today" : undefined} onClick={() => onFilters({ from: p.from, to: p.to })}>
+                        disabled={past} onClick={() => onFilters({ from: p.from, to: p.to })}>
                         {p.name}<span className={`${s.hrs} tnum`}>{rangeText(p.from, p.to)}</span>
                       </button>
                     );
@@ -176,6 +219,8 @@ export default function TopBar({ filters: f, onFilters, origin, onOrigin, now, d
                       : `It’s ${clock(now)}, so only sessions you can still reach are shown.`}
                   </p>
                 )}
+                {/* Why some presets are greyed out; a tooltip on a disabled button never shows */}
+                {gone.length > 0 && <p className={s.timeNote}>{listFmt.format(gone)} {gone.length > 1 ? "are" : "is"} already over today.</p>}
               </div>
             </div>
           )}
