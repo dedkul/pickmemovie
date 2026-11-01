@@ -22,12 +22,15 @@ type Props = {
   cinemas: Cinema[];
 };
 
-const DEFAULT_ORIGIN: Origin = { name: "Surry Hills", sub: "NSW 2010", lat: -33.8886, lng: 151.2094 };
+// The CBD: every cinema is a short drive away, so there is always something on.
+const DEFAULT_ORIGIN: Origin = { name: "Sydney", sub: "NSW 2000", lat: CBD.lat, lng: CBD.lng };
 
 function savedOrigin(): Origin | null {
   try {
     const o = JSON.parse(localStorage.getItem("pmm-origin") ?? "null");
-    return o && typeof o.name === "string" && Number.isFinite(o.lat) && Number.isFinite(o.lng) ? o : null;
+    if (!o || typeof o.name !== "string" || !Number.isFinite(o.lat) || !Number.isFinite(o.lng)) return null;
+    // A suburb saved while the app covered Melbourne would open on "outside Sydney".
+    return haversineKm(o, CBD) <= COVERAGE_KM ? o : null;
   } catch {
     return null;
   }
