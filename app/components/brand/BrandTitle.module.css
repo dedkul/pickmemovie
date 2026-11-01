@@ -1,0 +1,5 @@
+.title { display: inline-flex; flex-shrink: 0; align-items: center; width: 190px; height: 44px; color: var(--text); text-decoration: none; border-radius: 6px; }
+.art { display: block; width: 100%; height: 36px; }
+.name { font-family: var(--font-dm-sans), sans-serif; font-size: 36px; font-weight: 650; letter-spacing: -1.1px; }
+.title:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (max-width: 380px) { .title { width: 165px; } }

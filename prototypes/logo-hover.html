@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PickMeMovie · logo hover</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #F4F1F8; --surface: #FCFBFE; --line: rgba(34,30,51,.09); --line-2: rgba(34,30,51,.18); --text: #221E33; --text-2: #4E4864; --text-3: #6A6482; --accent: #5048C8; --accent-ink: #fff; color-scheme: light; }
+    [data-theme="dark"] { --bg: #131519; --surface: #1A1D22; --line: rgba(255,255,255,.07); --line-2: rgba(255,255,255,.15); --text: #ECEDF0; --text-2: #B3B7C1; --text-3: #8E939E; --accent: #ABA6FF; --accent-ink: #131519; color-scheme: dark; }
+    body { background: var(--bg); color: var(--text); font: 15px/1.45 "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+    button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+    /* The header exactly as the app lays it out */
+    .top { border-bottom: 1px solid var(--line); }
+    .top-row { max-width: 1280px; margin: 0 auto; padding: 0 32px; height: 60px; display: flex; align-items: center; }
+
+    /* ── The logo: same box as BrandTitle.module.css ── */
+    .brand { display: inline-flex; flex-shrink: 0; align-items: center; width: 190px; height: 44px; color: var(--text); text-decoration: none; border-radius: 6px; }
+    .brand svg { display: block; width: 100%; height: 36px; }
+    .brand:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .brand text { font-family: "DM Sans", sans-serif; font-size: 36px; font-weight: 650; letter-spacing: -1.1px; }
+
+    main { max-width: 760px; margin: 0 auto; padding: 48px 32px; display: grid; gap: 28px; }
+    h1 { font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+    p { color: var(--text-2); }
+    .stage { display: grid; place-items: center; padding: 56px 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
+    .stage .brand { width: 520px; max-width: 100%; height: auto; }
+    .stage .brand svg { height: auto; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { padding: 8px 14px; border-radius: 100px; border: 1px solid var(--line-2); background: var(--surface); font-size: 14px; font-weight: 500; color: var(--text-2); }
+    .pill[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+    ul { padding-left: 20px; color: var(--text-2); display: grid; gap: 6px; }
+    code { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-row" id="header-slot"></div>
+  </header>
+
+  <main>
+    <div>
+      <h1>Logo hover: plain SVG version</h1>
+      <p>Hover the logo, here or in the header above, or Tab to it. It plays once per hover. Compare with the current version at <code>localhost:3001</code>.</p>
+    </div>
+    <div class="stage" id="big-slot"></div>
+    <div class="row">
+      <button class="pill" id="replay" type="button">Replay</button>
+      <button class="pill" id="slow" type="button" aria-pressed="false">Slow motion (4×)</button>
+      <button class="pill" id="theme" type="button">Dark theme</button>
+    </div>
+    <ul>
+      <li>Same shapes and timing as the Remotion version: the lens opens, the mark tilts back and settles, the name flashes the accent colour, 1.48 s in all.</li>
+      <li>No packages. The motion is SVG <code>&lt;animate&gt;</code>, built into every browser.</li>
+      <li>Mouse hover and keyboard focus start it. Touch doesn't, matching the current version, and reduced motion skips it.</li>
+    </ul>
+  </main>
+
+  <template id="logo">
+    <a class="brand" href="#" aria-label="PickMeMovie home">
+      <svg viewBox="0 0 340 64" aria-hidden="true">
+        <g fill="currentColor">
+          <!-- tilt back, overshoot, settle -->
+          <animateTransform attributeName="transform" type="rotate" begin="indefinite" fill="freeze"
+            values="0 28 28; -12 28 28; 5 28 28; 0 28 28; 0 28 28" keyTimes="0; .2247; .5056; .8427; 1"
+            calcMode="spline" keySplines=".22 1 .36 1; .22 1 .36 1; .22 1 .36 1; .22 1 .36 1" />
+          <!-- the diamond cutout opens into a round lens and closes again -->
+          <path fill-rule="evenodd" d="M28 3a25 25 0 1 1 0 50a25 25 0 1 1 0-50Z M28 12 C31 21 35 25 44 28 C35 31 31 35 28 44 C25 35 21 31 12 28 C21 25 25 21 28 12Z">
+            <animate attributeName="d" begin="indefinite" fill="freeze" keyTimes="0; .1685; .3933; .7303; 1"
+              calcMode="spline" keySplines=".22 1 .36 1; .22 1 .36 1; .22 1 .36 1; .22 1 .36 1"
+              values="M28 3a25 25 0 1 1 0 50a25 25 0 1 1 0-50Z M28 12 C31 21 35 25 44 28 C35 31 31 35 28 44 C25 35 21 31 12 28 C21 25 25 21 28 12Z;
+                      M28 3a25 25 0 1 1 0 50a25 25 0 1 1 0-50Z M28 12 C36.84 12 44 19.16 44 28 C44 36.84 36.84 44 28 44 C19.16 44 12 36.84 12 28 C12 19.16 19.16 12 28 12Z;
+                      M28 3a25 25 0 1 1 0 50a25 25 0 1 1 0-50Z M28 12 C36.84 12 44 19.16 44 28 C44 36.84 36.84 44 28 44 C19.16 44 12 36.84 12 28 C12 19.16 19.16 12 28 12Z;
+                      M28 3a25 25 0 1 1 0 50a25 25 0 1 1 0-50Z M28 12 C31 21 35 25 44 28 C35 31 31 35 28 44 C25 35 21 31 12 28 C21 25 25 21 28 12Z;
+                      M28 3a25 25 0 1 1 0 50a25 25 0 1 1 0-50Z M28 12 C31 21 35 25 44 28 C35 31 31 35 28 44 C25 35 21 31 12 28 C21 25 25 21 28 12Z" />
+          </path>
+          <path d="M43 42a6 6 0 0 1 8 0l11 11a6 6 0 0 1-8 8L43 50a6 6 0 0 1 0-8Z" />
+        </g>
+        <text x="78" y="43" fill="currentColor">PickMeMovie</text>
+        <!-- the name flashes the accent colour while the lens is open -->
+        <text x="78" y="43" fill="var(--accent)" opacity="0">PickMeMovie
+          <animate attributeName="opacity" begin="indefinite" fill="freeze" values="0; 1; 1; 0; 0" keyTimes="0; .1685; .3933; .7303; 1"
+            calcMode="spline" keySplines=".22 1 .36 1; .22 1 .36 1; .22 1 .36 1; .22 1 .36 1" />
+        </text>
+      </svg>
+    </a>
+  </template>
+
+  <script>
+    const DUR = 89 / 60; // the Remotion version: frames 0–89 at 60 fps
+    let speed = 1;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+    function mount(slot) {
+      const a = document.getElementById('logo').content.firstElementChild.cloneNode(true);
+      const anims = a.querySelectorAll('animate, animateTransform');
+      let busy = false;
+      a.play = force => {
+        if ((busy || reduce.matches) && !force) return;
+        busy = true;
+        anims.forEach(x => { x.setAttribute('dur', DUR * speed + 's'); x.beginElement(); });
+        setTimeout(() => { busy = false; }, DUR * speed * 1000);
+      };
+      a.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') a.play(); });
+      a.addEventListener('focus', () => a.play());
+      a.addEventListener('click', e => e.preventDefault());
+      slot.append(a);
+      return a;
+    }
+    mount(document.getElementById('header-slot'));
+    const big = mount(document.getElementById('big-slot'));
+
+    document.getElementById('replay').onclick = () => big.play(true);
+    document.getElementById('slow').onclick = e => {
+      speed = speed === 1 ? 4 : 1;
+      e.currentTarget.setAttribute('aria-pressed', speed === 4);
+    };
+    document.getElementById('theme').onclick = e => {
+      const dark = document.documentElement.dataset.theme !== 'dark';
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      e.currentTarget.textContent = dark ? 'Light theme' : 'Dark theme';
+    };
+  </script>
+</body>
+</html>
