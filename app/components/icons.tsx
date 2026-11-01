@@ -41,7 +41,7 @@ export const ThemeIcon = () => (
 );
 
 export const Car = () => (
-  <svg className="car" width="14" height="14" viewBox="0 0 16 16" role="img" aria-label="drive"><path d="M3 10.5V8.2l1.3-3.4A1.5 1.5 0 0 1 5.7 3.8h4.6a1.5 1.5 0 0 1 1.4 1l1.3 3.4v2.3M3 10.5h10M3 10.5V12.5M13 10.5V12.5M2.5 7.5h11" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /><circle cx="5.2" cy="9" r=".8" fill="currentColor" /><circle cx="10.8" cy="9" r=".8" fill="currentColor" /></svg>
+  <svg className="car" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 10.5V8.2l1.3-3.4A1.5 1.5 0 0 1 5.7 3.8h4.6a1.5 1.5 0 0 1 1.4 1l1.3 3.4v2.3M3 10.5h10M3 10.5V12.5M13 10.5V12.5M2.5 7.5h11" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /><circle cx="5.2" cy="9" r=".8" fill="currentColor" /><circle cx="10.8" cy="9" r=".8" fill="currentColor" /></svg>
 );
 
 export const External = () => (

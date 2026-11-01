@@ -71,8 +71,8 @@ export default function FilmDialog({ open: { group }, film, origin, when, onClos
               {film.year && <span>{film.year}</span>}
             </p>
             {film.genres.length > 0 && <div className={s.genres}>{film.genres.map(g => <span key={g}>{g}</span>)}</div>}
-            {film.overview && <p ref={syn} className={`${s.syn} ${synOpen ? s.synOpen : ""}`}>{film.overview}</p>}
-            {clipped && <button className={s.more} type="button" onClick={() => setSynOpen(o => !o)}>{synOpen ? "Less" : "More"}</button>}
+            {film.overview && <p ref={syn} id="fd-syn" className={`${s.syn} ${synOpen ? s.synOpen : ""}`}>{film.overview}</p>}
+            {clipped && <button className={s.more} type="button" aria-expanded={synOpen} aria-controls="fd-syn" onClick={() => setSynOpen(o => !o)}>{synOpen ? "Less" : "More"}</button>}
           </>
         )}
 
