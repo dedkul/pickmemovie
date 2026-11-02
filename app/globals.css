@@ -24,6 +24,8 @@ svg { display: block; flex-shrink: 0; }
   --accent-ink:  #FFFFFF;
   --accent-soft: #E3E0FA;
   --on-soft:     #3B34A8;
+  --seg-thumb:   #FCFBFE;   /* the selected segment: raised above --bg-2 */
+  --seg-idle:    var(--text-2);
   --shadow:      0 1px 2px rgba(34,30,51,.05), 0 6px 20px rgba(34,30,51,.05);
   --r: 12px;
   --wrap: 1280px;
@@ -45,6 +47,11 @@ svg { display: block; flex-shrink: 0; }
   --accent-ink:  #131519;
   --accent-soft: rgba(171, 166, 255, .14);
   --on-soft:     #CBC8FF;
+  /* Dark mode shows height by getting lighter, not by shadow, so the thumb is
+     lighter than its track (1.56:1) and idle labels drop back a step. The thumb
+     is 22% accent over --bg-2, so the brand violet shows here too. */
+  --seg-thumb:   #3E3F57;
+  --seg-idle:    var(--text-3);
   --shadow:      none;
   color-scheme: dark;
 }
@@ -109,14 +116,14 @@ body > .wrap { width: 100%; }
 .seg button {
   position: relative; z-index: 1;
   padding: 6px 14px; border-radius: 100px;
-  font-size: .875rem; font-weight: 500; color: var(--text-2);
+  font-size: .875rem; font-weight: 500; color: var(--seg-idle);
   transition: color .12s;
 }
 .seg button[aria-pressed="true"] { color: var(--text); }
 /* The highlight (Seg.tsx) slides by clip-path. The shadow sits on the wrapper
    because clip-path would cut it off the layer itself. */
 .seg-ind { position: absolute; inset: 0; pointer-events: none; filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.12)); }
-.seg-ind > span { position: absolute; inset: 0; background: var(--surface); clip-path: inset(50%); transition: clip-path .24s var(--ease-in-out); }
+.seg-ind > span { position: absolute; inset: 0; background: var(--seg-thumb); clip-path: inset(50%); transition: clip-path .24s var(--ease-in-out); }
 .seg button:disabled { opacity: .45; cursor: not-allowed; }
 
 .select-wrap { position: relative; display: inline-flex; align-items: center; }
